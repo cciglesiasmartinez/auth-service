@@ -4,14 +4,14 @@ import com.filmdb.auth.auth_service.dto.LoginRequest;
 import com.filmdb.auth.auth_service.dto.LoginResponse;
 import com.filmdb.auth.auth_service.dto.RegisterRequest;
 import com.filmdb.auth.auth_service.entity.User;
+import com.filmdb.auth.auth_service.security.CustomUserDetails;
 import com.filmdb.auth.auth_service.service.AuthService;
 import jakarta.validation.Valid;
+import org.apache.coyote.Response;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
-import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.RequestBody;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.security.core.Authentication;
+import org.springframework.web.bind.annotation.*;
 
 @RestController
 @RequestMapping("/auth")
@@ -38,7 +38,6 @@ public class AuthController {
         }
     }
 
-
     @PostMapping("/login")
     public ResponseEntity<?> login(@Valid @RequestBody LoginRequest request) {
         try {
@@ -47,8 +46,19 @@ public class AuthController {
                     request.getPassword()
             );
             return new ResponseEntity<>(loginResponse, HttpStatus.ACCEPTED);
-        } catch (IllegalArgumentException ex) {
+        } catch (IllegalArgumentException e) {
             return ResponseEntity.status(HttpStatus.UNAUTHORIZED).body("Invalid credentials");
         }
+    }
+
+    @GetMapping("/me")
+    public ResponseEntity<?> getCurrentUser(Authentication authentication) {
+        System.out.println("OK, request to /me received, auth is: " + authentication);
+        if (authentication == null || !(authentication.getPrincipal() instanceof CustomUserDetails)) {
+            return new ResponseEntity<>("Unauthorized", HttpStatus.UNAUTHORIZED);
+        }
+        CustomUserDetails userDetails = (CustomUserDetails) authentication.getPrincipal();
+        User user = userDetails.getUser();
+        return ResponseEntity.ok(user);
     }
 }
