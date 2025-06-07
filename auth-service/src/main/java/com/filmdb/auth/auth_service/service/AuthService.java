@@ -28,7 +28,7 @@ public class AuthService {
     }
 
     /**
-     * Helper method to check if a user is already registered
+     * Helper method to check if a user is already registered.
      * @param username The username for the desired user to check.
      * @param email The email for the desired user to check.
      * @return {@code true} if is not registered, {@code false } if it is.
@@ -69,7 +69,7 @@ public class AuthService {
      * @return JWT in String format
      * @throws IllegalArgumentException if password or email mismatch.
      */
-    public LoginResponse login(String email, String rawPassword) {
+    public LoginResponse loginUser(String email, String rawPassword) {
         Optional<User> userOptional = userRepository.findByEmail(email);
         if (userOptional.isEmpty()) {
             throw new IllegalArgumentException("No user found with that email");
@@ -82,6 +82,22 @@ public class AuthService {
             return new LoginResponse(token, expiresIn, user.getUsername());
         } else {
             throw new IllegalArgumentException("Invalid password.");
+        }
+    }
+
+    /**
+     * Changes user password.
+     * @param user The user object received from the controller
+     * @param currentPassword Current password for the user (from the request)
+     * @param newPassword New password for the user (from the request)
+     * @throws IllegalArgumentException if current password in the request doesn't match the one in database
+     */
+    public void changeUserPassword(User user, String currentPassword, String newPassword) {
+        if (passwordEncoder.matches(currentPassword, user.getPassword())) {
+            user.setPassword(passwordEncoder.encode(newPassword));
+            userRepository.save(user);
+        } else {
+            throw new IllegalArgumentException("Current password doesn't match.");
         }
     }
 
