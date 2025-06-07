@@ -1,9 +1,6 @@
 package com.filmdb.auth.auth_service.controller;
 
-import com.filmdb.auth.auth_service.dto.ChangePasswordRequest;
-import com.filmdb.auth.auth_service.dto.LoginRequest;
-import com.filmdb.auth.auth_service.dto.LoginResponse;
-import com.filmdb.auth.auth_service.dto.RegisterRequest;
+import com.filmdb.auth.auth_service.dto.*;
 import com.filmdb.auth.auth_service.entity.User;
 import com.filmdb.auth.auth_service.security.CustomUserDetails;
 import com.filmdb.auth.auth_service.service.AuthService;
@@ -77,5 +74,51 @@ public class AuthController {
             return ResponseEntity.status(HttpStatus.FORBIDDEN).body(e.getMessage());
         }
     }
+
+    @PutMapping("/me/username")
+    public ResponseEntity<?> changeUserUsername(@Valid @RequestBody ChangeUsernameRequest request,
+                                                Authentication authentication) {
+        if (authentication == null || !(authentication.getPrincipal() instanceof CustomUserDetails customUserDetails)) {
+            return new ResponseEntity<>("Unauthorized", HttpStatus.UNAUTHORIZED);
+        }
+        User user = customUserDetails.getUser();
+        try {
+            authService.changeUserUsername(user, request.getCurrentPassword(), request.getUsername());
+            return ResponseEntity.ok("Username changed.");
+        } catch (Exception e) {
+            return ResponseEntity.status(HttpStatus.FORBIDDEN).body(e.getMessage());
+        }
+    }
+
+    @PutMapping("/me/email")
+    public ResponseEntity<?> changeUserEmail(@Valid @RequestBody ChangeEmailRequest request,
+                                                Authentication authentication) {
+        if (authentication == null || !(authentication.getPrincipal() instanceof CustomUserDetails customUserDetails)) {
+            return new ResponseEntity<>("Unauthorized", HttpStatus.UNAUTHORIZED);
+        }
+        User user = customUserDetails.getUser();
+        try {
+            authService.changeUserUsername(user, request.getCurrentPassword(), request.getEmail());
+            return ResponseEntity.ok("Email changed.");
+        } catch (Exception e) {
+            return ResponseEntity.status(HttpStatus.FORBIDDEN).body(e.getMessage());
+        }
+    }
+
+    @DeleteMapping("/me")
+    public ResponseEntity<?> deleteUser(@Valid @RequestBody DeleteUserRequest request,
+                                                Authentication authentication) {
+        if (authentication == null || !(authentication.getPrincipal() instanceof CustomUserDetails customUserDetails)) {
+            return new ResponseEntity<>("Unauthorized", HttpStatus.UNAUTHORIZED);
+        }
+        User user = customUserDetails.getUser();
+        try {
+            authService.deleteUser(user, request.getCurrentPassword());
+            return ResponseEntity.ok("User deleted.");
+        } catch (Exception e) {
+            return ResponseEntity.status(HttpStatus.FORBIDDEN).body(e.getMessage());
+        }
+    }
+
 
 }
