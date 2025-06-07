@@ -95,6 +95,7 @@ public class AuthService {
     public void changeUserPassword(User user, String currentPassword, String newPassword) {
         if (passwordEncoder.matches(currentPassword, user.getPassword())) {
             user.setPassword(passwordEncoder.encode(newPassword));
+            user.setModifiedAt(java.time.LocalDateTime.now());
             userRepository.save(user);
         } else {
             throw new IllegalArgumentException("Current password doesn't match.");
