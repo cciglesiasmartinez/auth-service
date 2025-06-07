@@ -31,7 +31,7 @@ public class AuthService {
      * Helper method to check if a user is already registered.
      * @param username The username for the desired user to check.
      * @param email The email for the desired user to check.
-     * @return {@code true} if is not registered, {@code false } if it is.
+     * @return {@code true} if is not registered, {@code false} if it is.
      */
     public boolean isUserAlreadyRegistered(String username, String email) {
         return (userRepository.findByEmail(email).isPresent()) || (userRepository.findByUsername(username).isPresent());
@@ -97,6 +97,63 @@ public class AuthService {
             user.setPassword(passwordEncoder.encode(newPassword));
             user.setModifiedAt(java.time.LocalDateTime.now());
             userRepository.save(user);
+        } else {
+            throw new IllegalArgumentException("Current password doesn't match.");
+        }
+    }
+
+    /**
+     *
+     * @param user
+     * @param username
+     * @throws IllegalArgumentException
+     */
+    public void changeUserUsername(User user, String currentPassword, String username) {
+        // Needs length validation somewhere :) probably on DTO
+        if (passwordEncoder.matches(currentPassword, user.getPassword())) {
+            if (userRepository.findByUsername(username).isEmpty()) {
+                user.setUsername(username);
+                user.setModifiedAt(java.time.LocalDateTime.now());
+                userRepository.save(user);
+            } else {
+                throw new IllegalArgumentException("Username already exists.");
+            }
+        } else {
+            throw new IllegalArgumentException("Current password doesn't match.");
+        }
+    }
+
+    /**
+     *
+     * @param user
+     * @param email
+     * @throws IllegalArgumentException
+     */
+    public void changeUserEmail(User user, String currentPassword, String email) {
+        // Needs length and format validation somewhere :) probably on DTO
+        if (passwordEncoder.matches(currentPassword, user.getPassword())) {
+            if (userRepository.findByEmail(email).isEmpty()) {
+                user.setEmail(email);
+                user.setModifiedAt(java.time.LocalDateTime.now());
+                userRepository.save(user);
+            } else {
+                throw new IllegalArgumentException("Email already exists.");
+            }
+        } else {
+            throw new IllegalArgumentException("Current password doesn't match.");
+        }
+    }
+
+    /**
+     *
+     * @param user
+     * @param currentPassword
+     * @throws IllegalArgumentException
+     */
+    public void deleteUser(User user, String currentPassword) {
+        if (passwordEncoder.matches(currentPassword, user.getPassword())) {
+            user.setModifiedAt(java.time.LocalDateTime.now());
+            userRepository.delete(user);
         } else {
             throw new IllegalArgumentException("Current password doesn't match.");
         }
