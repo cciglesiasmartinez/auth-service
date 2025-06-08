@@ -72,7 +72,7 @@ public class AuthService {
     public LoginResponse loginUser(String email, String rawPassword) {
         Optional<User> userOptional = userRepository.findByEmail(email);
         if (userOptional.isEmpty()) {
-            throw new IllegalArgumentException("No user found with that email");
+            throw new IllegalArgumentException("No user found with that email.");
         }
         User user = userOptional.get();
         String encodedPassword = user.getPassword();

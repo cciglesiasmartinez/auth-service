@@ -98,7 +98,7 @@ public class AuthController {
         }
         User user = customUserDetails.getUser();
         try {
-            authService.changeUserUsername(user, request.getCurrentPassword(), request.getEmail());
+            authService.changeUserEmail(user, request.getCurrentPassword(), request.getEmail());
             return ResponseEntity.ok("Email changed.");
         } catch (Exception e) {
             return ResponseEntity.status(HttpStatus.FORBIDDEN).body(e.getMessage());
