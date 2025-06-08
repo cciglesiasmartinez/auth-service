@@ -2,6 +2,9 @@ package com.filmdb.auth.auth_service.service;
 
 import com.filmdb.auth.auth_service.dto.LoginResponse;
 import com.filmdb.auth.auth_service.entity.User;
+import com.filmdb.auth.auth_service.exceptions.InvalidCredentialsException;
+import com.filmdb.auth.auth_service.exceptions.PasswordMismatchException;
+import com.filmdb.auth.auth_service.exceptions.UserAlreadyRegisteredException;
 import com.filmdb.auth.auth_service.repository.UserRepository;
 import com.filmdb.auth.auth_service.security.JwtUtil;
 import org.junit.jupiter.api.BeforeEach;
@@ -56,7 +59,7 @@ class AuthServiceTest {
         when(userRepository.findByEmail("test@mail.com")).thenReturn(Optional.of(new User()));
 
         // Act (when)
-        IllegalArgumentException e = assertThrows(IllegalArgumentException.class, () ->
+        UserAlreadyRegisteredException e = assertThrows(UserAlreadyRegisteredException.class, () ->
                 authService.registerUser("testUser", "test@mail.com", "12345",
                         false));
 
@@ -94,7 +97,7 @@ class AuthServiceTest {
         when(userRepository.findByEmail("test@mail.com")).thenReturn(Optional.of(savedUser));
 
         // Act (when)
-        IllegalArgumentException e = assertThrows(IllegalArgumentException.class, () ->
+        InvalidCredentialsException e = assertThrows(InvalidCredentialsException.class, () ->
                 authService.loginUser("test@mail.com", "54321"));
 
         // Assert (then)
@@ -113,7 +116,7 @@ class AuthServiceTest {
         when(userRepository.findByEmail("test@mail.com")).thenReturn(Optional.of(savedUser));
 
         // Act (when)
-        IllegalArgumentException e = assertThrows(IllegalArgumentException.class, () ->
+        InvalidCredentialsException e = assertThrows(InvalidCredentialsException.class, () ->
                 authService.loginUser("fake@mail.com", "12345"));
 
         // Assert (then)
@@ -148,7 +151,7 @@ class AuthServiceTest {
         when(userRepository.save(any(User.class))).thenReturn(savedUser);
 
         // Act (when)
-        IllegalArgumentException e = assertThrows(IllegalArgumentException.class, () ->
+        PasswordMismatchException e = assertThrows(PasswordMismatchException.class, () ->
                 authService.changeUserPassword(savedUser, "54321", "securePwd"));
 
         // Assert (then)
@@ -183,7 +186,7 @@ class AuthServiceTest {
         when(userRepository.save(any(User.class))).thenReturn(savedUser);
 
         // Act (when)
-        IllegalArgumentException e = assertThrows(IllegalArgumentException.class, () ->
+        PasswordMismatchException e = assertThrows(PasswordMismatchException.class, () ->
                 authService.changeUserUsername(savedUser, "54321", "coolUser"));
 
         // Assert (then)
@@ -218,7 +221,7 @@ class AuthServiceTest {
         when(userRepository.save(any(User.class))).thenReturn(savedUser);
 
         // Act (when)
-        IllegalArgumentException e = assertThrows(IllegalArgumentException.class, () ->
+        PasswordMismatchException e = assertThrows(PasswordMismatchException.class, () ->
                 authService.changeUserEmail(savedUser, "54321", "new@mail.com"));
 
         // Assert (then)
@@ -253,7 +256,7 @@ class AuthServiceTest {
         when(userRepository.save(any(User.class))).thenReturn(savedUser);
 
         // Act (when)
-        IllegalArgumentException e = assertThrows(IllegalArgumentException.class, () ->
+        PasswordMismatchException e = assertThrows(PasswordMismatchException.class, () ->
                 authService.deleteUser(savedUser, "54321"));
 
         // Assert (then)
