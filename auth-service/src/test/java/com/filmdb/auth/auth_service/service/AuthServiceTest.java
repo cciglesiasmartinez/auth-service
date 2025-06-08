@@ -1,10 +1,12 @@
 package com.filmdb.auth.auth_service.service;
 
+import com.filmdb.auth.auth_service.dto.LoginResponse;
 import com.filmdb.auth.auth_service.entity.User;
 import com.filmdb.auth.auth_service.repository.UserRepository;
 import com.filmdb.auth.auth_service.security.JwtUtil;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
+import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 
 import java.util.Optional;
 
@@ -15,12 +17,14 @@ class AuthServiceTest {
 
     private AuthService authService;
     private UserRepository userRepository;
+    private BCryptPasswordEncoder passwordEncoder;
 
     @BeforeEach
     void setup() {
         userRepository = mock(UserRepository.class);
         JwtUtil jwtUtil = mock(JwtUtil.class);
         authService = new AuthService(userRepository, jwtUtil);
+        passwordEncoder = new BCryptPasswordEncoder();
     }
 
     @Test
@@ -58,6 +62,202 @@ class AuthServiceTest {
 
         // Assert (then)
         assertEquals("Username or email already registered.", e.getMessage());
+    }
+
+    @Test
+    void loginUser_Success() {
+        // Arrange (given)
+        User savedUser = new User();
+        savedUser.setId("2febf143-8fd3-4bb0-b87d-ba03c8422605");
+        savedUser.setEmail("test@mail.com");
+        savedUser.setUsername("testUser");
+        savedUser.setPassword(passwordEncoder.encode("12345"));
+        when(userRepository.save(any(User.class))).thenReturn(savedUser);
+        when(userRepository.findByEmail("test@mail.com")).thenReturn(Optional.of(savedUser));
+
+        // Act (when)
+        LoginResponse response = authService.loginUser("test@mail.com", "12345");
+
+        // Assert (then)
+        assertEquals(savedUser.getUsername(),response.getUsername());
+    }
+
+    @Test
+    void loginUser_PasswordIsWrong_Throws() {
+        // Arrange (given)
+        User savedUser = new User();
+        savedUser.setId("2febf143-8fd3-4bb0-b87d-ba03c8422605");
+        savedUser.setEmail("test@mail.com");
+        savedUser.setUsername("testUser");
+        savedUser.setPassword(passwordEncoder.encode("12345"));
+        when(userRepository.save(any(User.class))).thenReturn(savedUser);
+        when(userRepository.findByEmail("test@mail.com")).thenReturn(Optional.of(savedUser));
+
+        // Act (when)
+        IllegalArgumentException e = assertThrows(IllegalArgumentException.class, () ->
+                authService.loginUser("test@mail.com", "54321"));
+
+        // Assert (then)
+        assertEquals("Invalid password.", e.getMessage());
+    }
+
+    @Test
+    void loginUser_EmailIsWrong_Throws() {
+        // Arrange (given)
+        User savedUser = new User();
+        savedUser.setId("2febf143-8fd3-4bb0-b87d-ba03c8422605");
+        savedUser.setEmail("test@mail.com");
+        savedUser.setUsername("testUser");
+        savedUser.setPassword(passwordEncoder.encode("12345"));
+        when(userRepository.save(any(User.class))).thenReturn(savedUser);
+        when(userRepository.findByEmail("test@mail.com")).thenReturn(Optional.of(savedUser));
+
+        // Act (when)
+        IllegalArgumentException e = assertThrows(IllegalArgumentException.class, () ->
+                authService.loginUser("fake@mail.com", "12345"));
+
+        // Assert (then)
+        assertEquals("No user found with that email.", e.getMessage());
+    }
+
+    @Test
+    void changeUserPassword_Success() {
+        // Arrange (given)
+        User savedUser = new User();
+        savedUser.setId("2febf143-8fd3-4bb0-b87d-ba03c8422605");
+        savedUser.setEmail("test@mail.com");
+        savedUser.setUsername("testUser");
+        savedUser.setPassword(passwordEncoder.encode("12345"));
+        when(userRepository.save(any(User.class))).thenReturn(savedUser);
+
+        // Act (when)
+        authService.changeUserPassword(savedUser, "12345", "secure");
+
+        // Assert (then)
+        assertTrue(passwordEncoder.matches("secure", savedUser.getPassword()));
+    }
+
+    @Test
+    void changeUserPassword_currentPasswordMismatch_Throws() {
+        // Arrange (given)
+        User savedUser = new User();
+        savedUser.setId("2febf143-8fd3-4bb0-b87d-ba03c8422605");
+        savedUser.setEmail("test@mail.com");
+        savedUser.setUsername("testUser");
+        savedUser.setPassword(passwordEncoder.encode("12345"));
+        when(userRepository.save(any(User.class))).thenReturn(savedUser);
+
+        // Act (when)
+        IllegalArgumentException e = assertThrows(IllegalArgumentException.class, () ->
+                authService.changeUserPassword(savedUser, "54321", "securePwd"));
+
+        // Assert (then)
+        assertEquals("Current password doesn't match.", e.getMessage());
+    }
+
+    @Test
+    void changeUserUsername_Success() {
+        // Arrange (given)
+        User savedUser = new User();
+        savedUser.setId("2febf143-8fd3-4bb0-b87d-ba03c8422605");
+        savedUser.setEmail("test@mail.com");
+        savedUser.setUsername("testUser");
+        savedUser.setPassword(passwordEncoder.encode("12345"));
+        when(userRepository.save(any(User.class))).thenReturn(savedUser);
+
+        // Act (when)
+        authService.changeUserUsername(savedUser, "12345", "coolUser");
+
+        // Assert (then)
+        assertEquals("coolUser", savedUser.getUsername());
+    }
+
+    @Test
+    void changeUserUsername_currentPasswordMismatch_Throws() {
+        // Arrange (given)
+        User savedUser = new User();
+        savedUser.setId("2febf143-8fd3-4bb0-b87d-ba03c8422605");
+        savedUser.setEmail("test@mail.com");
+        savedUser.setUsername("testUser");
+        savedUser.setPassword(passwordEncoder.encode("12345"));
+        when(userRepository.save(any(User.class))).thenReturn(savedUser);
+
+        // Act (when)
+        IllegalArgumentException e = assertThrows(IllegalArgumentException.class, () ->
+                authService.changeUserUsername(savedUser, "54321", "coolUser"));
+
+        // Assert (then)
+        assertEquals("Current password doesn't match.", e.getMessage());
+    }
+
+    @Test
+    void changeUserEmail_Success() {
+        // Arrange (given)
+        User savedUser = new User();
+        savedUser.setId("2febf143-8fd3-4bb0-b87d-ba03c8422605");
+        savedUser.setEmail("test@mail.com");
+        savedUser.setUsername("testUser");
+        savedUser.setPassword(passwordEncoder.encode("12345"));
+        when(userRepository.save(any(User.class))).thenReturn(savedUser);
+
+        // Act (when)
+        authService.changeUserEmail(savedUser, "12345", "new@mail.com");
+
+        // Assert (then)
+        assertEquals("new@mail.com", savedUser.getEmail());
+    }
+
+    @Test
+    void changeUserEmail_currentPasswordMismatch_Throws() {
+        // Arrange (given)
+        User savedUser = new User();
+        savedUser.setId("2febf143-8fd3-4bb0-b87d-ba03c8422605");
+        savedUser.setEmail("test@mail.com");
+        savedUser.setUsername("testUser");
+        savedUser.setPassword(passwordEncoder.encode("12345"));
+        when(userRepository.save(any(User.class))).thenReturn(savedUser);
+
+        // Act (when)
+        IllegalArgumentException e = assertThrows(IllegalArgumentException.class, () ->
+                authService.changeUserEmail(savedUser, "54321", "new@mail.com"));
+
+        // Assert (then)
+        assertEquals("Current password doesn't match.", e.getMessage());
+    }
+
+    @Test
+    void deleteUser_Success() {
+        // Arrange (given)
+        User savedUser = new User();
+        savedUser.setId("2febf143-8fd3-4bb0-b87d-ba03c8422605");
+        savedUser.setEmail("test@mail.com");
+        savedUser.setUsername("testUser");
+        savedUser.setPassword(passwordEncoder.encode("12345"));
+        when(userRepository.save(any(User.class))).thenReturn(savedUser);
+
+        // Act (when)
+        authService.deleteUser(savedUser, "12345");
+
+        // Assert (then)
+        verify(userRepository).delete(savedUser);
+    }
+
+    @Test
+    void deleteUser_currentPasswordMismatch_Throws() {
+        // Arrange (given)
+        User savedUser = new User();
+        savedUser.setId("2febf143-8fd3-4bb0-b87d-ba03c8422605");
+        savedUser.setEmail("test@mail.com");
+        savedUser.setUsername("testUser");
+        savedUser.setPassword(passwordEncoder.encode("12345"));
+        when(userRepository.save(any(User.class))).thenReturn(savedUser);
+
+        // Act (when)
+        IllegalArgumentException e = assertThrows(IllegalArgumentException.class, () ->
+                authService.deleteUser(savedUser, "54321"));
+
+        // Assert (then)
+        assertEquals("Current password doesn't match.", e.getMessage());
     }
 
 }
