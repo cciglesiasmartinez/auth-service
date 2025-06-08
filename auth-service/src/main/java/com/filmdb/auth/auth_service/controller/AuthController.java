@@ -22,105 +22,67 @@ public class AuthController {
         this.authService = authService;
     }
 
+    private User getAuthenticatedUser(Authentication authentication) {
+        if (authentication == null || !(authentication.getPrincipal() instanceof CustomUserDetails customUserDetails)) {
+            throw new InvalidCredentialsException("Invalid credentials.");
+        }
+        return customUserDetails.getUser();
+    }
+
     @PostMapping("/register")
     public ResponseEntity<?> registerUser(@Valid @RequestBody RegisterRequest request) {
-        try {
-            User newUser = authService.registerUser(
-                    request.getUsername(),
-                    request.getEmail(),
-                    request.getPassword(),
-                    request.isAdmin()
-            );
-            return new ResponseEntity<>(newUser, HttpStatus.CREATED);
-        } catch (UserAlreadyRegisteredException e) {
-            return new ResponseEntity<>(e.getMessage(), HttpStatus.CONFLICT);
-        }
+        User newUser = authService.registerUser(
+                request.getUsername(),
+                request.getEmail(),
+                request.getPassword(),
+                request.isAdmin());
+        return new ResponseEntity<>(newUser, HttpStatus.CREATED);
     }
 
     @PostMapping("/login")
     public ResponseEntity<?> loginUser(@Valid @RequestBody LoginRequest request) {
-        try {
-            LoginResponse loginResponse = authService.loginUser(
-                    request.getEmail(),
-                    request.getPassword()
-            );
-            return new ResponseEntity<>(loginResponse, HttpStatus.ACCEPTED);
-        } catch (InvalidCredentialsException e) {
-            return ResponseEntity.status(HttpStatus.UNAUTHORIZED).body("Invalid credentials");
-        }
+        LoginResponse loginResponse = authService.loginUser(
+                request.getEmail(),
+                request.getPassword());
+        return new ResponseEntity<>(loginResponse, HttpStatus.ACCEPTED);
     }
 
     @GetMapping("/me")
     public ResponseEntity<?> getCurrentUser(Authentication authentication) {
-        System.out.println("OK, request to /me received, auth is: " + authentication);
-        if (authentication == null || !(authentication.getPrincipal() instanceof CustomUserDetails)) {
-            return new ResponseEntity<>("Unauthorized", HttpStatus.UNAUTHORIZED);
-        }
-        CustomUserDetails userDetails = (CustomUserDetails) authentication.getPrincipal();
-        User user = userDetails.getUser();
+        User user = getAuthenticatedUser(authentication);
         return ResponseEntity.ok(user);
     }
 
     @PutMapping("/me/password")
-    public ResponseEntity<?> changeUserPassword(@RequestBody ChangePasswordRequest request,
+    public ResponseEntity<?> changeUserPassword(@Valid @RequestBody ChangePasswordRequest request,
                                                 Authentication authentication) {
-        if (authentication == null || !(authentication.getPrincipal() instanceof CustomUserDetails)) {
-            return new ResponseEntity<>("Unauthorized", HttpStatus.UNAUTHORIZED);
-        }
-        CustomUserDetails userDetails = (CustomUserDetails) authentication.getPrincipal();
-        User user = userDetails.getUser();
-        try {
-            authService.changeUserPassword(user, request.getCurrentPassword(), request.getNewPassword());
-            return ResponseEntity.ok("Password changed.");
-        } catch (Exception e) {
-            return ResponseEntity.status(HttpStatus.FORBIDDEN).body(e.getMessage());
-        }
+        User user = getAuthenticatedUser(authentication);
+        authService.changeUserPassword(user, request.getCurrentPassword(), request.getNewPassword());
+        return ResponseEntity.ok("Password changed.");
     }
 
     @PutMapping("/me/username")
     public ResponseEntity<?> changeUserUsername(@Valid @RequestBody ChangeUsernameRequest request,
                                                 Authentication authentication) {
-        if (authentication == null || !(authentication.getPrincipal() instanceof CustomUserDetails customUserDetails)) {
-            return new ResponseEntity<>("Unauthorized", HttpStatus.UNAUTHORIZED);
-        }
-        User user = customUserDetails.getUser();
-        try {
-            authService.changeUserUsername(user, request.getCurrentPassword(), request.getUsername());
-            return ResponseEntity.ok("Username changed.");
-        } catch (Exception e) {
-            return ResponseEntity.status(HttpStatus.FORBIDDEN).body(e.getMessage());
-        }
+        User user = getAuthenticatedUser(authentication);
+        authService.changeUserUsername(user, request.getCurrentPassword(), request.getUsername());
+        return ResponseEntity.ok("Username changed.");
     }
 
     @PutMapping("/me/email")
     public ResponseEntity<?> changeUserEmail(@Valid @RequestBody ChangeEmailRequest request,
                                                 Authentication authentication) {
-        if (authentication == null || !(authentication.getPrincipal() instanceof CustomUserDetails customUserDetails)) {
-            return new ResponseEntity<>("Unauthorized", HttpStatus.UNAUTHORIZED);
-        }
-        User user = customUserDetails.getUser();
-        try {
-            authService.changeUserEmail(user, request.getCurrentPassword(), request.getEmail());
-            return ResponseEntity.ok("Email changed.");
-        } catch (Exception e) {
-            return ResponseEntity.status(HttpStatus.FORBIDDEN).body(e.getMessage());
-        }
+        User user = getAuthenticatedUser(authentication);
+        authService.changeUserEmail(user, request.getCurrentPassword(), request.getEmail());
+        return ResponseEntity.ok("Email changed.");
     }
 
     @DeleteMapping("/me")
     public ResponseEntity<?> deleteUser(@Valid @RequestBody DeleteUserRequest request,
                                                 Authentication authentication) {
-        if (authentication == null || !(authentication.getPrincipal() instanceof CustomUserDetails customUserDetails)) {
-            return new ResponseEntity<>("Unauthorized", HttpStatus.UNAUTHORIZED);
-        }
-        User user = customUserDetails.getUser();
-        try {
-            authService.deleteUser(user, request.getCurrentPassword());
-            return ResponseEntity.ok("User deleted.");
-        } catch (Exception e) {
-            return ResponseEntity.status(HttpStatus.FORBIDDEN).body(e.getMessage());
-        }
+        User user = getAuthenticatedUser(authentication);
+        authService.deleteUser(user, request.getCurrentPassword());
+        return ResponseEntity.ok("User deleted.");
     }
-
 
 }
