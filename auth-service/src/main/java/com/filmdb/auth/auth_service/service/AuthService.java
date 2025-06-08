@@ -40,13 +40,26 @@ public class AuthService {
     }
 
     /**
+     * Helper method to validate current password before performing sensitive operations.
+     *
+     * @param user The user whose password we are going to validate.
+     * @param currentPassword The password to validate.
+     * @throws PasswordMismatchException if password doesn't match.
+     */
+    private void validateCurrentPassword(User user, String currentPassword) {
+        if (!passwordEncoder.matches(currentPassword, user.getPassword())) {
+            throw new PasswordMismatchException();
+        }
+    }
+
+    /**
      * Helper method that checks if a user is already registered.
      *
      * @param username The username for the desired user to check.
      * @param email The email for the desired user to check.
      * @return {@code true} if is not registered, {@code false} if it is.
      */
-    public boolean isUserAlreadyRegistered(String username, String email) {
+    private boolean isUserAlreadyRegistered(String username, String email) {
         return (userRepository.findByEmail(email).isPresent()) || (userRepository.findByUsername(username).isPresent());
     }
 
@@ -67,9 +80,8 @@ public class AuthService {
             user.setUsername(username);
             user.setEmail(email);
             user.setPassword(passwordEncoder.encode(rawPassword));
-            user.setAdmin(false); // Might change this in the DTO
+            user.setAdmin(isAdmin);
             user.setRegisteredAt(java.time.LocalDateTime.now());
-            user.setModifiedAt(java.time.LocalDateTime.now());
             return userRepository.save(user);
         } else {
             throw new UserAlreadyRegisteredException();
@@ -110,13 +122,9 @@ public class AuthService {
      * @throws PasswordMismatchException if the current password provided does not match the stored password.
      */
     public void changeUserPassword(User user, String currentPassword, String newPassword) {
-        if (passwordEncoder.matches(currentPassword, user.getPassword())) {
-            user.setPassword(passwordEncoder.encode(newPassword));
-            user.setModifiedAt(java.time.LocalDateTime.now());
-            userRepository.save(user);
-        } else {
-            throw new PasswordMismatchException();
-        }
+        validateCurrentPassword(user, currentPassword);
+        user.setPassword(passwordEncoder.encode(newPassword));
+        userRepository.save(user);
     }
 
     /**
@@ -129,16 +137,12 @@ public class AuthService {
      * @throws PasswordMismatchException if the current password provided does not match the stored password.
      */
     public void changeUserUsername(User user, String currentPassword, String username) {
-        if (passwordEncoder.matches(currentPassword, user.getPassword())) {
-            if (userRepository.findByUsername(username).isEmpty()) {
-                user.setUsername(username);
-                user.setModifiedAt(java.time.LocalDateTime.now());
-                userRepository.save(user);
-            } else {
-                throw new UsernameAlreadyExistsException();
-            }
+        validateCurrentPassword(user, currentPassword);
+        if (userRepository.findByUsername(username).isEmpty()) {
+            user.setUsername(username);
+            userRepository.save(user);
         } else {
-            throw new PasswordMismatchException();
+            throw new UsernameAlreadyExistsException();
         }
     }
 
@@ -152,16 +156,12 @@ public class AuthService {
      * @throws PasswordMismatchException if the current password provided does not match the stored password.
      */
     public void changeUserEmail(User user, String currentPassword, String email) {
-        if (passwordEncoder.matches(currentPassword, user.getPassword())) {
-            if (userRepository.findByEmail(email).isEmpty()) {
-                user.setEmail(email);
-                user.setModifiedAt(java.time.LocalDateTime.now());
-                userRepository.save(user);
-            } else {
-                throw new EmailAlreadyExistsException();
-            }
+        validateCurrentPassword(user, currentPassword);
+        if (userRepository.findByEmail(email).isEmpty()) {
+            user.setEmail(email);
+            userRepository.save(user);
         } else {
-            throw new PasswordMismatchException();
+            throw new EmailAlreadyExistsException();
         }
     }
 
@@ -173,12 +173,8 @@ public class AuthService {
      * @throws PasswordMismatchException if the current password provided does not match the stored password.
      */
     public void deleteUser(User user, String currentPassword) {
-        if (passwordEncoder.matches(currentPassword, user.getPassword())) {
-            user.setModifiedAt(java.time.LocalDateTime.now());
-            userRepository.delete(user);
-        } else {
-            throw new PasswordMismatchException();
-        }
+        validateCurrentPassword(user, currentPassword);
+        userRepository.delete(user);
     }
 
 }
