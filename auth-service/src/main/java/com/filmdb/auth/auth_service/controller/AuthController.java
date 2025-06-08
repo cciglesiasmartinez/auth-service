@@ -2,6 +2,8 @@ package com.filmdb.auth.auth_service.controller;
 
 import com.filmdb.auth.auth_service.dto.*;
 import com.filmdb.auth.auth_service.entity.User;
+import com.filmdb.auth.auth_service.exceptions.InvalidCredentialsException;
+import com.filmdb.auth.auth_service.exceptions.UserAlreadyRegisteredException;
 import com.filmdb.auth.auth_service.security.CustomUserDetails;
 import com.filmdb.auth.auth_service.service.AuthService;
 import jakarta.validation.Valid;
@@ -30,7 +32,7 @@ public class AuthController {
                     request.isAdmin()
             );
             return new ResponseEntity<>(newUser, HttpStatus.CREATED);
-        } catch (IllegalArgumentException e) {
+        } catch (UserAlreadyRegisteredException e) {
             return new ResponseEntity<>(e.getMessage(), HttpStatus.CONFLICT);
         }
     }
@@ -43,7 +45,7 @@ public class AuthController {
                     request.getPassword()
             );
             return new ResponseEntity<>(loginResponse, HttpStatus.ACCEPTED);
-        } catch (IllegalArgumentException e) {
+        } catch (InvalidCredentialsException e) {
             return ResponseEntity.status(HttpStatus.UNAUTHORIZED).body("Invalid credentials");
         }
     }
@@ -70,7 +72,7 @@ public class AuthController {
         try {
             authService.changeUserPassword(user, request.getCurrentPassword(), request.getNewPassword());
             return ResponseEntity.ok("Password changed.");
-        } catch (IllegalArgumentException e) {
+        } catch (Exception e) {
             return ResponseEntity.status(HttpStatus.FORBIDDEN).body(e.getMessage());
         }
     }

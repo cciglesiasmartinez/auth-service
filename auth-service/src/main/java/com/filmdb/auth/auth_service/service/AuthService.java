@@ -2,6 +2,7 @@ package com.filmdb.auth.auth_service.service;
 
 import com.filmdb.auth.auth_service.dto.LoginResponse;
 import com.filmdb.auth.auth_service.entity.User;
+import com.filmdb.auth.auth_service.exceptions.*;
 import com.filmdb.auth.auth_service.repository.UserRepository;
 import com.filmdb.auth.auth_service.security.JwtUtil;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
@@ -9,18 +10,29 @@ import org.springframework.stereotype.Service;
 import java.util.Optional;
 import java.util.UUID;
 
+/**
+ * Service class that handles authentication-related operations such as user registration, login, password
+ * and profile updates, and user deletion. This class acts as the core of authentication logic, interfacing
+ * with the {@link UserRepository}, password encoding utilities, and JWT token generation.
+ */
 @Service
 public class AuthService {
 
-    // This is the UserRepository we're going to use
+    /** Repository for accessing user data from the database. */
     private final UserRepository userRepository;
 
-    // Utility for encrypting passwords
+    /** Utility for encoding and verifying user passwords using BCrypt. */
     private final BCryptPasswordEncoder passwordEncoder;
 
-    // Helper class for JWT
+    /** Utility class for generating and validating JWT tokens. */
     private final JwtUtil jwtUtil;
 
+    /**
+     * Constructs an {@code AuthService} with the necessary dependencies.
+     *
+     * @param userRepository Repository used to perform CRUD operations on User entities.
+     * @param jwtUtil Utility class used to handle JWT creation and validation.
+     */
     public AuthService(UserRepository userRepository, JwtUtil jwtUtil) {
         this.userRepository = userRepository;
         this.passwordEncoder = new BCryptPasswordEncoder();
@@ -28,7 +40,8 @@ public class AuthService {
     }
 
     /**
-     * Helper method to check if a user is already registered.
+     * Helper method that checks if a user is already registered.
+     *
      * @param username The username for the desired user to check.
      * @param email The email for the desired user to check.
      * @return {@code true} if is not registered, {@code false} if it is.
@@ -39,12 +52,13 @@ public class AuthService {
 
     /**
      * Creates a new user entry in the database.
+     *
      * @param username The username for the user.
      * @param email The email for the user.
      * @param rawPassword Unencrypted password for the user.
      * @param isAdmin {@code true} if the user is going to be admin, {@code false} if it's not.
      * @return An object containing the data pertaining to the new user.
-     * @throws IllegalArgumentException if the username or email are already registered.
+     * @throws UserAlreadyRegisteredException if the username or email are already registered.
      */
     public User registerUser(String username, String email, String rawPassword, boolean isAdmin) {
         if (!this.isUserAlreadyRegistered(username, email)) {
@@ -58,21 +72,23 @@ public class AuthService {
             user.setModifiedAt(java.time.LocalDateTime.now());
             return userRepository.save(user);
         } else {
-            throw new IllegalArgumentException("Username or email already registered.");
+            throw new UserAlreadyRegisteredException();
         }
     }
 
     /**
-     * Returns the JWT for the desired user
-     * @param email User's email
-     * @param rawPassword User's raw password
-     * @return JWT in String format
-     * @throws IllegalArgumentException if password or email mismatch.
+     * Authenticates a user using their email and raw (plaintext) password. If the credentials are valid, returns
+     * a {@link LoginResponse} containing a signed JWT, the token expiration time (in seconds), and the username.
+     *
+     * @param email The email address of the user attempting to log in.
+     * @param rawPassword The plaintext password provided by the user.
+     * @return A {@link LoginResponse} object containing the JWT, expiration time, and username.
+     * @throws InvalidCredentialsException if email or password are not correct.
      */
     public LoginResponse loginUser(String email, String rawPassword) {
         Optional<User> userOptional = userRepository.findByEmail(email);
         if (userOptional.isEmpty()) {
-            throw new IllegalArgumentException("No user found with that email.");
+            throw new InvalidCredentialsException("No user found with that email.");
         }
         User user = userOptional.get();
         String encodedPassword = user.getPassword();
@@ -81,16 +97,17 @@ public class AuthService {
             long expiresIn = jwtUtil.getJwtExpirationMs() / 1000;
             return new LoginResponse(token, expiresIn, user.getUsername());
         } else {
-            throw new IllegalArgumentException("Invalid password.");
+            throw new InvalidCredentialsException("Invalid password.");
         }
     }
 
     /**
-     * Changes user password.
-     * @param user The user object received from the controller
-     * @param currentPassword Current password for the user (from the request)
-     * @param newPassword New password for the user (from the request)
-     * @throws IllegalArgumentException if current password in the request doesn't match the one in database
+     * Changes the password of a given user if the current password is correct.
+     *
+     * @param user The user object whose password will be changed.
+     * @param currentPassword The current password to verify the user's identity.
+     * @param newPassword The new desired password.
+     * @throws PasswordMismatchException if the current password provided does not match the stored password.
      */
     public void changeUserPassword(User user, String currentPassword, String newPassword) {
         if (passwordEncoder.matches(currentPassword, user.getPassword())) {
@@ -98,64 +115,69 @@ public class AuthService {
             user.setModifiedAt(java.time.LocalDateTime.now());
             userRepository.save(user);
         } else {
-            throw new IllegalArgumentException("Current password doesn't match.");
+            throw new PasswordMismatchException();
         }
     }
 
     /**
+     * Changes the username of a given user if the current password is correct and new username is not already taken.
      *
-     * @param user
-     * @param username
-     * @throws IllegalArgumentException
+     * @param user The user object whose username will be changed.
+     * @param currentPassword The current password to verify the user's identity.
+     * @param username The new desired username.
+     * @throws UsernameAlreadyExistsException if the new username is already in use by another user.
+     * @throws PasswordMismatchException if the current password provided does not match the stored password.
      */
     public void changeUserUsername(User user, String currentPassword, String username) {
-        // Needs length validation somewhere :) probably on DTO
         if (passwordEncoder.matches(currentPassword, user.getPassword())) {
             if (userRepository.findByUsername(username).isEmpty()) {
                 user.setUsername(username);
                 user.setModifiedAt(java.time.LocalDateTime.now());
                 userRepository.save(user);
             } else {
-                throw new IllegalArgumentException("Username already exists.");
+                throw new UsernameAlreadyExistsException();
             }
         } else {
-            throw new IllegalArgumentException("Current password doesn't match.");
+            throw new PasswordMismatchException();
         }
     }
 
     /**
+     * Changes the email of a given user if the current password is correct and new email is not already registered.
      *
-     * @param user
-     * @param email
-     * @throws IllegalArgumentException
+     * @param user The user object whose email will be changed.
+     * @param currentPassword The current password to verify the user's identity.
+     * @param email The new desired email address.
+     * @throws EmailAlreadyExistsException if the new email is already in use by another user.
+     * @throws PasswordMismatchException if the current password provided does not match the stored password.
      */
     public void changeUserEmail(User user, String currentPassword, String email) {
-        // Needs length and format validation somewhere :) probably on DTO
         if (passwordEncoder.matches(currentPassword, user.getPassword())) {
             if (userRepository.findByEmail(email).isEmpty()) {
                 user.setEmail(email);
                 user.setModifiedAt(java.time.LocalDateTime.now());
                 userRepository.save(user);
             } else {
-                throw new IllegalArgumentException("Email already exists.");
+                throw new EmailAlreadyExistsException();
             }
         } else {
-            throw new IllegalArgumentException("Current password doesn't match.");
+            throw new PasswordMismatchException();
         }
     }
 
     /**
+     * Deletes a user account if the current password is verified correctly.
      *
-     * @param user
-     * @param currentPassword
-     * @throws IllegalArgumentException
+     * @param user The user object to be deleted.
+     * @param currentPassword The current password to verify the user's identity before deletion.
+     * @throws PasswordMismatchException if the current password provided does not match the stored password.
      */
     public void deleteUser(User user, String currentPassword) {
         if (passwordEncoder.matches(currentPassword, user.getPassword())) {
             user.setModifiedAt(java.time.LocalDateTime.now());
             userRepository.delete(user);
         } else {
-            throw new IllegalArgumentException("Current password doesn't match.");
+            throw new PasswordMismatchException();
         }
     }
 
