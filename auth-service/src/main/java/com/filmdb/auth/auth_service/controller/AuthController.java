@@ -25,20 +25,21 @@ public class AuthController {
 
     private User getAuthenticatedUser(Authentication authentication) {
         if (authentication == null || !(authentication.getPrincipal() instanceof CustomUserDetails customUserDetails)) {
-            throw new InvalidCredentialsException("Invalid credentials.");
+            throw new InvalidCredentialsException("Unauthorized.");
         }
         return customUserDetails.getUser();
     }
 
     @PostMapping("/register")
-    public ResponseEntity<?> registerUser(@Valid @RequestBody RegisterRequest request) {
+    public ResponseEntity<UserResponse> registerUser(@Valid @RequestBody RegisterRequest request) {
         User newUser = authService.registerUser(
                 request.getUsername(),
                 request.getEmail(),
                 request.getPassword(),
                 request.isAdmin()
         );
-        return new ResponseEntity<>(newUser, HttpStatus.CREATED);
+        UserResponse response = UserResponse.fromUser(newUser);
+        return new ResponseEntity<UserResponse>(response, HttpStatus.CREATED);
     }
 
     @PostMapping("/login")
@@ -52,7 +53,8 @@ public class AuthController {
     @GetMapping("/me")
     public ResponseEntity<?> getCurrentUser(Authentication authentication) {
         User user = getAuthenticatedUser(authentication);
-        return ResponseEntity.ok(user);
+        UserResponse response = UserResponse.fromUser(user);
+        return new ResponseEntity<UserResponse>(response, HttpStatus.OK);
     }
 
     @PutMapping("/me/password")
@@ -102,13 +104,7 @@ public class AuthController {
                                                 Authentication authentication) {
         User user = getAuthenticatedUser(authentication);
         authService.deleteUser(user, request.getCurrentPassword());
-        return ResponseEntity.ok(
-                ApiResponse.builder()
-                        .message("User deleted.")
-                        .success(true)
-                        .timestamp(LocalDateTime.now())
-                        .build()
-        );
+        return ResponseEntity.noContent().build();
     }
 
 }
