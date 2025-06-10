@@ -10,6 +10,7 @@ import com.filmdb.auth.auth_service.security.JwtUtil;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
+import org.springframework.security.crypto.password.PasswordEncoder;
 
 import java.util.Optional;
 
@@ -20,14 +21,15 @@ class AuthServiceTest {
 
     private AuthService authService;
     private UserRepository userRepository;
-    private BCryptPasswordEncoder passwordEncoder;
+    private PasswordEncoder passwordEncoder;
 
     @BeforeEach
     void setup() {
         userRepository = mock(UserRepository.class);
         JwtUtil jwtUtil = mock(JwtUtil.class);
-        authService = new AuthService(userRepository, jwtUtil);
         passwordEncoder = new BCryptPasswordEncoder();
+        authService = new AuthService(userRepository, passwordEncoder, jwtUtil);
+
     }
 
     @Test

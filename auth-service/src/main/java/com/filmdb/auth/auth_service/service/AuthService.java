@@ -5,7 +5,8 @@ import com.filmdb.auth.auth_service.entity.User;
 import com.filmdb.auth.auth_service.exceptions.*;
 import com.filmdb.auth.auth_service.repository.UserRepository;
 import com.filmdb.auth.auth_service.security.JwtUtil;
-import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
+import jakarta.transaction.Transactional;
+import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 import java.util.Optional;
 import java.util.UUID;
@@ -22,7 +23,7 @@ public class AuthService {
     private final UserRepository userRepository;
 
     /** Utility for encoding and verifying user passwords using BCrypt. */
-    private final BCryptPasswordEncoder passwordEncoder;
+    private final PasswordEncoder passwordEncoder;
 
     /** Utility class for generating and validating JWT tokens. */
     private final JwtUtil jwtUtil;
@@ -33,9 +34,9 @@ public class AuthService {
      * @param userRepository Repository used to perform CRUD operations on User entities.
      * @param jwtUtil Utility class used to handle JWT creation and validation.
      */
-    public AuthService(UserRepository userRepository, JwtUtil jwtUtil) {
+    public AuthService(UserRepository userRepository, PasswordEncoder passwordEncoder, JwtUtil jwtUtil) {
         this.userRepository = userRepository;
-        this.passwordEncoder = new BCryptPasswordEncoder();
+        this.passwordEncoder = passwordEncoder;
         this.jwtUtil = jwtUtil;
     }
 
@@ -73,6 +74,7 @@ public class AuthService {
      * @return An object containing the data pertaining to the new user.
      * @throws UserAlreadyRegisteredException if the username or email are already registered.
      */
+    @Transactional
     public User registerUser(String username, String email, String rawPassword, boolean isAdmin) {
         if (!this.isUserAlreadyRegistered(username, email)) {
             User user = new User();
@@ -121,6 +123,7 @@ public class AuthService {
      * @param newPassword The new desired password.
      * @throws PasswordMismatchException if the current password provided does not match the stored password.
      */
+    @Transactional
     public void changeUserPassword(User user, String currentPassword, String newPassword) {
         validateCurrentPassword(user, currentPassword);
         user.setPassword(passwordEncoder.encode(newPassword));
@@ -136,6 +139,7 @@ public class AuthService {
      * @throws UsernameAlreadyExistsException if the new username is already in use by another user.
      * @throws PasswordMismatchException if the current password provided does not match the stored password.
      */
+    @Transactional
     public void changeUserUsername(User user, String currentPassword, String username) {
         validateCurrentPassword(user, currentPassword);
         if (userRepository.findByUsername(username).isEmpty()) {
@@ -155,6 +159,7 @@ public class AuthService {
      * @throws EmailAlreadyExistsException if the new email is already in use by another user.
      * @throws PasswordMismatchException if the current password provided does not match the stored password.
      */
+    @Transactional
     public void changeUserEmail(User user, String currentPassword, String email) {
         validateCurrentPassword(user, currentPassword);
         if (userRepository.findByEmail(email).isEmpty()) {
@@ -172,6 +177,7 @@ public class AuthService {
      * @param currentPassword The current password to verify the user's identity before deletion.
      * @throws PasswordMismatchException if the current password provided does not match the stored password.
      */
+    @Transactional
     public void deleteUser(User user, String currentPassword) {
         validateCurrentPassword(user, currentPassword);
         userRepository.delete(user);
