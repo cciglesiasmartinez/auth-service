@@ -61,7 +61,7 @@ public class AuthService {
      * @return {@code true} if is not registered, {@code false} if it is.
      */
     private boolean isUserAlreadyRegistered(String username, String email) {
-        return (userRepository.findByEmail(email).isPresent()) || (userRepository.findByUsername(username).isPresent());
+        return userRepository.existsByEmailOrUsername(email, username);
     }
 
     /**

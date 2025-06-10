@@ -58,7 +58,7 @@ class AuthServiceTest {
     @Test
     void registerUser_AlreadyRegistered_Throws() {
         // Arrange (given)
-        when(userRepository.findByEmail("test@mail.com")).thenReturn(Optional.of(new User()));
+        when(userRepository.existsByEmailOrUsername("test@mail.com", "testUser")).thenReturn(true);
 
         // Act (when)
         UserAlreadyRegisteredException e = assertThrows(UserAlreadyRegisteredException.class, () ->
