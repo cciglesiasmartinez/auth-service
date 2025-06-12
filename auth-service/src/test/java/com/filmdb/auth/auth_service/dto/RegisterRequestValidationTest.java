@@ -31,7 +31,6 @@ class RegisterRequestValidationTest {
         request.setUsername("john");
         request.setEmail("john@example.com");
         request.setPassword("securePass123");
-        request.setAdmin(false);
 
         // Act (when)
         Set<ConstraintViolation<RegisterRequest>> violations = validator.validate(request);

@@ -47,7 +47,7 @@ class AuthServiceTest {
 
         // Act (when)
         UserResponse result = authService.registerUser(
-                "testUser", "test@mail.com", "12345", false);
+                "testUser", "test@mail.com", "12345");
 
         // Assert (then)
         assertNotNull(result);
@@ -63,8 +63,7 @@ class AuthServiceTest {
 
         // Act (when)
         UserAlreadyRegisteredException e = assertThrows(UserAlreadyRegisteredException.class, () ->
-                authService.registerUser("testUser", "test@mail.com", "12345",
-                        false));
+                authService.registerUser("testUser", "test@mail.com", "12345"));
 
         // Assert (then)
         assertEquals("Username or email already registered.", e.getMessage());

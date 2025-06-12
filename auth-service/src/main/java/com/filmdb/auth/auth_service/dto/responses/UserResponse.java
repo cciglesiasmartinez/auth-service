@@ -27,7 +27,6 @@ public class UserResponse {
                 .username(user.getUsername())
                 .email(user.getEmail())
                 .password(user.getPassword()) // Remove before production deployment
-                .isAdmin(user.isAdmin())
                 .registeredAt(user.getRegisteredAt())
                 .modifiedAt(user.getModifiedAt())
                 .build();

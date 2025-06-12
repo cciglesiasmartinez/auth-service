@@ -31,9 +31,6 @@ public class User implements Serializable {
     @Column(nullable = false, unique = true, length = 100)
     private String email;
 
-    @Column(name="is_admin")
-    private boolean isAdmin;
-
     @Column(name="registered_at", nullable = false)
     private LocalDateTime registeredAt = LocalDateTime.now();
 

@@ -75,19 +75,17 @@ public class AuthService {
      * @param username The username for the user.
      * @param email The email for the user.
      * @param rawPassword Unencrypted password for the user.
-     * @param isAdmin {@code true} if the user is going to be admin, {@code false} if it's not.
      * @return An object containing the data pertaining to the new user.
      * @throws UserAlreadyRegisteredException if the username or email are already registered.
      */
     @Transactional
-    public UserResponse registerUser(String username, String email, String rawPassword, boolean isAdmin) {
+    public UserResponse registerUser(String username, String email, String rawPassword) {
         if (!isUserAlreadyRegistered(username, email)) {
             User user = new User();
             user.setId(UUID.randomUUID().toString());
             user.setUsername(username);
             user.setEmail(email);
             user.setPassword(passwordEncoder.encode(rawPassword));
-            user.setAdmin(isAdmin);
             user.setRegisteredAt(java.time.LocalDateTime.now());
             userRepository.save(user);
             return UserResponse.fromUser(user);

@@ -36,8 +36,7 @@ public class AuthController {
         UserResponse response = authService.registerUser(
                 request.getUsername(),
                 request.getEmail(),
-                request.getPassword(),
-                request.isAdmin());
+                request.getPassword());
         return new ResponseEntity<>(response, HttpStatus.CREATED);
     }
 
