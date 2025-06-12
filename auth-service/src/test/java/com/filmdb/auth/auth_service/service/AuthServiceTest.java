@@ -1,6 +1,7 @@
 package com.filmdb.auth.auth_service.service;
 
-import com.filmdb.auth.auth_service.dto.LoginResponse;
+import com.filmdb.auth.auth_service.dto.responses.LoginResponse;
+import com.filmdb.auth.auth_service.dto.responses.UserResponse;
 import com.filmdb.auth.auth_service.entity.User;
 import com.filmdb.auth.auth_service.exceptions.InvalidCredentialsException;
 import com.filmdb.auth.auth_service.exceptions.PasswordMismatchException;
@@ -45,7 +46,7 @@ class AuthServiceTest {
         when(userRepository.save(any(User.class))).thenReturn(savedUser);
 
         // Act (when)
-        User result = authService.registerUser(
+        UserResponse result = authService.registerUser(
                 "testUser", "test@mail.com", "12345", false);
 
         // Assert (then)

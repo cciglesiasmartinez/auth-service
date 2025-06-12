@@ -1,6 +1,7 @@
 package com.filmdb.auth.auth_service.controller;
 
-import com.filmdb.auth.auth_service.dto.*;
+import com.filmdb.auth.auth_service.dto.requests.*;
+import com.filmdb.auth.auth_service.dto.responses.*;
 import com.filmdb.auth.auth_service.entity.User;
 import com.filmdb.auth.auth_service.exceptions.InvalidCredentialsException;
 import com.filmdb.auth.auth_service.security.CustomUserDetails;
@@ -32,76 +33,64 @@ public class AuthController {
 
     @PostMapping("/register")
     public ResponseEntity<UserResponse> registerUser(@Valid @RequestBody RegisterRequest request) {
-        User newUser = authService.registerUser(
+        UserResponse response = authService.registerUser(
                 request.getUsername(),
                 request.getEmail(),
                 request.getPassword(),
                 request.isAdmin()
         );
-        UserResponse response = UserResponse.fromUser(newUser);
-        return new ResponseEntity<UserResponse>(response, HttpStatus.CREATED);
+        return new ResponseEntity<>(response, HttpStatus.CREATED);
     }
 
     @PostMapping("/login")
     public ResponseEntity<LoginResponse> loginUser(@Valid @RequestBody LoginRequest request) {
-        LoginResponse loginResponse = authService.loginUser(
+        LoginResponse response = authService.loginUser(
                 request.getEmail(),
                 request.getPassword());
-        return new ResponseEntity<LoginResponse>(loginResponse, HttpStatus.ACCEPTED);
+        return new ResponseEntity<>(response, HttpStatus.ACCEPTED);
     }
 
     @GetMapping("/me")
-    public ResponseEntity<?> getCurrentUser(Authentication authentication) {
+    public ResponseEntity<UserResponse> getCurrentUser(Authentication authentication) {
         User user = getAuthenticatedUser(authentication);
         UserResponse response = UserResponse.fromUser(user);
-        return new ResponseEntity<UserResponse>(response, HttpStatus.OK);
+        return new ResponseEntity<>(response, HttpStatus.OK);
     }
 
     @PutMapping("/me/password")
-    public ResponseEntity<ApiResponse> changeUserPassword(@Valid @RequestBody ChangePasswordRequest request,
-                                                Authentication authentication) {
+    public ResponseEntity<ChangePasswordResponse> changeUserPassword(@Valid @RequestBody ChangePasswordRequest request,
+                                                                     Authentication authentication) {
         User user = getAuthenticatedUser(authentication);
         authService.changeUserPassword(user, request.getCurrentPassword(), request.getNewPassword());
-        return ResponseEntity.ok(
-                ApiResponse.builder()
-                        .message("Password changed.")
-                        .success(true)
-                        .timestamp(LocalDateTime.now())
-                        .build()
-        );
+        ChangePasswordResponse response = new ChangePasswordResponse("Password changed", LocalDateTime.now());
+        return new ResponseEntity<ChangePasswordResponse>(response, HttpStatus.OK);
     }
 
     @PutMapping("/me/username")
-    public ResponseEntity<ApiResponse> changeUserUsername(@Valid @RequestBody ChangeUsernameRequest request,
-                                                Authentication authentication) {
+    public ResponseEntity<ChangeUsernameResponse> changeUserUsername(@Valid @RequestBody ChangeUsernameRequest request,
+                                                                     Authentication authentication) {
         User user = getAuthenticatedUser(authentication);
-        authService.changeUserUsername(user, request.getCurrentPassword(), request.getUsername());
-        return ResponseEntity.ok(
-                ApiResponse.builder()
-                        .message("Username changed.")
-                        .success(true)
-                        .timestamp(LocalDateTime.now())
-                        .build()
-        );
+        ChangeUsernameResponse response = authService.changeUserUsername(
+                user,
+                request.getCurrentPassword(),
+                request.getUsername());
+        return new ResponseEntity<>(response, HttpStatus.OK);
     }
 
     @PutMapping("/me/email")
-    public ResponseEntity<ApiResponse> changeUserEmail(@Valid @RequestBody ChangeEmailRequest request,
-                                                Authentication authentication) {
+    public ResponseEntity<ChangeEmailResponse> changeUserEmail(@Valid @RequestBody ChangeEmailRequest request,
+                                                               Authentication authentication) {
         User user = getAuthenticatedUser(authentication);
-        authService.changeUserEmail(user, request.getCurrentPassword(), request.getEmail());
-        return ResponseEntity.ok(
-                ApiResponse.builder()
-                        .message("Email changed.")
-                        .success(true)
-                        .timestamp(LocalDateTime.now())
-                        .build()
-        );
+        ChangeEmailResponse response = authService.changeUserEmail(
+                user,
+                request.getCurrentPassword(),
+                request.getEmail());
+        return new ResponseEntity<>(response, HttpStatus.OK);
     }
 
     @DeleteMapping("/me")
     public ResponseEntity<ApiResponse> deleteUser(@Valid @RequestBody DeleteUserRequest request,
-                                                Authentication authentication) {
+                                                  Authentication authentication) {
         User user = getAuthenticatedUser(authentication);
         authService.deleteUser(user, request.getCurrentPassword());
         return ResponseEntity.noContent().build();

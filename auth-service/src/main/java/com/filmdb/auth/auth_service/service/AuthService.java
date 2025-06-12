@@ -1,6 +1,9 @@
 package com.filmdb.auth.auth_service.service;
 
-import com.filmdb.auth.auth_service.dto.LoginResponse;
+import com.filmdb.auth.auth_service.dto.responses.ChangeEmailResponse;
+import com.filmdb.auth.auth_service.dto.responses.ChangeUsernameResponse;
+import com.filmdb.auth.auth_service.dto.responses.LoginResponse;
+import com.filmdb.auth.auth_service.dto.responses.UserResponse;
 import com.filmdb.auth.auth_service.entity.User;
 import com.filmdb.auth.auth_service.exceptions.*;
 import com.filmdb.auth.auth_service.repository.UserRepository;
@@ -8,6 +11,8 @@ import com.filmdb.auth.auth_service.security.JwtUtil;
 import jakarta.transaction.Transactional;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
+
+import java.time.LocalDateTime;
 import java.util.Optional;
 import java.util.UUID;
 
@@ -75,8 +80,8 @@ public class AuthService {
      * @throws UserAlreadyRegisteredException if the username or email are already registered.
      */
     @Transactional
-    public User registerUser(String username, String email, String rawPassword, boolean isAdmin) {
-        if (!this.isUserAlreadyRegistered(username, email)) {
+    public UserResponse registerUser(String username, String email, String rawPassword, boolean isAdmin) {
+        if (!isUserAlreadyRegistered(username, email)) {
             User user = new User();
             user.setId(UUID.randomUUID().toString());
             user.setUsername(username);
@@ -84,7 +89,8 @@ public class AuthService {
             user.setPassword(passwordEncoder.encode(rawPassword));
             user.setAdmin(isAdmin);
             user.setRegisteredAt(java.time.LocalDateTime.now());
-            return userRepository.save(user);
+            userRepository.save(user);
+            return UserResponse.fromUser(user);
         } else {
             throw new UserAlreadyRegisteredException();
         }
@@ -140,11 +146,12 @@ public class AuthService {
      * @throws PasswordMismatchException if the current password provided does not match the stored password.
      */
     @Transactional
-    public void changeUserUsername(User user, String currentPassword, String username) {
+    public ChangeUsernameResponse changeUserUsername(User user, String currentPassword, String username) {
         validateCurrentPassword(user, currentPassword);
         if (userRepository.findByUsername(username).isEmpty()) {
             user.setUsername(username);
             userRepository.save(user);
+            return new ChangeUsernameResponse(username, LocalDateTime.now());
         } else {
             throw new UsernameAlreadyExistsException();
         }
@@ -160,11 +167,12 @@ public class AuthService {
      * @throws PasswordMismatchException if the current password provided does not match the stored password.
      */
     @Transactional
-    public void changeUserEmail(User user, String currentPassword, String email) {
+    public ChangeEmailResponse changeUserEmail(User user, String currentPassword, String email) {
         validateCurrentPassword(user, currentPassword);
         if (userRepository.findByEmail(email).isEmpty()) {
             user.setEmail(email);
             userRepository.save(user);
+            return new ChangeEmailResponse(email, LocalDateTime.now());
         } else {
             throw new EmailAlreadyExistsException();
         }
