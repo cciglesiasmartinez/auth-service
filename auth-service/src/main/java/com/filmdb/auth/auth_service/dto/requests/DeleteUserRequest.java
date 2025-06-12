@@ -1,4 +1,4 @@
-package com.filmdb.auth.auth_service.dto;
+package com.filmdb.auth.auth_service.dto.requests;
 
 import jakarta.validation.constraints.NotBlank;
 import lombok.Getter;
