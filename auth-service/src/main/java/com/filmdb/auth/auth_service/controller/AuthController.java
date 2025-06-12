@@ -37,8 +37,7 @@ public class AuthController {
                 request.getUsername(),
                 request.getEmail(),
                 request.getPassword(),
-                request.isAdmin()
-        );
+                request.isAdmin());
         return new ResponseEntity<>(response, HttpStatus.CREATED);
     }
 
@@ -63,7 +62,7 @@ public class AuthController {
         User user = getAuthenticatedUser(authentication);
         authService.changeUserPassword(user, request.getCurrentPassword(), request.getNewPassword());
         ChangePasswordResponse response = new ChangePasswordResponse("Password changed", LocalDateTime.now());
-        return new ResponseEntity<ChangePasswordResponse>(response, HttpStatus.OK);
+        return new ResponseEntity<>(response, HttpStatus.OK);
     }
 
     @PutMapping("/me/username")
@@ -89,7 +88,7 @@ public class AuthController {
     }
 
     @DeleteMapping("/me")
-    public ResponseEntity<ApiResponse> deleteUser(@Valid @RequestBody DeleteUserRequest request,
+    public ResponseEntity<?> deleteUser(@Valid @RequestBody DeleteUserRequest request,
                                                   Authentication authentication) {
         User user = getAuthenticatedUser(authentication);
         authService.deleteUser(user, request.getCurrentPassword());
