@@ -1,6 +1,7 @@
 package com.filmdb.auth.auth_service.domain.model;
 
 import com.filmdb.auth.auth_service.domain.services.PasswordEncoder;
+import com.filmdb.auth.auth_service.exceptions.PasswordMismatchException;
 
 import java.time.LocalDateTime;
 
@@ -57,7 +58,7 @@ public class User {
     public void changePassword(PlainPassword currentPassword, PlainPassword newPassword,
                                PasswordEncoder passwordEncoder) {
         if (!passwordEncoder.matches(currentPassword, this.password)) {
-            throw new IllegalArgumentException("Current password is incorrect.");
+            throw new PasswordMismatchException();
         }
         this.password = passwordEncoder.encode(newPassword);
         this.modifiedAt = LocalDateTime.now();
