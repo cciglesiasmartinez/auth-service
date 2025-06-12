@@ -21,6 +21,7 @@ public class UserResponse {
     private LocalDateTime registeredAt;
     private LocalDateTime modifiedAt;
 
+    // This should be deleted once migration to DDD + Hex is completed :)
     public static UserResponse fromUser(User user) {
         return UserResponse.builder()
                 .id(user.getId())
@@ -29,6 +30,17 @@ public class UserResponse {
                 .password(user.getPassword()) // Remove before production deployment
                 .registeredAt(user.getRegisteredAt())
                 .modifiedAt(user.getModifiedAt())
+                .build();
+    }
+
+    public static UserResponse fromDomainUser(com.filmdb.auth.auth_service.domain.model.User user) {
+        return UserResponse.builder()
+                .id(user.id().toString())
+                .username(user.username().toString())
+                .email(user.email().toString())
+                .password(user.password().toString())
+                .registeredAt(user.registeredAt())
+                .modifiedAt(user.modifiedAt())
                 .build();
     }
 }
