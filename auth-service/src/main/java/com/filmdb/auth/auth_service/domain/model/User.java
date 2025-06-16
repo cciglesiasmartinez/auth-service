@@ -57,21 +57,31 @@ public class User {
     // Domain methods
     public void changePassword(PlainPassword currentPassword, PlainPassword newPassword,
                                PasswordEncoder passwordEncoder) {
-        if (!passwordEncoder.matches(currentPassword, this.password)) {
-            throw new PasswordMismatchException();
-        }
+        validateCurrentPassword(currentPassword, passwordEncoder);
         this.password = passwordEncoder.encode(newPassword);
         this.modifiedAt = LocalDateTime.now();
     }
 
-    public void changeUsername(Username newUsername) {
+    public void changeUsername(PlainPassword currentPassword, Username newUsername,
+                               PasswordEncoder passwordEncoder) {
+        validateCurrentPassword(currentPassword, passwordEncoder);
         this.username = newUsername;
         this.modifiedAt = LocalDateTime.now();
     }
 
-    public void changeEmail(Email newEmail) {
+    public void changeEmail(PlainPassword currentPassword, Email newEmail,
+                            PasswordEncoder passwordEncoder) {
+        validateCurrentPassword(currentPassword, passwordEncoder);
         this.email = newEmail;
         this.modifiedAt = LocalDateTime.now();
+    }
+
+    // Helper methods
+    public void validateCurrentPassword(PlainPassword currentPassword,
+                                           PasswordEncoder passwordEncoder) {
+        if (!passwordEncoder.matches(currentPassword, this.password)) {
+            throw new PasswordMismatchException();
+        }
     }
 
 }
