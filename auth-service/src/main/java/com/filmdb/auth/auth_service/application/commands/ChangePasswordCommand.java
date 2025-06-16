@@ -7,7 +7,7 @@ public class ChangePasswordCommand {
 
     private final String userId;
     private final String currentPassword;
-    private final String newPassord;
+    private final String newPassword;
 
     public String userId() {
         return userId;
@@ -18,7 +18,7 @@ public class ChangePasswordCommand {
     }
 
     public String newPassword() {
-        return newPassord;
+        return newPassword;
     }
 
 }
