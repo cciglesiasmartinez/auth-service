@@ -8,8 +8,15 @@ import com.filmdb.auth.auth_service.domain.repository.UserRepository;
 import com.filmdb.auth.auth_service.domain.services.PasswordEncoder;
 import com.filmdb.auth.auth_service.domain.services.TokenProvider;
 import com.filmdb.auth.auth_service.dto.responses.LoginResponse;
+import com.filmdb.auth.auth_service.exceptions.PasswordMismatchException;
 import lombok.AllArgsConstructor;
 
+/**
+ * Application service for login a user.
+ * <p>
+ * Looks for the user in the database, if it exists, checks if the provided password matches the stored one.
+ * If everything is correct, generates a token, and issues a {@link LoginResponse} object issuing the token.
+ */
 @AllArgsConstructor
 public class LoginUserService {
 
@@ -17,14 +24,20 @@ public class LoginUserService {
     private final PasswordEncoder passwordEncoder;
     private final TokenProvider tokenProvider;
 
+    /**
+     * Executes the user login use case.
+     *
+     * @param command {@link LoginUserCommand} command containing email and password.
+     * @return {@link LoginResponse} object containing jwt token, expiration time and username.
+     * @throws RuntimeException if the user is not found.
+     * @throws PasswordMismatchException if provided password does not match stored password.
+     */
     public LoginResponse execute(LoginUserCommand command) {
         Email email = Email.of(command.email());
         User user = userRepository.findByEmail(email)
                 .orElseThrow(() -> new RuntimeException("Invalid credentials."));
         PlainPassword plainPassword = PlainPassword.of(command.password());
-        if (!passwordEncoder.matches(plainPassword, user.password())) {
-            throw new RuntimeException("Invalid credentials.");
-        }
+        user.validateCurrentPassword(plainPassword, passwordEncoder);
         String token = tokenProvider.generateToken(user.username().toString());
         long expiresIn = tokenProvider.getTokenExpirationInSeconds();
         // Change username type from String to Username before completing migration
