@@ -1,7 +1,7 @@
 package com.filmdb.auth.auth_service.domain.model;
 
 import com.filmdb.auth.auth_service.domain.services.PasswordEncoder;
-import com.filmdb.auth.auth_service.exceptions.PasswordMismatchException;
+import com.filmdb.auth.auth_service.domain.exception.PasswordMismatchException;
 
 import java.time.LocalDateTime;
 
@@ -27,6 +27,14 @@ public class User {
                               PasswordEncoder passwordEncoder) {
         EncodedPassword encodedPassword = passwordEncoder.encode(plainPassword);
         return new User(UserId.generate(), username, encodedPassword, email, LocalDateTime.now());
+    }
+
+    // Static method for mapper
+    public static User of(UserId id, Username username, EncodedPassword password, Email email,
+                          LocalDateTime registeredAt, LocalDateTime modifiedAt) {
+        User user = new User(id, username, password, email, registeredAt);
+        user.modifiedAt = modifiedAt;
+        return user;
     }
 
     // Getters
