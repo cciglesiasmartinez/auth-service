@@ -1,7 +1,10 @@
 package com.filmdb.auth.auth_service.application.usecase;
 
-import com.filmdb.auth.auth_service.dto.responses.*;
-import com.filmdb.auth.auth_service.dto.requests.*;
+import com.filmdb.auth.auth_service.adapter.in.web.dto.requests.*;
+import com.filmdb.auth.auth_service.adapter.in.web.dto.responses.ChangeEmailResponse;
+import com.filmdb.auth.auth_service.adapter.in.web.dto.responses.ChangeUsernameResponse;
+import com.filmdb.auth.auth_service.adapter.in.web.dto.responses.LoginResponse;
+import com.filmdb.auth.auth_service.adapter.in.web.dto.responses.UserResponse;
 import com.filmdb.auth.auth_service.domain.model.User;
 
 
