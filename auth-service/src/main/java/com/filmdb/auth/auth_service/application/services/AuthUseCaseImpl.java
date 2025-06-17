@@ -1,14 +1,14 @@
 package com.filmdb.auth.auth_service.application.services;
 
+import com.filmdb.auth.auth_service.adapter.in.web.dto.requests.*;
 import com.filmdb.auth.auth_service.adapter.in.web.mapper.AuthRequestCommandMapper;
 import com.filmdb.auth.auth_service.application.commands.*;
 import com.filmdb.auth.auth_service.application.usecase.AuthUseCase;
 import com.filmdb.auth.auth_service.domain.model.User;
-import com.filmdb.auth.auth_service.dto.requests.*;
-import com.filmdb.auth.auth_service.dto.responses.ChangeEmailResponse;
-import com.filmdb.auth.auth_service.dto.responses.ChangeUsernameResponse;
-import com.filmdb.auth.auth_service.dto.responses.LoginResponse;
-import com.filmdb.auth.auth_service.dto.responses.UserResponse;
+import com.filmdb.auth.auth_service.adapter.in.web.dto.responses.ChangeEmailResponse;
+import com.filmdb.auth.auth_service.adapter.in.web.dto.responses.ChangeUsernameResponse;
+import com.filmdb.auth.auth_service.adapter.in.web.dto.responses.LoginResponse;
+import com.filmdb.auth.auth_service.adapter.in.web.dto.responses.UserResponse;
 import lombok.AllArgsConstructor;
 import org.springframework.stereotype.Service;
 
