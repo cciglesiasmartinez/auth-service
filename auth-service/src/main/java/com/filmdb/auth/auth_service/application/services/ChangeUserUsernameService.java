@@ -7,9 +7,10 @@ import com.filmdb.auth.auth_service.domain.model.UserId;
 import com.filmdb.auth.auth_service.domain.model.Username;
 import com.filmdb.auth.auth_service.domain.repository.UserRepository;
 import com.filmdb.auth.auth_service.domain.services.PasswordEncoder;
-import com.filmdb.auth.auth_service.dto.responses.ChangeUsernameResponse;
-import com.filmdb.auth.auth_service.exceptions.PasswordMismatchException;
+import com.filmdb.auth.auth_service.adapter.in.web.dto.responses.ChangeUsernameResponse;
+import com.filmdb.auth.auth_service.domain.exception.PasswordMismatchException;
 import lombok.AllArgsConstructor;
+import org.springframework.stereotype.Service;
 
 import java.time.LocalDateTime;
 
@@ -18,6 +19,7 @@ import java.time.LocalDateTime;
  * <p>
  * Looks for the user in the repository and changes its username if provided password matches stored password.
  */
+@Service
 @AllArgsConstructor
 public class ChangeUserUsernameService {
 

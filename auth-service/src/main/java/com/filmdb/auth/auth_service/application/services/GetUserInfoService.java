@@ -4,14 +4,16 @@ import com.filmdb.auth.auth_service.application.commands.GetUserInfoCommand;
 import com.filmdb.auth.auth_service.domain.model.User;
 import com.filmdb.auth.auth_service.domain.model.UserId;
 import com.filmdb.auth.auth_service.domain.repository.UserRepository;
-import com.filmdb.auth.auth_service.dto.responses.UserResponse;
+import com.filmdb.auth.auth_service.adapter.in.web.dto.responses.UserResponse;
 import lombok.AllArgsConstructor;
+import org.springframework.stereotype.Service;
 
 /**
  * Application service for getting user info (self).
  * <p>
  * Looks for the user in the database and if exists, returns {@link UserResponse} with user data.
  */
+@Service
 @AllArgsConstructor
 public class GetUserInfoService {
 

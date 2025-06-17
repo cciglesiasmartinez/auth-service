@@ -6,14 +6,16 @@ import com.filmdb.auth.auth_service.domain.model.User;
 import com.filmdb.auth.auth_service.domain.model.UserId;
 import com.filmdb.auth.auth_service.domain.repository.UserRepository;
 import com.filmdb.auth.auth_service.domain.services.PasswordEncoder;
-import com.filmdb.auth.auth_service.exceptions.PasswordMismatchException;
+import com.filmdb.auth.auth_service.domain.exception.PasswordMismatchException;
 import lombok.AllArgsConstructor;
+import org.springframework.stereotype.Service;
 
 /**
  * Application service for deleting the user account.
  * <p>
  * Looks for the user in the database, and if the password matches, deletes it.
  */
+@Service
 @AllArgsConstructor
 public class DeleteUserService {
 

@@ -7,8 +7,9 @@ import com.filmdb.auth.auth_service.domain.model.User;
 import com.filmdb.auth.auth_service.domain.model.Username;
 import com.filmdb.auth.auth_service.domain.repository.UserRepository;
 import com.filmdb.auth.auth_service.domain.services.PasswordEncoder;
-import com.filmdb.auth.auth_service.dto.responses.UserResponse;
+import com.filmdb.auth.auth_service.adapter.in.web.dto.responses.UserResponse;
 import lombok.AllArgsConstructor;
+import org.springframework.stereotype.Service;
 
 /**
  * Application service for registering new users.
@@ -16,6 +17,7 @@ import lombok.AllArgsConstructor;
  * Validates that the user does not already exist (by email or username), encodes the password, creates the user,
  * and persists it using the domain repository.
  */
+@Service
 @AllArgsConstructor
 public class RegisterUserService {
 
