@@ -1,6 +1,6 @@
-package com.filmdb.auth.auth_service.security;
+package com.filmdb.auth.auth_service.infrastructure.security;
 
-import com.filmdb.auth.auth_service.infrastructure.security.CustomUserDetails;
+import com.filmdb.auth.auth_service.domain.services.TokenProvider;
 import com.filmdb.auth.auth_service.service.CustomUserDetailsService;
 import jakarta.servlet.FilterChain;
 import jakarta.servlet.ServletException;
@@ -10,14 +10,15 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.security.authentication.*;
 import org.springframework.security.web.authentication.WebAuthenticationDetailsSource;
+import org.springframework.stereotype.Component;
 import org.springframework.web.filter.OncePerRequestFilter;
 import java.io.IOException;
 
-//@Component
+@Component
 public class AuthTokenFilter extends OncePerRequestFilter {
 
     @Autowired
-    private JwtUtil jwtUtils;
+    private TokenProvider tokenProvider;
 
     @Autowired
     private CustomUserDetailsService userDetailsService;
@@ -30,8 +31,8 @@ public class AuthTokenFilter extends OncePerRequestFilter {
     ) throws ServletException, IOException {
         try {
             String jwt = parseJwt(request);
-            if (jwt != null && jwtUtils.validateJwtToken(jwt)) {
-                String username = jwtUtils.getUsernameFromToken(jwt);
+            if (jwt != null && tokenProvider.validateJwtToken(jwt)) {
+                String username = tokenProvider.getUsernameFromToken(jwt);
                 CustomUserDetails userDetails = (CustomUserDetails) userDetailsService.loadUserByUsername(username);
                 UsernamePasswordAuthenticationToken authentication =
                         new UsernamePasswordAuthenticationToken(
