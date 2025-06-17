@@ -1,5 +1,10 @@
-package com.filmdb.auth.auth_service.exceptions;
+package com.filmdb.auth.auth_service.adapter.in.web.exception;
 
+import com.filmdb.auth.auth_service.application.exception.EmailAlreadyExistsException;
+import com.filmdb.auth.auth_service.application.exception.InvalidCredentialsException;
+import com.filmdb.auth.auth_service.application.exception.UserAlreadyRegisteredException;
+import com.filmdb.auth.auth_service.application.exception.UsernameAlreadyExistsException;
+import com.filmdb.auth.auth_service.domain.exception.PasswordMismatchException;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.ControllerAdvice;

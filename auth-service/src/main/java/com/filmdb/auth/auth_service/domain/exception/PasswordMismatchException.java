@@ -1,4 +1,4 @@
-package com.filmdb.auth.auth_service.exceptions;
+package com.filmdb.auth.auth_service.domain.exception;
 
 public class PasswordMismatchException extends RuntimeException {
 
