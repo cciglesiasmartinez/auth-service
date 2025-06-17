@@ -9,8 +9,10 @@ import org.springframework.data.jpa.repository.config.EnableJpaRepositories;
 
 @OpenAPIDefinition(info = @Info(title = "Auth Service API", version = "v1"))
 @SpringBootApplication
-@EnableJpaRepositories(basePackages = "com.filmdb.auth.auth_service.repository")
-@EntityScan(basePackages = "com.filmdb.auth.auth_service.entity")
+//@EnableJpaRepositories(basePackages = "com.filmdb.auth.auth_service.repository")
+//@EntityScan(basePackages = "com.filmdb.auth.auth_service.entity")
+@EnableJpaRepositories(basePackages = "com.filmdb.auth.auth_service.infrastructure.persistence.repository")
+@EntityScan(basePackages = "com.filmdb.auth.auth_service.infrastructure.persistence.entity")
 public class AuthServiceApplication {
 
 	public static void main(String[] args) {
