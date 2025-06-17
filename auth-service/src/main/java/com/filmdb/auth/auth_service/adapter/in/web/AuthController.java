@@ -1,0 +1,88 @@
+package com.filmdb.auth.auth_service.adapter.in.web;
+
+import com.filmdb.auth.auth_service.application.commands.ChangePasswordCommand;
+import com.filmdb.auth.auth_service.application.usecase.AuthUseCase;
+import com.filmdb.auth.auth_service.domain.model.User;
+import com.filmdb.auth.auth_service.dto.requests.*;
+import com.filmdb.auth.auth_service.dto.responses.*;
+import com.filmdb.auth.auth_service.exceptions.InvalidCredentialsException;
+import com.filmdb.auth.auth_service.security.CustomUserDetails;
+import jakarta.validation.Valid;
+import org.apache.coyote.Response;
+import org.springframework.http.HttpStatus;
+import org.springframework.http.ResponseEntity;
+import org.springframework.security.core.Authentication;
+import org.springframework.web.bind.annotation.*;
+
+import java.time.LocalDateTime;
+
+@RestController
+@RequestMapping("/auth")
+public class AuthController {
+
+    private final AuthUseCase authUseCase;
+
+    public AuthController(AuthUseCase authUseCase) {
+        this.authUseCase = authUseCase;
+    }
+
+    private User getAuthenticatedUser(Authentication authentication) {
+        if (authentication == null || !(authentication.getPrincipal() instanceof CustomUserDetails customUserDetails)) {
+            throw new InvalidCredentialsException("Unauthorized");
+        }
+        return customUserDetails.getUser();
+    }
+
+    @PostMapping("/register")
+    public ResponseEntity<UserResponse> register(@Valid @RequestBody RegisterRequest request) {
+        UserResponse response = authUseCase.register(request);
+        return new ResponseEntity<>(response, HttpStatus.CREATED);
+    }
+
+    @PostMapping("/login")
+    public ResponseEntity<LoginResponse> login(@Valid @RequestBody LoginRequest request) {
+        LoginResponse response = authUseCase.login(request);
+        return new ResponseEntity<>(response, HttpStatus.ACCEPTED);
+    }
+
+    @GetMapping("/me")
+    public ResponseEntity<UserResponse> getCurrentUser(Authentication authentication) {
+        User user = getAuthenticatedUser(authentication);
+        UserResponse response = UserResponse.fromDomainUser(user);
+        return new ResponseEntity<>(response, HttpStatus.OK);
+    }
+
+    @PutMapping("/me/password")
+    public ResponseEntity<ChangePasswordResponse> changeUserPassword(@Valid @RequestBody ChangePasswordRequest request,
+                                                                     Authentication authentication) {
+        User user = getAuthenticatedUser(authentication);
+        authUseCase.changePassword(user, request);
+        ChangePasswordResponse response = new ChangePasswordResponse("Password changed", LocalDateTime.now());
+        return new ResponseEntity<>(response, HttpStatus.OK);
+    }
+
+    @PutMapping("/me/username")
+    public ResponseEntity<ChangeUsernameResponse> changeUserUsername(@Valid @RequestBody ChangeUsernameRequest request,
+                                                                     Authentication authentication) {
+        User user = getAuthenticatedUser(authentication);
+        ChangeUsernameResponse response = authUseCase.changeUsername(user, request);
+        return new ResponseEntity<>(response, HttpStatus.OK);
+    }
+
+    @PutMapping("/me/email")
+    public ResponseEntity<ChangeEmailResponse> changeUserEmail(@Valid @RequestBody ChangeEmailRequest request,
+                                                               Authentication authentication) {
+        User user = getAuthenticatedUser(authentication);
+        ChangeEmailResponse response = authUseCase.changeEmail(user, request);
+        return new ResponseEntity<>(response, HttpStatus.OK);
+    }
+
+    @DeleteMapping("/me")
+    public ResponseEntity<?> deleteUser(@Valid @RequestBody DeleteUserRequest request,
+                                        Authentication authentication) {
+        User user = getAuthenticatedUser(authentication);
+        authUseCase.deleteUser(user, request);
+        return ResponseEntity.noContent().build();
+    }
+
+}
