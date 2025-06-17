@@ -1,14 +1,12 @@
 package com.filmdb.auth.auth_service.adapter.in.web;
 
-import com.filmdb.auth.auth_service.application.commands.ChangePasswordCommand;
+import com.filmdb.auth.auth_service.adapter.in.web.dto.requests.*;
+import com.filmdb.auth.auth_service.adapter.in.web.dto.responses.*;
 import com.filmdb.auth.auth_service.application.usecase.AuthUseCase;
 import com.filmdb.auth.auth_service.domain.model.User;
-import com.filmdb.auth.auth_service.dto.requests.*;
-import com.filmdb.auth.auth_service.dto.responses.*;
-import com.filmdb.auth.auth_service.exceptions.InvalidCredentialsException;
-import com.filmdb.auth.auth_service.security.CustomUserDetails;
+import com.filmdb.auth.auth_service.application.exception.InvalidCredentialsException;
+import com.filmdb.auth.auth_service.infrastructure.security.CustomUserDetails;
 import jakarta.validation.Valid;
-import org.apache.coyote.Response;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.core.Authentication;
