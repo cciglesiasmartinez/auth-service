@@ -1,4 +1,4 @@
-package com.filmdb.auth.auth_service.dto.responses;
+package com.filmdb.auth.auth_service.adapter.in.web.dto.responses;
 
 import com.fasterxml.jackson.annotation.JsonInclude;
 import lombok.AllArgsConstructor;

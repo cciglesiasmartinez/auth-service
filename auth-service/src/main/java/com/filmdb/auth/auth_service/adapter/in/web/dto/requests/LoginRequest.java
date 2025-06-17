@@ -1,4 +1,4 @@
-package com.filmdb.auth.auth_service.dto.requests;
+package com.filmdb.auth.auth_service.adapter.in.web.dto.requests;
 
 import jakarta.validation.constraints.Email;
 import jakarta.validation.constraints.NotBlank;
@@ -9,13 +9,11 @@ import lombok.Setter;
 @NoArgsConstructor
 @Getter
 @Setter
-public class RegisterRequest {
+public class LoginRequest {
 
-    @NotBlank(message = "Username is required")
     private String username;
 
-    @Email
-    @NotBlank(message = "Invalid email format")
+    @Email(message = "Invalid email format")
     private String email;
 
     @NotBlank(message = "Password is required")

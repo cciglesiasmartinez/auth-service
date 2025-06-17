@@ -1,4 +1,4 @@
-package com.filmdb.auth.auth_service.dto.requests;
+package com.filmdb.auth.auth_service.adapter.in.web.dto.requests;
 
 import jakarta.validation.constraints.Email;
 import jakarta.validation.constraints.NotBlank;
