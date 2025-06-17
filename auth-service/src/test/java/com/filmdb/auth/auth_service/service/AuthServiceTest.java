@@ -1,11 +1,11 @@
 package com.filmdb.auth.auth_service.service;
 
-import com.filmdb.auth.auth_service.dto.responses.LoginResponse;
-import com.filmdb.auth.auth_service.dto.responses.UserResponse;
+import com.filmdb.auth.auth_service.adapter.in.web.dto.responses.LoginResponse;
+import com.filmdb.auth.auth_service.adapter.in.web.dto.responses.UserResponse;
 import com.filmdb.auth.auth_service.entity.User;
-import com.filmdb.auth.auth_service.exceptions.InvalidCredentialsException;
-import com.filmdb.auth.auth_service.exceptions.PasswordMismatchException;
-import com.filmdb.auth.auth_service.exceptions.UserAlreadyRegisteredException;
+import com.filmdb.auth.auth_service.application.exception.InvalidCredentialsException;
+import com.filmdb.auth.auth_service.domain.exception.PasswordMismatchException;
+import com.filmdb.auth.auth_service.application.exception.UserAlreadyRegisteredException;
 import com.filmdb.auth.auth_service.repository.UserRepository;
 import com.filmdb.auth.auth_service.security.JwtUtil;
 import org.junit.jupiter.api.BeforeEach;
