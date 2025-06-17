@@ -1,6 +1,6 @@
 package com.filmdb.auth.auth_service.dto;
 
-import com.filmdb.auth.auth_service.dto.requests.RegisterRequest;
+import com.filmdb.auth.auth_service.adapter.in.web.dto.requests.RegisterRequest;
 import jakarta.validation.ConstraintViolation;
 import jakarta.validation.Validation;
 import jakarta.validation.Validator;
