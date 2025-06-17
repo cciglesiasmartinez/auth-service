@@ -1,4 +1,4 @@
-package com.filmdb.auth.auth_service.controller;
+package com.filmdb.auth.auth_service.adapter.in.web;
 
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.RestController;
