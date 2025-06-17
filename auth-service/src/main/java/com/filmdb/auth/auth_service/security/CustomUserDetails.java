@@ -1,6 +1,6 @@
 package com.filmdb.auth.auth_service.security;
 
-import com.filmdb.auth.auth_service.entity.User;
+import com.filmdb.auth.auth_service.domain.model.User;
 import org.springframework.security.core.GrantedAuthority;
 import org.springframework.security.core.userdetails.UserDetails;
 
@@ -26,12 +26,12 @@ public class CustomUserDetails implements UserDetails {
 
     @Override
     public String getPassword() {
-        return user.getPassword();
+        return user.password().toString();
     }
 
     @Override
     public String getUsername() {
-        return user.getUsername();
+        return user.username().toString();
     }
 
     @Override
