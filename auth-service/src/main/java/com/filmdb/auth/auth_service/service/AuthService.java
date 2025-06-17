@@ -21,7 +21,7 @@ import java.util.UUID;
  * and profile updates, and user deletion. This class acts as the core of authentication logic, interfacing
  * with the {@link UserRepository}, password encoding utilities, and JWT token generation.
  */
-@Service
+//@Service
 public class AuthService {
 
     /** Repository for accessing user data from the database. */
