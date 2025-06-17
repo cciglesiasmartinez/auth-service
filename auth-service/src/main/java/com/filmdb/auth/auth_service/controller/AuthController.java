@@ -14,8 +14,8 @@ import org.springframework.web.bind.annotation.*;
 
 import java.time.LocalDateTime;
 
-@RestController
-@RequestMapping("/auth")
+//@RestController
+//@RequestMapping("/auth")
 public class AuthController {
 
     private final AuthService authService;
@@ -28,7 +28,11 @@ public class AuthController {
         if (authentication == null || !(authentication.getPrincipal() instanceof CustomUserDetails customUserDetails)) {
             throw new InvalidCredentialsException("Unauthorized.");
         }
-        return customUserDetails.getUser();
+        User user = new User();
+        user.setUsername(customUserDetails.getUsername());
+        user.setPassword(customUserDetails.getPassword());
+        return user;
+        //return customUserDetails.getUser();
     }
 
     @PostMapping("/register")
