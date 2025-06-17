@@ -1,10 +1,10 @@
 package com.filmdb.auth.auth_service.controller;
 
-import com.filmdb.auth.auth_service.dto.requests.*;
-import com.filmdb.auth.auth_service.dto.responses.*;
+import com.filmdb.auth.auth_service.adapter.in.web.dto.requests.*;
+import com.filmdb.auth.auth_service.adapter.in.web.dto.responses.*;
 import com.filmdb.auth.auth_service.entity.User;
-import com.filmdb.auth.auth_service.exceptions.InvalidCredentialsException;
-import com.filmdb.auth.auth_service.security.CustomUserDetails;
+import com.filmdb.auth.auth_service.application.exception.InvalidCredentialsException;
+import com.filmdb.auth.auth_service.infrastructure.security.CustomUserDetails;
 import com.filmdb.auth.auth_service.service.AuthService;
 import jakarta.validation.Valid;
 import org.springframework.http.HttpStatus;
