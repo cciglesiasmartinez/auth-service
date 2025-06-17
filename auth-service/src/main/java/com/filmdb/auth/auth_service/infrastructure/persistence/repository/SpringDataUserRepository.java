@@ -9,11 +9,11 @@ import java.util.Optional;
 @Repository
 public interface SpringDataUserRepository extends JpaRepository<UserEntity, String> {
 
-    Optional<UserEntity> findById(String id);
+//    Optional<UserEntity> findById(String id);
     Optional<UserEntity> findByEmail(String email);
     Optional<UserEntity> findByUsername(String username);
 //    Optional<UserEntity> save(UserEntity user);
-    void delete(UserEntity user);
+//    void delete(UserEntity user);
     boolean existsByEmailOrUsername(String email, String username);
     boolean existsByEmail(String email);
     boolean existsByUsername(String username);
