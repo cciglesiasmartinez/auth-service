@@ -6,7 +6,7 @@ import com.filmdb.auth.auth_service.domain.model.UserId;
 import com.filmdb.auth.auth_service.domain.model.Username;
 import org.mapstruct.Mapper;
 
-@Mapper(componentModel = "spring")
+//@Mapper(componentModel = "spring")
 public interface UserValueObjectMapper {
 
     // UserId
