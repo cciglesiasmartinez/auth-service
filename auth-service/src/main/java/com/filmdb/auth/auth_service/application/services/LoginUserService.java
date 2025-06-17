@@ -7,9 +7,10 @@ import com.filmdb.auth.auth_service.domain.model.User;
 import com.filmdb.auth.auth_service.domain.repository.UserRepository;
 import com.filmdb.auth.auth_service.domain.services.PasswordEncoder;
 import com.filmdb.auth.auth_service.domain.services.TokenProvider;
-import com.filmdb.auth.auth_service.dto.responses.LoginResponse;
-import com.filmdb.auth.auth_service.exceptions.PasswordMismatchException;
+import com.filmdb.auth.auth_service.adapter.in.web.dto.responses.LoginResponse;
+import com.filmdb.auth.auth_service.domain.exception.PasswordMismatchException;
 import lombok.AllArgsConstructor;
+import org.springframework.stereotype.Service;
 
 /**
  * Application service for login a user.
@@ -17,6 +18,7 @@ import lombok.AllArgsConstructor;
  * Looks for the user in the database, if it exists, checks if the provided password matches the stored one.
  * If everything is correct, generates a token, and issues a {@link LoginResponse} object issuing the token.
  */
+@Service
 @AllArgsConstructor
 public class LoginUserService {
 
@@ -38,10 +40,10 @@ public class LoginUserService {
                 .orElseThrow(() -> new RuntimeException("Invalid credentials."));
         PlainPassword plainPassword = PlainPassword.of(command.password());
         user.validateCurrentPassword(plainPassword, passwordEncoder);
-        String token = tokenProvider.generateToken(user.username().toString());
+        String token = tokenProvider.generateToken(user.username().value());
         long expiresIn = tokenProvider.getTokenExpirationInSeconds();
         // Change username type from String to Username before completing migration
-        return new LoginResponse(token, expiresIn, user.username().toString());
+        return new LoginResponse(token, expiresIn, user.username().value());
     }
 
 }
