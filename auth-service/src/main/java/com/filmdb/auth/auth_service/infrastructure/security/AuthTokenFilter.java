@@ -1,7 +1,6 @@
 package com.filmdb.auth.auth_service.infrastructure.security;
 
 import com.filmdb.auth.auth_service.domain.services.TokenProvider;
-import com.filmdb.auth.auth_service.service.CustomUserDetailsService;
 import jakarta.servlet.FilterChain;
 import jakarta.servlet.ServletException;
 import jakarta.servlet.http.HttpServletRequest;
