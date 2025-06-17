@@ -1,8 +1,7 @@
-package com.filmdb.auth.auth_service.service;
+package com.filmdb.auth.auth_service.infrastructure.security;
 
 import com.filmdb.auth.auth_service.domain.model.Username;
 import com.filmdb.auth.auth_service.domain.repository.UserRepository;
-import com.filmdb.auth.auth_service.infrastructure.security.CustomUserDetails;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.core.userdetails.*;
 import org.springframework.stereotype.Service;
