@@ -1,4 +1,4 @@
-package com.filmdb.auth.auth_service.security;
+package com.filmdb.auth.auth_service.infrastructure.security;
 
 import com.filmdb.auth.auth_service.domain.model.User;
 import org.springframework.security.core.GrantedAuthority;
