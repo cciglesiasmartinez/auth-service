@@ -1,6 +1,7 @@
 package com.filmdb.auth.auth_service.application.services;
 
 import com.filmdb.auth.auth_service.application.commands.GetUserInfoCommand;
+import com.filmdb.auth.auth_service.application.exception.UserNotFoundException;
 import com.filmdb.auth.auth_service.domain.model.User;
 import com.filmdb.auth.auth_service.domain.model.UserId;
 import com.filmdb.auth.auth_service.domain.repository.UserRepository;
@@ -24,11 +25,11 @@ public class GetUserInfoService {
      *
      * @param command {@link GetUserInfoCommand} object containing the user id.
      * @return {@link UserResponse} object with user data.
-     * @throws RuntimeException if user does not exist.
+     * @throws UserNotFoundException if user does not exist.
      */
     public UserResponse execute(GetUserInfoCommand command) {
         User user = userRepository.findById(UserId.of(command.userId()))
-                .orElseThrow(() -> new RuntimeException("User not found"));
+                .orElseThrow(() -> new UserNotFoundException());
         return UserResponse.fromDomainUser(user);
     }
 

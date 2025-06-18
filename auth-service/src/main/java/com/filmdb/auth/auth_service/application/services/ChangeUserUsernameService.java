@@ -1,6 +1,8 @@
 package com.filmdb.auth.auth_service.application.services;
 
 import com.filmdb.auth.auth_service.application.commands.ChangeUserUsernameCommand;
+import com.filmdb.auth.auth_service.application.exception.UserNotFoundException;
+import com.filmdb.auth.auth_service.application.exception.UsernameAlreadyExistsException;
 import com.filmdb.auth.auth_service.domain.model.PlainPassword;
 import com.filmdb.auth.auth_service.domain.model.User;
 import com.filmdb.auth.auth_service.domain.model.UserId;
@@ -31,17 +33,17 @@ public class ChangeUserUsernameService {
      *
      * @param command Change username command containing user id, current password and the new username.
      * @return {@link ChangeUsernameResponse} object containing the new username and the current timestamp.
-     * @throws RuntimeException if current username is already in use.
+     * @throws UserNotFoundException if current username is already in use.
      * @throws PasswordMismatchException if provided password does not match the stored one.
      */
     public ChangeUsernameResponse execute(ChangeUserUsernameCommand command) {
         PlainPassword currentPassword = PlainPassword.of(command.currentPassword());
         Username newUsername = Username.of(command.newUsername());
         if (userRepository.existsByUsername(newUsername)) {
-            throw new RuntimeException("Username already in use.");
+            throw new UsernameAlreadyExistsException();
         }
         User user = userRepository.findById(UserId.of(command.userId()))
-                .orElseThrow(() -> new RuntimeException("User not found."));
+                .orElseThrow(() -> new UserNotFoundException());
         user.changeUsername(currentPassword, newUsername, passwordEncoder);
         userRepository.save(user);
         return new ChangeUsernameResponse(user.username().value(), LocalDateTime.now());

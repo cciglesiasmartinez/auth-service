@@ -1,6 +1,7 @@
 package com.filmdb.auth.auth_service.application.services;
 
 import com.filmdb.auth.auth_service.application.commands.RegisterUserCommand;
+import com.filmdb.auth.auth_service.application.exception.UserAlreadyRegisteredException;
 import com.filmdb.auth.auth_service.domain.model.Email;
 import com.filmdb.auth.auth_service.domain.model.PlainPassword;
 import com.filmdb.auth.auth_service.domain.model.User;
@@ -29,14 +30,14 @@ public class RegisterUserService {
      *
      * @param command The registration command containing username, email, and raw password.
      * @return A {@link UserResponse} representing the newly registered user.
-     * @throws IllegalArgumentException if a user with the same email or username already exists.
+     * @throws UserAlreadyRegisteredException if a user with the same email or username already exists.
      */
     public UserResponse execute(RegisterUserCommand command) {
         Username username = Username.of(command.username());
         Email email = Email.of(command.email());
         PlainPassword plainPassword = PlainPassword.of(command.password());
         if (userRepository.existsByEmailOrUsername(email, username)) {
-            throw new IllegalArgumentException("User already registered.");
+            throw new UserAlreadyRegisteredException();
         }
         User user = User.create(username, email, plainPassword, passwordEncoder);
         userRepository.save(user);

@@ -2,6 +2,7 @@ package com.filmdb.auth.auth_service.application.services;
 
 import com.filmdb.auth.auth_service.adapter.in.web.dto.responses.ChangePasswordResponse;
 import com.filmdb.auth.auth_service.application.commands.ChangePasswordCommand;
+import com.filmdb.auth.auth_service.application.exception.UserNotFoundException;
 import com.filmdb.auth.auth_service.domain.model.PlainPassword;
 import com.filmdb.auth.auth_service.domain.model.User;
 import com.filmdb.auth.auth_service.domain.model.UserId;
@@ -31,15 +32,14 @@ public class ChangePasswordService {
      *
      * @param command Registration command containing user id, current password and the new desired password.
      * @return {@link ChangePasswordResponse} object with message and timestamp.
-     * @throws RuntimeException if the user is not found on the repository.
+     * @throws UserNotFoundException if the user is not found on the repository.
      * @throws PasswordMismatchException if the current password does not match the stored password.
-     *
      */
     public ChangePasswordResponse execute(ChangePasswordCommand command) {
         PlainPassword currentPassword = PlainPassword.of(command.currentPassword());
         PlainPassword newPassword = PlainPassword.of(command.newPassword());
         User user = userRepository.findById(UserId.of(command.userId()))
-                .orElseThrow(() -> new RuntimeException("User not found."));
+                .orElseThrow(() -> new UserNotFoundException());
         user.changePassword(currentPassword, newPassword, passwordEncoder);
         userRepository.save(user);
         return new ChangePasswordResponse("Password changed.", LocalDateTime.now());
