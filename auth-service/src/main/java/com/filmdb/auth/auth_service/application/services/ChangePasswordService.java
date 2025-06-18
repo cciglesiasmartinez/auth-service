@@ -1,5 +1,6 @@
 package com.filmdb.auth.auth_service.application.services;
 
+import com.filmdb.auth.auth_service.adapter.in.web.dto.responses.ChangePasswordResponse;
 import com.filmdb.auth.auth_service.application.commands.ChangePasswordCommand;
 import com.filmdb.auth.auth_service.domain.model.PlainPassword;
 import com.filmdb.auth.auth_service.domain.model.User;
@@ -9,6 +10,8 @@ import com.filmdb.auth.auth_service.domain.services.PasswordEncoder;
 import com.filmdb.auth.auth_service.domain.exception.PasswordMismatchException;
 import lombok.AllArgsConstructor;
 import org.springframework.stereotype.Service;
+
+import java.time.LocalDateTime;
 
 /**
  * Application service for changing user password.
@@ -27,16 +30,19 @@ public class ChangePasswordService {
      * Executes the user change password use case.
      *
      * @param command Registration command containing user id, current password and the new desired password.
+     * @return {@link ChangePasswordResponse} object with message and timestamp.
      * @throws RuntimeException if the user is not found on the repository.
      * @throws PasswordMismatchException if the current password does not match the stored password.
+     *
      */
-    public void execute(ChangePasswordCommand command) {
+    public ChangePasswordResponse execute(ChangePasswordCommand command) {
         PlainPassword currentPassword = PlainPassword.of(command.currentPassword());
         PlainPassword newPassword = PlainPassword.of(command.newPassword());
         User user = userRepository.findById(UserId.of(command.userId()))
                 .orElseThrow(() -> new RuntimeException("User not found."));
         user.changePassword(currentPassword, newPassword, passwordEncoder);
         userRepository.save(user);
+        return new ChangePasswordResponse("Password changed.", LocalDateTime.now());
     }
 
 }
