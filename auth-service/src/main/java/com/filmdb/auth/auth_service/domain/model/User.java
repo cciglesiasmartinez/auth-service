@@ -7,7 +7,13 @@ import com.filmdb.auth.auth_service.infrastructure.persistence.entity.UserEntity
 import java.time.LocalDateTime;
 
 /**
- *
+ * Domain model representing a User within the system.
+ * <p>
+ * This class encapsulates the business logic and state for a registered user, including identity, authentication
+ * credentials, and audit timestamps.
+ * <p>
+ * Instances of this class are either created during user registration or reconstructed from persistent storage
+ * via mappers.
  */
 public class User {
 
