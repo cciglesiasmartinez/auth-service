@@ -1,7 +1,7 @@
 package com.filmdb.auth.auth_service.domain.services;
 
-import com.filmdb.auth.auth_service.domain.model.EncodedPassword;
-import com.filmdb.auth.auth_service.domain.model.PlainPassword;
+import com.filmdb.auth.auth_service.domain.model.valueobject.EncodedPassword;
+import com.filmdb.auth.auth_service.domain.model.valueobject.PlainPassword;
 
 public interface PasswordEncoder {
 

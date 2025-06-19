@@ -1,10 +1,9 @@
 package com.filmdb.auth.auth_service.infrastructure.persistence.mapper;
 
-import com.filmdb.auth.auth_service.domain.model.Email;
-import com.filmdb.auth.auth_service.domain.model.EncodedPassword;
-import com.filmdb.auth.auth_service.domain.model.UserId;
-import com.filmdb.auth.auth_service.domain.model.Username;
-import org.mapstruct.Mapper;
+import com.filmdb.auth.auth_service.domain.model.valueobject.Email;
+import com.filmdb.auth.auth_service.domain.model.valueobject.EncodedPassword;
+import com.filmdb.auth.auth_service.domain.model.valueobject.UserId;
+import com.filmdb.auth.auth_service.domain.model.valueobject.Username;
 
 //@Mapper(componentModel = "spring")
 public interface UserValueObjectMapper {

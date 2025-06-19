@@ -3,7 +3,7 @@ package com.filmdb.auth.auth_service.application.services;
 import com.filmdb.auth.auth_service.application.commands.GetUserInfoCommand;
 import com.filmdb.auth.auth_service.application.exception.UserNotFoundException;
 import com.filmdb.auth.auth_service.domain.model.User;
-import com.filmdb.auth.auth_service.domain.model.UserId;
+import com.filmdb.auth.auth_service.domain.model.valueobject.UserId;
 import com.filmdb.auth.auth_service.domain.repository.UserRepository;
 import com.filmdb.auth.auth_service.adapter.in.web.dto.responses.UserResponse;
 import lombok.AllArgsConstructor;

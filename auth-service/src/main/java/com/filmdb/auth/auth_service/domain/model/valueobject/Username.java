@@ -1,4 +1,4 @@
-package com.filmdb.auth.auth_service.domain.model;
+package com.filmdb.auth.auth_service.domain.model.valueobject;
 
 import lombok.EqualsAndHashCode;
 import lombok.ToString;
