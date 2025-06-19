@@ -1,5 +1,7 @@
 package com.filmdb.auth.auth_service.domain.model.valueobject;
 
+import com.fasterxml.jackson.annotation.JsonCreator;
+import com.fasterxml.jackson.annotation.JsonProperty;
 import lombok.EqualsAndHashCode;
 import lombok.ToString;
 
@@ -11,7 +13,8 @@ public final class UserId {
 
     private final String value;
 
-    private UserId(String value) {
+    @JsonCreator
+    private UserId(@JsonProperty("value") String value) {
         this.value = value;
     }
 
@@ -32,6 +35,10 @@ public final class UserId {
     }
 
     public String value() {
+        return value;
+    }
+
+    public String getValue() {
         return value;
     }
 

@@ -4,6 +4,7 @@ import com.filmdb.auth.auth_service.adapter.in.web.dto.requests.*;
 import com.filmdb.auth.auth_service.adapter.in.web.dto.responses.*;
 import com.filmdb.auth.auth_service.adapter.in.web.mapper.AuthRequestCommandMapper;
 import com.filmdb.auth.auth_service.application.commands.*;
+import com.filmdb.auth.auth_service.application.context.RequestContext;
 import com.filmdb.auth.auth_service.application.usecase.AuthUseCase;
 import com.filmdb.auth.auth_service.domain.model.User;
 import lombok.AllArgsConstructor;
@@ -19,6 +20,7 @@ public class AuthUseCaseImpl implements AuthUseCase {
     private final ChangeUserUsernameService changeUserUsernameService;
     private final ChangeUserEmailService changeUserEmailService;
     private final DeleteUserService deleteUserService;
+    private final RefreshAccessTokenService refreshAccessTokenService;
     private final AuthRequestCommandMapper mapper;
 
     @Override
@@ -28,9 +30,15 @@ public class AuthUseCaseImpl implements AuthUseCase {
     }
 
     @Override
-    public LoginResponse login(LoginRequest request) {
-        LoginUserCommand command = mapper.toLoginUserCommand(request);
+    public LoginResponse login(LoginRequest request, RequestContext context) {
+        LoginUserCommand command = mapper.toLoginUserCommand(request, context);
         return loginUserService.execute(command);
+    }
+
+    @Override
+    public RefreshAccessTokenResponse refreshAccessToken(RefreshAccessTokenRequest request) {
+        RefreshAccessTokenCommand command = mapper.toRefreshAccessTokenCommand(request);
+        return refreshAccessTokenService.execute(command);
     }
 
     @Override

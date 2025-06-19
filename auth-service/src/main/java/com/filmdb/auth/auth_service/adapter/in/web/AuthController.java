@@ -2,10 +2,13 @@ package com.filmdb.auth.auth_service.adapter.in.web;
 
 import com.filmdb.auth.auth_service.adapter.in.web.dto.requests.*;
 import com.filmdb.auth.auth_service.adapter.in.web.dto.responses.*;
+import com.filmdb.auth.auth_service.application.context.RequestContext;
 import com.filmdb.auth.auth_service.application.usecase.AuthUseCase;
 import com.filmdb.auth.auth_service.domain.model.User;
 import com.filmdb.auth.auth_service.application.exception.InvalidCredentialsException;
 import com.filmdb.auth.auth_service.infrastructure.security.CustomUserDetails;
+import jakarta.servlet.http.HttpServlet;
+import jakarta.servlet.http.HttpServletRequest;
 import jakarta.validation.Valid;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -38,9 +41,19 @@ public class AuthController {
     }
 
     @PostMapping("/login")
-    public ResponseEntity<LoginResponse> login(@Valid @RequestBody LoginRequest request) {
-        LoginResponse response = authUseCase.login(request);
+    public ResponseEntity<LoginResponse> login(@Valid @RequestBody LoginRequest request,
+                                               HttpServletRequest httpRequest) {
+        String ip = httpRequest.getRemoteAddr();
+        String userAgent = httpRequest.getHeader("User-Agent");
+        RequestContext context = new RequestContext(ip, userAgent);
+        LoginResponse response = authUseCase.login(request, context);
         return new ResponseEntity<>(response, HttpStatus.ACCEPTED);
+    }
+
+    @PostMapping("/refresh")
+    public ResponseEntity<RefreshAccessTokenResponse> refresh(@Valid @RequestBody RefreshAccessTokenRequest request) {
+        RefreshAccessTokenResponse response = authUseCase.refreshAccessToken(request);
+        return new ResponseEntity<>(response, HttpStatus.OK);
     }
 
     @GetMapping("/me")

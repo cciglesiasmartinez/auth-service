@@ -3,7 +3,7 @@ package com.filmdb.auth.auth_service.domain.model;
 import com.filmdb.auth.auth_service.domain.model.valueobject.*;
 import com.filmdb.auth.auth_service.domain.services.PasswordEncoder;
 import com.filmdb.auth.auth_service.domain.exception.PasswordMismatchException;
-import com.filmdb.auth.auth_service.infrastructure.persistence.entity.UserEntity;
+import com.filmdb.auth.auth_service.infrastructure.persistence.mysql.entity.UserEntity;
 
 import java.time.LocalDateTime;
 

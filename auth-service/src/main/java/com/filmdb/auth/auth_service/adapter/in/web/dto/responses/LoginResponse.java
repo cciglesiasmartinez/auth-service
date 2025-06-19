@@ -9,11 +9,13 @@ public class LoginResponse {
 
     private String token;
     private String tokenType = "Bearer";
+    private String refreshToken;
     private long expiresIn;
     private String username;
 
-    public LoginResponse(String token, long expiresIn, String username) {
+    public LoginResponse(String token, String refreshToken, long expiresIn, String username) {
         this.token = token;
+        this.refreshToken = refreshToken;
         this.expiresIn = expiresIn;
         this.username = username;
     }

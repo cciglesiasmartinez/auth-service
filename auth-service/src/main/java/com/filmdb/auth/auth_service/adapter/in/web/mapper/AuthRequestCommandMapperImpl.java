@@ -2,6 +2,7 @@ package com.filmdb.auth.auth_service.adapter.in.web.mapper;
 
 import com.filmdb.auth.auth_service.adapter.in.web.dto.requests.*;
 import com.filmdb.auth.auth_service.application.commands.*;
+import com.filmdb.auth.auth_service.application.context.RequestContext;
 import org.springframework.stereotype.Component;
 
 @Component
@@ -16,10 +17,12 @@ public class AuthRequestCommandMapperImpl implements  AuthRequestCommandMapper {
     }
 
     @Override
-    public LoginUserCommand toLoginUserCommand(LoginRequest request) {
+    public LoginUserCommand toLoginUserCommand(LoginRequest request, RequestContext context) {
         return new LoginUserCommand(
                 request.getEmail(),
-                request.getPassword()
+                request.getPassword(),
+                context.getIp(),
+                context.getUserAgent()
         );
     }
 
@@ -55,6 +58,13 @@ public class AuthRequestCommandMapperImpl implements  AuthRequestCommandMapper {
         return new DeleteUserCommand(
                 userId,
                 request.getCurrentPassword()
+        );
+    }
+
+    @Override
+    public RefreshAccessTokenCommand toRefreshAccessTokenCommand(RefreshAccessTokenRequest request) {
+        return new RefreshAccessTokenCommand(
+                request.getRefreshToken()
         );
     }
 }
