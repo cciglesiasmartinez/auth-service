@@ -1,5 +1,7 @@
 package com.filmdb.auth.auth_service.infrastructure.security;
 
+import com.filmdb.auth.auth_service.application.exception.UserNotFoundException;
+import com.filmdb.auth.auth_service.domain.model.valueobject.UserId;
 import com.filmdb.auth.auth_service.domain.model.valueobject.Username;
 import com.filmdb.auth.auth_service.domain.repository.UserRepository;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -17,5 +19,11 @@ public class CustomUserDetailsService  implements UserDetailsService {
         return userRepository.findByUsername(Username.of(username))
                 .map(CustomUserDetails::new)
                 .orElseThrow(() -> new UsernameNotFoundException("User not found with username: " + username));
+    }
+
+    public UserDetails loadUserByUserId(String userId) throws UserNotFoundException {
+        return userRepository.findById(UserId.of(userId))
+                .map(CustomUserDetails::new)
+                .orElseThrow(() -> new UserNotFoundException());
     }
 }
