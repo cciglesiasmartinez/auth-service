@@ -23,6 +23,7 @@ public class AuthTokenFilter extends OncePerRequestFilter {
     private CustomUserDetailsService userDetailsService;
 
     @Override
+    // TODO: Review this. CustomUserDetailsService might not be needed since we have Redis.
     protected void doFilterInternal(
             HttpServletRequest request,
             HttpServletResponse response,
@@ -31,8 +32,8 @@ public class AuthTokenFilter extends OncePerRequestFilter {
         try {
             String jwt = parseJwt(request);
             if (jwt != null && tokenProvider.validateJwtToken(jwt)) {
-                String username = tokenProvider.getUsernameFromToken(jwt);
-                CustomUserDetails userDetails = (CustomUserDetails) userDetailsService.loadUserByUsername(username);
+                String userId = tokenProvider.getUserIdFromToken(jwt);
+                CustomUserDetails userDetails = (CustomUserDetails) userDetailsService.loadUserByUserId(userId);
                 UsernamePasswordAuthenticationToken authentication =
                         new UsernamePasswordAuthenticationToken(
                                 userDetails,

@@ -46,7 +46,7 @@ public class JwtTokenProvider implements TokenProvider {
     }
 
     @Override
-    public String getUsernameFromToken(String token) {
+    public String getUserIdFromToken(String token) {
         return Jwts.parser()
                 .setSigningKey(key).build()
                 .parseClaimsJws(token)

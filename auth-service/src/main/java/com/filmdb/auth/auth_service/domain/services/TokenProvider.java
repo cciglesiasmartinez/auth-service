@@ -4,7 +4,7 @@ public interface TokenProvider {
 
     String generateToken(String subject);
     long getTokenExpirationInSeconds();
-    String getUsernameFromToken(String token);
+    String getUserIdFromToken(String token);
     boolean validateJwtToken(String token);
 
 }
