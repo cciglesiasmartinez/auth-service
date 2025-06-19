@@ -1,4 +1,4 @@
-package com.filmdb.auth.auth_service.infrastructure.persistence.mapper;
+package com.filmdb.auth.auth_service.infrastructure.persistence.mysql.mapper;
 
 import com.filmdb.auth.auth_service.domain.model.valueobject.Email;
 import com.filmdb.auth.auth_service.domain.model.valueobject.EncodedPassword;

@@ -1,4 +1,4 @@
-package com.filmdb.auth.auth_service.infrastructure.persistence.entity;
+package com.filmdb.auth.auth_service.infrastructure.persistence.mysql.entity;
 
 import jakarta.persistence.*;
 import lombok.*;

@@ -1,8 +1,7 @@
-package com.filmdb.auth.auth_service.infrastructure.persistence.mapper;
+package com.filmdb.auth.auth_service.infrastructure.persistence.mysql.mapper;
 
 import com.filmdb.auth.auth_service.domain.model.User;
-import com.filmdb.auth.auth_service.infrastructure.persistence.entity.UserEntity;
-import org.mapstruct.Mapper;
+import com.filmdb.auth.auth_service.infrastructure.persistence.mysql.entity.UserEntity;
 
 //@Mapper(componentModel = "spring", uses = UserValueObjectMapper.class)
 public interface UserEntityMapper {
