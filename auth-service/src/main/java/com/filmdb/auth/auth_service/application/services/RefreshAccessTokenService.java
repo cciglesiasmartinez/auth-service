@@ -23,8 +23,10 @@ public class RefreshAccessTokenService {
         RefreshToken storedToken =  refreshTokenRepository.findByTokenString(tokenString)
                 .orElseThrow(() -> new RuntimeException("Token not found."));
         String subject = storedToken.getUserId().value();
-        String jwtToken = tokenProvider.generateToken(subject);
-        return new RefreshAccessTokenResponse(jwtToken, LocalDateTime.now());
+        // TODO: generateToken() should ask for exp time? Then we can pass it to the response obj.
+        String accessToken = tokenProvider.generateToken(subject);
+        // TODO: NoArgConstructor to avoid passing tokenType?
+        return new RefreshAccessTokenResponse(accessToken, "Bearer",3600, LocalDateTime.now());
     }
 
 }

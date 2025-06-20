@@ -13,7 +13,9 @@ import java.time.LocalDateTime;
 @Setter
 public class RefreshAccessTokenResponse {
 
-    private String jwtToken;
-    private LocalDateTime createdAt;
+    private String accessToken;
+    private String tokenType = "Bearer";
+    private int expiresIn;
+    private LocalDateTime issuedAt;
 
 }
