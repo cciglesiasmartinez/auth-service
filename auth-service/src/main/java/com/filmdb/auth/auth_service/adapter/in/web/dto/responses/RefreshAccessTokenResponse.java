@@ -14,6 +14,7 @@ import java.time.LocalDateTime;
 public class RefreshAccessTokenResponse {
 
     private String accessToken;
+    private String refreshToken;
     private String tokenType = "Bearer";
     private int expiresIn;
     private LocalDateTime issuedAt;
