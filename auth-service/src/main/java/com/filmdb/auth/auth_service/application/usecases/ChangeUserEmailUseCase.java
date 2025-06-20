@@ -1,4 +1,4 @@
-package com.filmdb.auth.auth_service.application.services;
+package com.filmdb.auth.auth_service.application.usecases;
 
 import com.filmdb.auth.auth_service.application.commands.ChangeUserEmailCommand;
 import com.filmdb.auth.auth_service.application.exception.EmailAlreadyExistsException;
@@ -23,7 +23,7 @@ import java.time.LocalDateTime;
  */
 @Service
 @AllArgsConstructor
-public class ChangeUserEmailService {
+public class ChangeUserEmailUseCase {
 
     private final UserRepository userRepository;
     private final PasswordEncoder passwordEncoder;

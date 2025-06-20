@@ -1,4 +1,4 @@
-package com.filmdb.auth.auth_service.application.services;
+package com.filmdb.auth.auth_service.application.usecases;
 
 import com.filmdb.auth.auth_service.application.commands.GetUserInfoCommand;
 import com.filmdb.auth.auth_service.application.exception.UserNotFoundException;
@@ -16,7 +16,7 @@ import org.springframework.stereotype.Service;
  */
 @Service
 @AllArgsConstructor
-public class GetUserInfoService {
+public class GetUserInfoUseCase {
 
     private final UserRepository userRepository;
 

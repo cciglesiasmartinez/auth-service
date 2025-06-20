@@ -1,4 +1,4 @@
-package com.filmdb.auth.auth_service.application.usecase;
+package com.filmdb.auth.auth_service.application.usecases;
 
 import com.filmdb.auth.auth_service.adapter.in.web.dto.requests.*;
 import com.filmdb.auth.auth_service.adapter.in.web.dto.responses.*;

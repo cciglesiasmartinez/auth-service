@@ -1,11 +1,10 @@
-package com.filmdb.auth.auth_service.application.services;
+package com.filmdb.auth.auth_service.application.usecases;
 
 import com.filmdb.auth.auth_service.adapter.in.web.dto.requests.*;
 import com.filmdb.auth.auth_service.adapter.in.web.dto.responses.*;
 import com.filmdb.auth.auth_service.adapter.in.web.mapper.AuthRequestCommandMapper;
 import com.filmdb.auth.auth_service.application.commands.*;
 import com.filmdb.auth.auth_service.application.context.RequestContext;
-import com.filmdb.auth.auth_service.application.usecase.AuthUseCase;
 import com.filmdb.auth.auth_service.domain.model.User;
 import lombok.AllArgsConstructor;
 import org.springframework.stereotype.Service;
@@ -14,13 +13,13 @@ import org.springframework.stereotype.Service;
 @AllArgsConstructor
 public class AuthUseCaseImpl implements AuthUseCase {
 
-    private final RegisterUserService registerUserService;
-    private final LoginUserService loginUserService;
-    private final ChangePasswordService changePasswordService;
-    private final ChangeUserUsernameService changeUserUsernameService;
-    private final ChangeUserEmailService changeUserEmailService;
-    private final DeleteUserService deleteUserService;
-    private final RefreshAccessTokenService refreshAccessTokenService;
+    private final RegisterUserUseCase registerUserService;
+    private final LoginUserUseCase loginUserService;
+    private final ChangePasswordUseCase changePasswordService;
+    private final ChangeUserUsernameUseCase changeUserUsernameService;
+    private final ChangeUserEmailUseCase changeUserEmailService;
+    private final DeleteUserUseCase deleteUserService;
+    private final RefreshAccessTokenUseCase refreshAccessTokenService;
     private final AuthRequestCommandMapper mapper;
 
     @Override

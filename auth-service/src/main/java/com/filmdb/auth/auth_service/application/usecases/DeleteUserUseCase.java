@@ -1,4 +1,4 @@
-package com.filmdb.auth.auth_service.application.services;
+package com.filmdb.auth.auth_service.application.usecases;
 
 import com.filmdb.auth.auth_service.application.commands.DeleteUserCommand;
 import com.filmdb.auth.auth_service.application.exception.UserNotFoundException;
@@ -18,7 +18,7 @@ import org.springframework.stereotype.Service;
  */
 @Service
 @AllArgsConstructor
-public class DeleteUserService {
+public class DeleteUserUseCase {
 
     private final UserRepository userRepository;
     private final PasswordEncoder passwordEncoder;

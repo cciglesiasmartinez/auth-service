@@ -1,4 +1,4 @@
-package com.filmdb.auth.auth_service.application.services;
+package com.filmdb.auth.auth_service.application.usecases;
 
 import com.filmdb.auth.auth_service.application.commands.RegisterUserCommand;
 import com.filmdb.auth.auth_service.application.exception.UserAlreadyRegisteredException;
@@ -20,7 +20,7 @@ import org.springframework.stereotype.Service;
  */
 @Service
 @AllArgsConstructor
-public class RegisterUserService {
+public class RegisterUserUseCase {
 
     private final UserRepository userRepository;
     private final PasswordEncoder passwordEncoder;

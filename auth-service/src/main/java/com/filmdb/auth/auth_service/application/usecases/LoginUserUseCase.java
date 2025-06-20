@@ -1,7 +1,8 @@
-package com.filmdb.auth.auth_service.application.services;
+package com.filmdb.auth.auth_service.application.usecases;
 
 import com.filmdb.auth.auth_service.application.commands.LoginUserCommand;
 import com.filmdb.auth.auth_service.application.exception.UserNotFoundException;
+import com.filmdb.auth.auth_service.application.services.RefreshTokenService;
 import com.filmdb.auth.auth_service.domain.model.RefreshToken;
 import com.filmdb.auth.auth_service.domain.model.valueobject.Email;
 import com.filmdb.auth.auth_service.domain.model.valueobject.PlainPassword;
@@ -14,8 +15,6 @@ import com.filmdb.auth.auth_service.domain.exception.PasswordMismatchException;
 import lombok.AllArgsConstructor;
 import org.springframework.stereotype.Service;
 
-import java.time.LocalDateTime;
-
 /**
  * Application service for login a user.
  * <p>
@@ -24,7 +23,7 @@ import java.time.LocalDateTime;
  */
 @Service
 @AllArgsConstructor
-public class LoginUserService {
+public class LoginUserUseCase {
 
     private final UserRepository userRepository;
     private final PasswordEncoder passwordEncoder;
@@ -47,7 +46,7 @@ public class LoginUserService {
         user.validateCurrentPassword(plainPassword, passwordEncoder);
         String token = tokenProvider.generateToken(user.id().value());
         long expiresIn = tokenProvider.getTokenExpirationInSeconds();
-        RefreshToken refreshToken = refreshTokenService.generate(user, command.ip(), command.userAgent());
+        RefreshToken refreshToken = refreshTokenService.generate(user.id(), command.ip(), command.userAgent());
         System.out.println(refreshToken.toString());
         return new LoginResponse(token, refreshToken.token().value() ,expiresIn, user.username().value());
     }

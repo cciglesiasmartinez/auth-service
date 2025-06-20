@@ -1,4 +1,4 @@
-package com.filmdb.auth.auth_service.application.services;
+package com.filmdb.auth.auth_service.application.usecases;
 
 import com.filmdb.auth.auth_service.adapter.in.web.dto.responses.ChangePasswordResponse;
 import com.filmdb.auth.auth_service.application.commands.ChangePasswordCommand;
@@ -22,7 +22,7 @@ import java.time.LocalDateTime;
  */
 @Service
 @AllArgsConstructor
-public class ChangePasswordService {
+public class ChangePasswordUseCase {
 
     private final UserRepository userRepository;
     private final PasswordEncoder passwordEncoder;
