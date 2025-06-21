@@ -33,7 +33,7 @@ public class ChangeUserUsernameUseCase {
      *
      * @param command Change username command containing user id, current password and the new username.
      * @return {@link ChangeUsernameResponse} object containing the new username and the current timestamp.
-     * @throws UserNotFoundException if current username is already in use.
+     * @throws UserNotFoundException if user does not exist in database.
      * @throws PasswordMismatchException if provided password does not match the stored one.
      */
     public ChangeUsernameResponse execute(ChangeUserUsernameCommand command) {
