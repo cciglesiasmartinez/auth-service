@@ -24,7 +24,7 @@ public class RefreshTokenRepositoryImpl implements RefreshTokenRepository {
     @Override
     public Optional<RefreshToken> findByTokenString(RefreshTokenString token) {
         String key = buildKey(token.value());
-        return Optional.of(redisTemplate.opsForValue().get(key));
+        return Optional.ofNullable(redisTemplate.opsForValue().get(key));
     }
 
     @Override
