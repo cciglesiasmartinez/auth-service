@@ -7,12 +7,15 @@ import org.springframework.stereotype.Component;
 
 @Component
 public class AuthRequestCommandMapperImpl implements  AuthRequestCommandMapper {
+
+    // TODO: Use @NoArgsConstructor for commands, so mapping becomes more evident.
+
     @Override
     public RegisterUserCommand toRegisterUserCommand(RegisterRequest request) {
         return new RegisterUserCommand(
                 request.getUsername(),
-                request.getPassword(),
-                request.getEmail()
+                request.getEmail(),
+                request.getPassword()
         );
     }
 
