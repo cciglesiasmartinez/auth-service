@@ -44,7 +44,9 @@ public final class Username {
         PasswordData password = new PasswordData(value);
         RuleResult result = validator.validate(password);
         if (!result.isValid()) {
-            throw new InvalidUsernameException(String.join(" ", validator.getMessages(result)));
+            // TODO: Create a mapper function for errors or maybe a custom MessageResolver (Passay)
+            throw new InvalidUsernameException(String.join(" ", validator.getMessages(result)).
+                    replace("Password", "Username"));
         }
     }
 
@@ -53,14 +55,19 @@ public final class Username {
      *
      * @param username the raw username string
      * @return a validated {@code Username} instance
-     * @throws IllegalArgumentException if the username is null, empty, or not within the allowed length
+     * @throws InvalidUsernameException if the username is null, empty, or not within the allowed length
      */
     public static Username of(String username) {
-        if (username == null || username.trim().isEmpty()) {
-            throw new IllegalArgumentException("Username cannot be null or empty.");
+        if (username == null) {
+            throw new InvalidUsernameException("Username cannot be null.");
         }
-        validateUsername(username);
-        return new Username(username);
+
+        String trimmed = username.trim();
+        if (trimmed.isEmpty()) {
+            throw new InvalidUsernameException("Username cannot be empty.");
+        }
+        validateUsername(trimmed);
+        return new Username(trimmed);
     }
 
     /**
