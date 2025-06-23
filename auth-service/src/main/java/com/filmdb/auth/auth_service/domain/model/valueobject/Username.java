@@ -1,12 +1,19 @@
 package com.filmdb.auth.auth_service.domain.model.valueobject;
 
+import com.filmdb.auth.auth_service.domain.exception.InvalidUsernameException;
 import lombok.EqualsAndHashCode;
 import lombok.ToString;
+import org.passay.*;
+
+import java.util.ArrayList;
+import java.util.List;
 
 /**
  * Value Object representing a valid username.
  * <p>
- * A username must be a non-null, non-empty string with a length between 3 and 30 characters.
+ * A username must be a non-null, non-empty string with a length between 3 and 30 characters. It shouldn't contain
+ * special characters either.
+ * <p>
  * Leading and trailing whitespace is trimmed before validation.
  */
 @EqualsAndHashCode
@@ -23,6 +30,25 @@ public final class Username {
     }
 
     /**
+     * Validates a given username against a set of rules leveraging Passay's {@link PasswordValidator}.
+     *
+     * @param value username {@code String} to validate.
+     * @throws InvalidUsernameException if validation fails.
+     */
+    private static void validateUsername(String value) {
+        List<Rule> rules = new ArrayList<>();
+        rules.add(new LengthRule(MIN_LENGTH, MAX_LENGTH));
+        rules.add(new WhitespaceRule());
+        rules.add(new AllowedRegexRule("^[a-zA-Z0-9]+$"));
+        PasswordValidator validator = new PasswordValidator(rules);
+        PasswordData password = new PasswordData(value);
+        RuleResult result = validator.validate(password);
+        if (!result.isValid()) {
+            throw new InvalidUsernameException(String.join(" ", validator.getMessages(result)));
+        }
+    }
+
+    /**
      * Creates a {@code Username} instance from a raw string.
      *
      * @param username the raw username string
@@ -33,13 +59,8 @@ public final class Username {
         if (username == null || username.trim().isEmpty()) {
             throw new IllegalArgumentException("Username cannot be null or empty.");
         }
-        String trimmedUsername = username.trim();
-        if (trimmedUsername.length() < MIN_LENGTH || trimmedUsername.length() > MAX_LENGTH) {
-            throw new IllegalArgumentException(
-                    String.format("Username must be between %d and %d characters", MIN_LENGTH, MAX_LENGTH)
-            );
-        }
-        return new Username(trimmedUsername);
+        validateUsername(username);
+        return new Username(username);
     }
 
     /**

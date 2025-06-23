@@ -5,6 +5,7 @@ import com.filmdb.auth.auth_service.application.exception.InvalidCredentialsExce
 import com.filmdb.auth.auth_service.application.exception.UserAlreadyRegisteredException;
 import com.filmdb.auth.auth_service.application.exception.UsernameAlreadyExistsException;
 import com.filmdb.auth.auth_service.domain.exception.InvalidPasswordException;
+import com.filmdb.auth.auth_service.domain.exception.InvalidUsernameException;
 import com.filmdb.auth.auth_service.domain.exception.PasswordMismatchException;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -43,6 +44,11 @@ public class GlobalExceptionHandler {
 
     @ExceptionHandler(InvalidPasswordException.class)
     public ResponseEntity<?> handleInvalidPasswordException(InvalidPasswordException e ) {
+        return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(e.getMessage());
+    }
+
+    @ExceptionHandler(InvalidUsernameException.class)
+    public ResponseEntity<?> handleInvalidUsernameException(InvalidUsernameException e ) {
         return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(e.getMessage());
     }
 
