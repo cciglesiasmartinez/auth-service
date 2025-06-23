@@ -8,6 +8,13 @@ import org.passay.*;
 import java.util.ArrayList;
 import java.util.List;
 
+/**
+ * Value Object representing a valid plain password.
+ * <p>
+ * A plain password must be a non-null, non-empty string with a length between {@code MIN_LENGTH} and
+ * {@code MAX_LENGTH} . It should contain at least one uppercase character, one lowercase character, one number
+ * and one special character. Cannot contain spaces.
+ */
 @EqualsAndHashCode
 @ToString
 public final class PlainPassword {
@@ -21,8 +28,13 @@ public final class PlainPassword {
         this.value = value;
     }
 
+    /**
+     * Validates a given password against a set of rules leveraging Passay's {@link PasswordValidator}.
+     *
+     * @param value password {@code String} to validate.
+     * @throws InvalidPasswordException if validation fails.
+     */
     private static void validatePassword(String value) {
-
         List<Rule> rules = new ArrayList<>();
         rules.add(new LengthRule(MIN_LENGTH, MAX_LENGTH));
         rules.add(new WhitespaceRule());
@@ -30,25 +42,38 @@ public final class PlainPassword {
         rules.add(new CharacterRule(EnglishCharacterData.LowerCase, 1));
         rules.add(new CharacterRule(EnglishCharacterData.Digit, 1));
         rules.add(new CharacterRule(EnglishCharacterData.Special, 1));
-
         PasswordValidator validator = new PasswordValidator(rules);
         PasswordData password = new PasswordData(value);
         RuleResult result = validator.validate(password);
-
         if (!result.isValid()) {
             throw new InvalidPasswordException(String.join(" ", validator.getMessages(result)));
         }
-
     }
 
+    /**
+     * Creates a {@code PlainPassword} instance from a raw string.
+     *
+     * @param password the raw password string.
+     * @return a validated {@code PlainPassword} instance.
+     * @throws InvalidPasswordException if the password is null or empty.
+     */
     public static PlainPassword of(String password) {
-        if (password == null || password.isEmpty()) {
-            throw new InvalidPasswordException("Password cannot be null or empty.");
+        if (password == null) {
+            throw new InvalidPasswordException("Password cannot be null.");
         }
-        validatePassword(password);
-        return new PlainPassword(password);
+        String trimmedPassword = password.trim();
+        if (trimmedPassword.isEmpty()) {
+            throw new InvalidPasswordException("Password cannot be empty.");
+        }
+        validatePassword(trimmedPassword);
+        return new PlainPassword(trimmedPassword);
     }
 
+    /**
+     * Returns the raw string value of the plain password.
+     *
+     * @return the plain password string.
+     */
     public String value() {
         return value;
     }

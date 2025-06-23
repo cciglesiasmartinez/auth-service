@@ -55,19 +55,18 @@ public final class Username {
      *
      * @param username the raw username string
      * @return a validated {@code Username} instance
-     * @throws InvalidUsernameException if the username is null, empty, or not within the allowed length
+     * @throws InvalidUsernameException if the username is null or empty.
      */
     public static Username of(String username) {
         if (username == null) {
             throw new InvalidUsernameException("Username cannot be null.");
         }
-
-        String trimmed = username.trim();
-        if (trimmed.isEmpty()) {
+        String trimmedUsername = username.trim();
+        if (trimmedUsername.isEmpty()) {
             throw new InvalidUsernameException("Username cannot be empty.");
         }
-        validateUsername(trimmed);
-        return new Username(trimmed);
+        validateUsername(trimmedUsername);
+        return new Username(trimmedUsername);
     }
 
     /**
