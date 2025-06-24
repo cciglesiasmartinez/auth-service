@@ -22,15 +22,17 @@ public class User {
     private Username username;
     private EncodedPassword password;
     private Email email;
-    private LocalDateTime registeredAt;
+    private final LocalDateTime registeredAt;
     private LocalDateTime modifiedAt;
 
-    private User(UserId id, Username username, EncodedPassword password, Email email, LocalDateTime registeredAt) {
+    private User(UserId id, Username username, EncodedPassword password, Email email, LocalDateTime registeredAt,
+                 LocalDateTime modifiedAt) {
         this.id = id;
         this.username = username;
         this.password = password;
         this.email = email;
         this.registeredAt = registeredAt;
+        this.modifiedAt = modifiedAt;
     }
 
     /**
@@ -46,7 +48,7 @@ public class User {
     public static User create(Username username, Email email, PlainPassword plainPassword,
                               PasswordEncoder passwordEncoder) {
         EncodedPassword encodedPassword = passwordEncoder.encode(plainPassword);
-        return new User(UserId.generate(), username, encodedPassword, email, LocalDateTime.now());
+        return new User(UserId.generate(), username, encodedPassword, email, LocalDateTime.now(), LocalDateTime.now());
     }
 
     /**
@@ -64,9 +66,7 @@ public class User {
      */
     public static User of(UserId id, Username username, EncodedPassword password, Email email,
                           LocalDateTime registeredAt, LocalDateTime modifiedAt) {
-        User user = new User(id, username, password, email, registeredAt);
-        user.modifiedAt = modifiedAt;
-        return user;
+        return new User(id, username, password, email, registeredAt, modifiedAt);
     }
 
     /**

@@ -13,6 +13,7 @@ import com.filmdb.auth.auth_service.domain.services.TokenProvider;
 import com.filmdb.auth.auth_service.adapter.in.web.dto.responses.LoginResponse;
 import com.filmdb.auth.auth_service.domain.exception.PasswordMismatchException;
 import lombok.AllArgsConstructor;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
 
 /**
@@ -21,6 +22,7 @@ import org.springframework.stereotype.Service;
  * Looks for the user in the database, if it exists, checks if the provided password matches the stored one.
  * If everything is correct, generates a token, and issues a {@link LoginResponse} object issuing the token.
  */
+@Slf4j
 @Service
 @AllArgsConstructor
 public class LoginUserUseCase {
@@ -41,14 +43,17 @@ public class LoginUserUseCase {
     public LoginResponse execute(LoginUserCommand command) {
         Email email = Email.of(command.email());
         User user = userRepository.findByEmail(email)
-                .orElseThrow(() -> new UserNotFoundException());
+                .orElseThrow(() -> {
+                    log.warn("Login failed: user not found for email {}", email.value());
+                    return new UserNotFoundException();
+                });
         PlainPassword plainPassword = PlainPassword.of(command.password());
         user.validateCurrentPassword(plainPassword, passwordEncoder);
         String token = tokenProvider.generateToken(user.id().value());
         long expiresIn = tokenProvider.getTokenExpirationInSeconds();
         RefreshToken refreshToken = refreshTokenService.generate(user.id(), command.ip(), command.userAgent());
-        System.out.println(refreshToken.toString());
-        return new LoginResponse(token, refreshToken.token().value() ,expiresIn, user.username().value());
+        log.info("User '{}' authenticated successfully", user.username().value());
+        return new LoginResponse(token, refreshToken.token().value() , expiresIn, user.username().value());
     }
 
 }

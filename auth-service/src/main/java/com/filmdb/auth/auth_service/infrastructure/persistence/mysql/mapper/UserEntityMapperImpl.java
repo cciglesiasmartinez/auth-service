@@ -31,6 +31,7 @@ public class UserEntityMapperImpl implements UserEntityMapper {
         entity.setPassword(user.password().value());
         entity.setEmail(user.email().value());
         entity.setRegisteredAt(user.registeredAt());
+        entity.setModifiedAt(user.modifiedAt());
         return entity;
     }
 
