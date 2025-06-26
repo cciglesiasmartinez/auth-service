@@ -1,5 +1,6 @@
 package com.filmdb.auth.auth_service.domain.model;
 
+import com.filmdb.auth.auth_service.application.exception.InvalidCredentialsException;
 import com.filmdb.auth.auth_service.domain.model.valueobject.*;
 import com.filmdb.auth.auth_service.domain.services.PasswordEncoder;
 import com.filmdb.auth.auth_service.domain.exception.PasswordMismatchException;
@@ -127,6 +128,21 @@ public class User {
                                         PasswordEncoder passwordEncoder) {
         if (!passwordEncoder.matches(currentPassword, this.password)) {
             throw new PasswordMismatchException();
+        }
+    }
+
+    /**
+     * Validates the provided password during the login flow. This version throws a generic
+     * {@link InvalidCredentialsException} to avoid revealing whether the user exists or the password is wrong.
+     *
+     * @param loginPassword the raw password provided at login.
+     * @param passwordEncoder the encoder used to check password match.
+     * @throws InvalidCredentialsException if the password does not match.
+     */
+    public void validateLoginPassword(PlainPassword loginPassword,
+                                      PasswordEncoder passwordEncoder) {
+        if (!passwordEncoder.matches(loginPassword, this.password)) {
+            throw new InvalidCredentialsException("Invalid credentials.");
         }
     }
 

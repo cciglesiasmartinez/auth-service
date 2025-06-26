@@ -1,5 +1,6 @@
 package com.filmdb.auth.auth_service.domain.model.valueobject;
 
+import com.filmdb.auth.auth_service.application.exception.InvalidCredentialsException;
 import com.filmdb.auth.auth_service.domain.exception.InvalidPasswordException;
 import lombok.EqualsAndHashCode;
 import lombok.ToString;
@@ -66,6 +67,26 @@ public final class PlainPassword {
             throw new InvalidPasswordException("Password cannot be empty.");
         }
         validatePassword(trimmedPassword);
+        return new PlainPassword(trimmedPassword);
+    }
+
+    /**
+     * Factory method intended to use in LoginUserUserCase. It basically follows the same rules as .of but avoids
+     * unnecessary password (format) validation and throws generic {@link InvalidCredentialsException} exceptions
+     * suitable for login flows. This way we avoid potentially nasty scenarios.
+     *
+     * @param password the raw password string.
+     * @return a validated {@code PlainPassword} instance.
+     * @throws InvalidCredentialsException if the password is null or empty.
+     */
+    public static PlainPassword forLogin(String password) {
+        if (password == null) {
+            throw new InvalidCredentialsException("Invalid credentials.");
+        }
+        String trimmedPassword = password.trim();
+        if (trimmedPassword.isEmpty()) {
+            throw new InvalidCredentialsException("Invalid credentials.");
+        }
         return new PlainPassword(trimmedPassword);
     }
 

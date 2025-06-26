@@ -1,7 +1,7 @@
 package com.filmdb.auth.auth_service.application.usecases;
 
 import com.filmdb.auth.auth_service.application.commands.LoginUserCommand;
-import com.filmdb.auth.auth_service.application.exception.UserNotFoundException;
+import com.filmdb.auth.auth_service.application.exception.InvalidCredentialsException;
 import com.filmdb.auth.auth_service.application.services.RefreshTokenService;
 import com.filmdb.auth.auth_service.domain.model.RefreshToken;
 import com.filmdb.auth.auth_service.domain.model.valueobject.Email;
@@ -37,7 +37,7 @@ public class LoginUserUseCase {
      *
      * @param command {@link LoginUserCommand} command containing email and password and context data (ip, userAgent).
      * @return {@link LoginResponse} object containing jwt token, expiration time and username.
-     * @throws UserNotFoundException if the user is not found.
+     * @throws InvalidCredentialsException if the user is not found.
      * @throws PasswordMismatchException if provided password does not match stored password.
      */
     public LoginResponse execute(LoginUserCommand command) {
@@ -45,10 +45,10 @@ public class LoginUserUseCase {
         User user = userRepository.findByEmail(email)
                 .orElseThrow(() -> {
                     log.warn("Login failed: user not found for email {}", email.value());
-                    return new UserNotFoundException();
+                    return new InvalidCredentialsException("Invalid credentials.");
                 });
-        PlainPassword plainPassword = PlainPassword.of(command.password());
-        user.validateCurrentPassword(plainPassword, passwordEncoder);
+        PlainPassword plainPassword = PlainPassword.forLogin(command.password());
+        user.validateLoginPassword(plainPassword, passwordEncoder);
         String token = tokenProvider.generateToken(user.id().value());
         long expiresIn = tokenProvider.getTokenExpirationInSeconds();
         RefreshToken refreshToken = refreshTokenService.generate(user.id(), command.ip(), command.userAgent());
