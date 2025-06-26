@@ -1,9 +1,6 @@
 package com.filmdb.auth.auth_service.adapter.in.web.exception;
 
-import com.filmdb.auth.auth_service.application.exception.EmailAlreadyExistsException;
-import com.filmdb.auth.auth_service.application.exception.InvalidCredentialsException;
-import com.filmdb.auth.auth_service.application.exception.UserAlreadyRegisteredException;
-import com.filmdb.auth.auth_service.application.exception.UsernameAlreadyExistsException;
+import com.filmdb.auth.auth_service.application.exception.*;
 import com.filmdb.auth.auth_service.domain.exception.InvalidPasswordException;
 import com.filmdb.auth.auth_service.domain.exception.InvalidUsernameException;
 import com.filmdb.auth.auth_service.domain.exception.PasswordMismatchException;
@@ -50,6 +47,11 @@ public class GlobalExceptionHandler {
     @ExceptionHandler(InvalidUsernameException.class)
     public ResponseEntity<?> handleInvalidUsernameException(InvalidUsernameException e ) {
         return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(e.getMessage());
+    }
+
+    @ExceptionHandler(UserNotFoundException.class)
+    public ResponseEntity<?> handleUserNotFoundException(UserNotFoundException e) {
+        return ResponseEntity.status(HttpStatus.UNAUTHORIZED).body(e.getMessage());
     }
 
 }
