@@ -13,6 +13,7 @@ import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.core.Authentication;
 import org.springframework.web.bind.annotation.*;
+import org.springframework.web.servlet.view.RedirectView;
 
 import java.time.LocalDateTime;
 
@@ -93,6 +94,18 @@ public class AuthController {
         User user = getAuthenticatedUser(authentication);
         authUseCase.deleteUser(user, request);
         return ResponseEntity.noContent().build();
+    }
+
+    @GetMapping("/oauth/google")
+    public RedirectView redirectToGoogle() {
+        String uri = "https://accounts.google.com/o/oauth2/v2/auth" +
+                "?client_id=568242201835-bvt8okdpe6s364f0b57ea75mqod8ge8t.apps.googleusercontent.com" +
+                "&redirect_uri=https://6f07-5-159-173-156.ngrok-free.app/auth/oauth/google/callback" +
+                "&response_type=code" +
+                "&scope=openid%20email%20profile" +
+                "&access_type=offline" +
+                "&prompt=consent";
+        return new RedirectView(uri);
     }
 
 }
