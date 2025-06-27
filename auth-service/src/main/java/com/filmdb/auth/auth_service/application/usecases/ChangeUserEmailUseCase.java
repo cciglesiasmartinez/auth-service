@@ -37,24 +37,23 @@ public class ChangeUserEmailUseCase {
      * @return {@link ChangeEmailResponse} object containing the new email and the current timestamp.
      * @throws UserNotFoundException if current email is already in use.
      * @throws PasswordMismatchException if provided password does not match the stored one.
+     * @throws EmailAlreadyExistsException if email already exists.
      */
     public ChangeEmailResponse execute(ChangeUserEmailCommand command) {
         PlainPassword currentPassword = PlainPassword.of(command.currentPassword());
         Email newEmail = Email.of(command.newEmail());
         if (userRepository.existsByEmail(newEmail)) {
-            log.warn("ChangeUserEmailUseCase failed: email {} already exists.", newEmail.value());
+            log.warn("Email {} already exists.", newEmail.value());
             throw new EmailAlreadyExistsException();
         }
         User user = userRepository.findById(UserId.of(command.userId()))
                 .orElseThrow(() -> {
-                    log.warn("ChangeUserEmailUseCase failed: userId {} not found in database.",
-                            command.userId());
+                    log.warn("UserId {} not found in database.", command.userId());
                     throw new UserNotFoundException();
                 });
         user.changeEmail(currentPassword, newEmail, passwordEncoder);
         userRepository.save(user);
-        log.info("ChangeUserEmailUseCase successful: user {} changed their email successfully",
-                user.username().value());
+        log.info("Changed email to {} successfully.", newEmail);
         return new ChangeEmailResponse(newEmail.value(), LocalDateTime.now());
     }
 

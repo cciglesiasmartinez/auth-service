@@ -37,28 +37,25 @@ public class ChangeUserUsernameUseCase {
      * @return {@link ChangeUsernameResponse} object containing the new username and the current timestamp.
      * @throws UserNotFoundException if user does not exist in database.
      * @throws PasswordMismatchException if provided password does not match the stored one.
+     * @throws UsernameAlreadyExistsException if username already exists in database.
      */
     public ChangeUsernameResponse execute(ChangeUserUsernameCommand command) {
         // TODO: try-catch for log.warn?
         PlainPassword currentPassword = PlainPassword.of(command.currentPassword());
         Username newUsername = Username.of(command.newUsername());
         if (userRepository.existsByUsername(newUsername)) {
-            // TODO: Enrich the context for logging messages (ideally we need the user here)
-            log.warn("ChangeUserUsernameUseCase failed for userId {}: username {} already exists.",
-                    command.userId(),
-                    newUsername.value());
+            log.warn("Username {} already exists.", newUsername.value());
             throw new UsernameAlreadyExistsException();
         }
         User user = userRepository.findById(UserId.of(command.userId()))
                 .orElseThrow(() -> {
-                    log.warn("ChangeUserUsernameUseCase failed: user {} not found on the database.",
+                    log.warn("User {} not found on the database.",
                             command.userId());
                     throw new UserNotFoundException();
                 });
         user.changeUsername(currentPassword, newUsername, passwordEncoder);
         userRepository.save(user);
-        log.info("ChangeUserUsernameUseCase successful: User '{}' changed their username successfully.",
-                user.username().value());
+        log.info("Changed username to {} successfully.", user.username().value());
         return new ChangeUsernameResponse(user.username().value(), LocalDateTime.now());
     }
 

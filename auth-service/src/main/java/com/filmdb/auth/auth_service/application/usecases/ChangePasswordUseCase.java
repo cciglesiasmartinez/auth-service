@@ -42,14 +42,12 @@ public class ChangePasswordUseCase {
         PlainPassword newPassword = PlainPassword.of(command.newPassword());
         User user = userRepository.findById(UserId.of(command.userId()))
                 .orElseThrow(() -> {
-                    log.warn("ChangePasswordUseCase failed: userId {} not found on database.",
-                            command.userId());
+                    log.warn("UserId {} not found on database.", command.userId());
                     throw new UserNotFoundException();
                 });
         user.changePassword(currentPassword, newPassword, passwordEncoder);
         userRepository.save(user);
-        log.info("ChangePasswordUseCase successful: user {} changed their password successfully.",
-                user.username().value());
+        log.info("Password changed successfully.");
         return new ChangePasswordResponse("Password changed.", LocalDateTime.now());
     }
 

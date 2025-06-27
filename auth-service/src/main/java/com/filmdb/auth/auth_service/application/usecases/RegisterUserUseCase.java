@@ -39,14 +39,12 @@ public class RegisterUserUseCase {
         Email email = Email.of(command.email());
         PlainPassword plainPassword = PlainPassword.of(command.password());
         if (userRepository.existsByEmailOrUsername(email, username)) {
-            log.warn("RegisterUserUseCase failed: email {} or username {} already exist.",
-                    email.value(),
-                    username.value());
+            log.warn("Email {} or username {} already exist.", email.value(), username.value());
             throw new UserAlreadyRegisteredException();
         }
         User user = User.create(username, email, plainPassword, passwordEncoder);
         userRepository.save(user);
-        log.info("RegisterUserUseCase successful: user {} registered successfully.", user.username().value());
+        log.info("User with username {} registered successfully.", user.username().value());
         return UserResponse.fromDomainUser(user);
     }
 

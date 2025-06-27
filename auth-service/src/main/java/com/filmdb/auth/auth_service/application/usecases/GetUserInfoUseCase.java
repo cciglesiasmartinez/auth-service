@@ -32,11 +32,10 @@ public class GetUserInfoUseCase {
     public UserResponse execute(GetUserInfoCommand command) {
         User user = userRepository.findById(UserId.of(command.userId()))
                 .orElseThrow(() -> {
-                    log.warn("GetUserInfoUseCase failed: user not found for userId {}.", command.userId());
+                    log.warn("UserId {} not found in database.", command.userId());
                     throw new UserNotFoundException();
                 });
-        log.info("GetUserInfoUseCase successful: User '{}' checked their information successfully.",
-                user.username().value());
+        log.info("User checked their information successfully.");
         return UserResponse.fromDomainUser(user);
     }
 

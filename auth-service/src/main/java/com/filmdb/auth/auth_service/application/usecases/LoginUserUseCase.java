@@ -44,7 +44,7 @@ public class LoginUserUseCase {
         Email email = Email.of(command.email());
         User user = userRepository.findByEmail(email)
                 .orElseThrow(() -> {
-                    log.warn("Login failed: user not found for email {}", email.value());
+                    log.warn("User not found for email {}", email.value());
                     return new InvalidCredentialsException("Invalid credentials.");
                 });
         PlainPassword plainPassword = PlainPassword.forLogin(command.password());
@@ -52,7 +52,7 @@ public class LoginUserUseCase {
         String token = tokenProvider.generateToken(user.id().value());
         long expiresIn = tokenProvider.getTokenExpirationInSeconds();
         RefreshToken refreshToken = refreshTokenService.generate(user.id(), command.ip(), command.userAgent());
-        log.info("User '{}' authenticated successfully", user.username().value());
+        log.info("User {} authenticated successfully.", user.username().value());
         return new LoginResponse(token, refreshToken.token().value() , expiresIn, user.username().value());
     }
 

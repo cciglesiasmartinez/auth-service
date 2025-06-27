@@ -36,12 +36,11 @@ public class DeleteUserUseCase {
         PlainPassword currentPassword = PlainPassword.of(command.currentPassword());
         User user = userRepository.findById(UserId.of(command.userId()))
                 .orElseThrow(() -> {
-                    log.warn("Login failed: user not found for userId {}", command.userId());
+                    log.warn("UserId {} not found in database.", command.userId());
                     throw new UserNotFoundException();
                 });
         user.validateCurrentPassword(currentPassword, passwordEncoder);
-        log.info("DeleteUserUseCase successful: User '{}' deleted their user successfully.",
-                user.username().value());
+        log.info("Deleted their user successfully.");
         userRepository.delete(user);
     }
 

@@ -26,11 +26,11 @@ public class RefreshAccessTokenUseCase {
         RefreshTokenString tokenString = RefreshTokenString.of(command.refreshToken());
         RefreshToken storedToken =  refreshTokenRepository.findByTokenString(tokenString)
                 .orElseThrow(() -> {
-                    log.warn("RefreshAccessTokenUseCase failed: token {} not found.", tokenString.value());
+                    log.warn("Token not found in database.");
                     throw new RuntimeException("Token not found.");
                 });
         if (storedToken.expiresAt().isBefore(LocalDateTime.now())) {
-            log.warn("RefreshAccessTokenUseCase failed: token {} expired.", storedToken.token().value());
+            log.warn("Refresh token expired.");
             throw new RuntimeException("Refresh token expired.");
         }
         String subject = storedToken.getUserId().value();
@@ -38,9 +38,7 @@ public class RefreshAccessTokenUseCase {
         String accessToken = tokenProvider.generateToken(subject);
         // TODO: NoArgConstructor to avoid passing tokenType?
         RefreshToken newToken = refreshTokenService.rotate(storedToken);
-        log.info("RefreshAccessTokenUseCase successful: userid {} generated new token {}.",
-                storedToken.getUserId().value(),
-                storedToken.getToken().value());
+        log.info("New refresh token generated successfully.");
         return new RefreshAccessTokenResponse(accessToken, newToken.token().value(),
                 "Bearer",3600, LocalDateTime.now());
     }
