@@ -49,8 +49,7 @@ public class ChangeUserUsernameUseCase {
         }
         User user = userRepository.findById(UserId.of(command.userId()))
                 .orElseThrow(() -> {
-                    log.warn("User {} not found on the database.",
-                            command.userId());
+                    log.warn("User {} not found on the database.", command.userId());
                     throw new UserNotFoundException();
                 });
         user.changeUsername(currentPassword, newUsername, passwordEncoder);
