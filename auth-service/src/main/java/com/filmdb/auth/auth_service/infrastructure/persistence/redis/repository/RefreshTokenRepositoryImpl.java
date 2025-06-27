@@ -2,7 +2,6 @@ package com.filmdb.auth.auth_service.infrastructure.persistence.redis.repository
 
 import com.filmdb.auth.auth_service.domain.model.RefreshToken;
 import com.filmdb.auth.auth_service.domain.model.valueobject.RefreshTokenString;
-import com.filmdb.auth.auth_service.domain.model.valueobject.UserId;
 import com.filmdb.auth.auth_service.domain.repository.RefreshTokenRepository;
 import lombok.AllArgsConstructor;
 import org.springframework.data.redis.core.RedisTemplate;
@@ -40,4 +39,5 @@ public class RefreshTokenRepositoryImpl implements RefreshTokenRepository {
         String key = buildKey(token.token().value());
         redisTemplate.delete(key);
     }
+
 }
