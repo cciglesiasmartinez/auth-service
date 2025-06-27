@@ -9,6 +9,7 @@ import com.filmdb.auth.auth_service.domain.repository.UserRepository;
 import com.filmdb.auth.auth_service.domain.services.PasswordEncoder;
 import com.filmdb.auth.auth_service.domain.exception.PasswordMismatchException;
 import lombok.AllArgsConstructor;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
 
 /**
@@ -16,6 +17,7 @@ import org.springframework.stereotype.Service;
  * <p>
  * Looks for the user in the database, and if the password matches, deletes it.
  */
+@Slf4j
 @Service
 @AllArgsConstructor
 public class DeleteUserUseCase {
@@ -33,8 +35,13 @@ public class DeleteUserUseCase {
     public void execute(DeleteUserCommand command) {
         PlainPassword currentPassword = PlainPassword.of(command.currentPassword());
         User user = userRepository.findById(UserId.of(command.userId()))
-                .orElseThrow(() -> new UserNotFoundException());
+                .orElseThrow(() -> {
+                    log.warn("Login failed: user not found for userId {}", command.userId());
+                    throw new UserNotFoundException();
+                });
         user.validateCurrentPassword(currentPassword, passwordEncoder);
+        log.info("DeleteUserUseCase successful: User '{}' deleted their user successfully.",
+                user.username().value());
         userRepository.delete(user);
     }
 

@@ -12,6 +12,7 @@ import com.filmdb.auth.auth_service.domain.services.PasswordEncoder;
 import com.filmdb.auth.auth_service.adapter.in.web.dto.responses.ChangeUsernameResponse;
 import com.filmdb.auth.auth_service.domain.exception.PasswordMismatchException;
 import lombok.AllArgsConstructor;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
 
 import java.time.LocalDateTime;
@@ -21,6 +22,7 @@ import java.time.LocalDateTime;
  * <p>
  * Looks for the user in the repository and changes its username if provided password matches stored password.
  */
+@Slf4j
 @Service
 @AllArgsConstructor
 public class ChangeUserUsernameUseCase {
@@ -37,15 +39,26 @@ public class ChangeUserUsernameUseCase {
      * @throws PasswordMismatchException if provided password does not match the stored one.
      */
     public ChangeUsernameResponse execute(ChangeUserUsernameCommand command) {
+        // TODO: try-catch for log.warn?
         PlainPassword currentPassword = PlainPassword.of(command.currentPassword());
         Username newUsername = Username.of(command.newUsername());
         if (userRepository.existsByUsername(newUsername)) {
+            // TODO: Enrich the context for logging messages (ideally we need the user here)
+            log.warn("ChangeUserUsernameUseCase failed for userId {}: username {} already exists.",
+                    command.userId(),
+                    newUsername.value());
             throw new UsernameAlreadyExistsException();
         }
         User user = userRepository.findById(UserId.of(command.userId()))
-                .orElseThrow(() -> new UserNotFoundException());
+                .orElseThrow(() -> {
+                    log.warn("ChangeUserUsernameUseCase failed: user {} not found on the database.",
+                            command.userId());
+                    throw new UserNotFoundException();
+                });
         user.changeUsername(currentPassword, newUsername, passwordEncoder);
         userRepository.save(user);
+        log.info("ChangeUserUsernameUseCase successful: User '{}' changed their username successfully.",
+                user.username().value());
         return new ChangeUsernameResponse(user.username().value(), LocalDateTime.now());
     }
 

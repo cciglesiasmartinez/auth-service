@@ -7,6 +7,7 @@ import com.filmdb.auth.auth_service.domain.model.valueobject.UserId;
 import com.filmdb.auth.auth_service.domain.repository.UserRepository;
 import com.filmdb.auth.auth_service.adapter.in.web.dto.responses.UserResponse;
 import lombok.AllArgsConstructor;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
 
 /**
@@ -14,6 +15,7 @@ import org.springframework.stereotype.Service;
  * <p>
  * Looks for the user in the database and if exists, returns {@link UserResponse} with user data.
  */
+@Slf4j
 @Service
 @AllArgsConstructor
 public class GetUserInfoUseCase {
@@ -29,7 +31,12 @@ public class GetUserInfoUseCase {
      */
     public UserResponse execute(GetUserInfoCommand command) {
         User user = userRepository.findById(UserId.of(command.userId()))
-                .orElseThrow(() -> new UserNotFoundException());
+                .orElseThrow(() -> {
+                    log.warn("GetUserInfoUseCase failed: user not found for userId {}.", command.userId());
+                    throw new UserNotFoundException();
+                });
+        log.info("GetUserInfoUseCase successful: User '{}' checked their information successfully.",
+                user.username().value());
         return UserResponse.fromDomainUser(user);
     }
 

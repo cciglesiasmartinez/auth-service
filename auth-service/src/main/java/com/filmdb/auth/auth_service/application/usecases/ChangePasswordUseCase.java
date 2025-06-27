@@ -10,6 +10,7 @@ import com.filmdb.auth.auth_service.domain.repository.UserRepository;
 import com.filmdb.auth.auth_service.domain.services.PasswordEncoder;
 import com.filmdb.auth.auth_service.domain.exception.PasswordMismatchException;
 import lombok.AllArgsConstructor;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
 
 import java.time.LocalDateTime;
@@ -20,6 +21,7 @@ import java.time.LocalDateTime;
  * Looks for the user in the repository and changes its password if the provided currentPassword matches
  * the user actual password.
  */
+@Slf4j
 @Service
 @AllArgsConstructor
 public class ChangePasswordUseCase {
@@ -39,9 +41,15 @@ public class ChangePasswordUseCase {
         PlainPassword currentPassword = PlainPassword.of(command.currentPassword());
         PlainPassword newPassword = PlainPassword.of(command.newPassword());
         User user = userRepository.findById(UserId.of(command.userId()))
-                .orElseThrow(() -> new UserNotFoundException());
+                .orElseThrow(() -> {
+                    log.warn("ChangePasswordUseCase failed: userId {} not found on database.",
+                            command.userId());
+                    throw new UserNotFoundException();
+                });
         user.changePassword(currentPassword, newPassword, passwordEncoder);
         userRepository.save(user);
+        log.info("ChangePasswordUseCase successful: user {} changed their password successfully.",
+                user.username().value());
         return new ChangePasswordResponse("Password changed.", LocalDateTime.now());
     }
 

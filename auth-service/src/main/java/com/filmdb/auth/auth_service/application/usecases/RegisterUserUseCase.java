@@ -10,6 +10,7 @@ import com.filmdb.auth.auth_service.domain.repository.UserRepository;
 import com.filmdb.auth.auth_service.domain.services.PasswordEncoder;
 import com.filmdb.auth.auth_service.adapter.in.web.dto.responses.UserResponse;
 import lombok.AllArgsConstructor;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
 
 /**
@@ -18,6 +19,7 @@ import org.springframework.stereotype.Service;
  * Validates that the user does not already exist (by email or username), encodes the password, creates the user,
  * and persists it using the domain repository.
  */
+@Slf4j
 @Service
 @AllArgsConstructor
 public class RegisterUserUseCase {
@@ -37,10 +39,14 @@ public class RegisterUserUseCase {
         Email email = Email.of(command.email());
         PlainPassword plainPassword = PlainPassword.of(command.password());
         if (userRepository.existsByEmailOrUsername(email, username)) {
+            log.warn("RegisterUserUseCase failed: email {} or username {} already exist.",
+                    email.value(),
+                    username.value());
             throw new UserAlreadyRegisteredException();
         }
         User user = User.create(username, email, plainPassword, passwordEncoder);
         userRepository.save(user);
+        log.info("RegisterUserUseCase successful: user {} registered successfully.", user.username().value());
         return UserResponse.fromDomainUser(user);
     }
 

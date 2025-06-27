@@ -12,6 +12,7 @@ import com.filmdb.auth.auth_service.domain.services.PasswordEncoder;
 import com.filmdb.auth.auth_service.adapter.in.web.dto.responses.ChangeEmailResponse;
 import com.filmdb.auth.auth_service.domain.exception.PasswordMismatchException;
 import lombok.AllArgsConstructor;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
 
 import java.time.LocalDateTime;
@@ -21,6 +22,7 @@ import java.time.LocalDateTime;
  * <p>
  * Looks for the user in the repository and changes its email if provided password matches the stored one.
  */
+@Slf4j
 @Service
 @AllArgsConstructor
 public class ChangeUserEmailUseCase {
@@ -40,12 +42,19 @@ public class ChangeUserEmailUseCase {
         PlainPassword currentPassword = PlainPassword.of(command.currentPassword());
         Email newEmail = Email.of(command.newEmail());
         if (userRepository.existsByEmail(newEmail)) {
+            log.warn("ChangeUserEmailUseCase failed: email {} already exists.", newEmail.value());
             throw new EmailAlreadyExistsException();
         }
         User user = userRepository.findById(UserId.of(command.userId()))
-                .orElseThrow(() -> new UserNotFoundException());
+                .orElseThrow(() -> {
+                    log.warn("ChangeUserEmailUseCase failed: userId {} not found in database.",
+                            command.userId());
+                    throw new UserNotFoundException();
+                });
         user.changeEmail(currentPassword, newEmail, passwordEncoder);
         userRepository.save(user);
+        log.info("ChangeUserEmailUseCase successful: user {} changed their email successfully",
+                user.username().value());
         return new ChangeEmailResponse(newEmail.value(), LocalDateTime.now());
     }
 
