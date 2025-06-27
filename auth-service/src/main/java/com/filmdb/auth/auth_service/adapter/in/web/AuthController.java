@@ -108,4 +108,10 @@ public class AuthController {
         return new RedirectView(uri);
     }
 
+    @GetMapping("/oauth/google/callback")
+    public ResponseEntity<String> handleGoogleCallback(@RequestParam("code") String code) {
+        System.out.println("[OAUTH] Google code received: " + code);
+        return ResponseEntity.ok("Code received: " + code);
+    }
+
 }
