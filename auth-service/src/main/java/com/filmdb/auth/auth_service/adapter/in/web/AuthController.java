@@ -6,13 +6,19 @@ import com.filmdb.auth.auth_service.application.context.RequestContext;
 import com.filmdb.auth.auth_service.application.usecases.AuthUseCase;
 import com.filmdb.auth.auth_service.domain.model.User;
 import com.filmdb.auth.auth_service.application.exception.InvalidCredentialsException;
+import com.filmdb.auth.auth_service.domain.model.valueobject.ProviderKey;
+import com.filmdb.auth.auth_service.domain.repository.UserLoginRepository;
 import com.filmdb.auth.auth_service.infrastructure.security.CustomUserDetails;
+import com.filmdb.auth.auth_service.infrastructure.security.oauth.GoogleTokenVerifier;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.validation.Valid;
 import org.springframework.http.HttpStatus;
+import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.core.Authentication;
 import org.springframework.web.bind.annotation.*;
+import org.springframework.web.reactive.function.BodyInserters;
+import org.springframework.web.reactive.function.client.WebClient;
 import org.springframework.web.servlet.view.RedirectView;
 
 import java.time.LocalDateTime;
@@ -21,9 +27,16 @@ import java.time.LocalDateTime;
 @RequestMapping("/auth")
 public class AuthController {
 
+    // TODO: Delete this later :)
+    private final GoogleTokenVerifier googleTokenVerifier;
+    private final UserLoginRepository userLoginRepository;
+
     private final AuthUseCase authUseCase;
 
-    public AuthController(AuthUseCase authUseCase) {
+    public AuthController(GoogleTokenVerifier googleTokenVerifier, UserLoginRepository userLoginRepository,
+                          AuthUseCase authUseCase) {
+        this.googleTokenVerifier = googleTokenVerifier;
+        this.userLoginRepository = userLoginRepository;
         this.authUseCase = authUseCase;
     }
 
@@ -111,7 +124,35 @@ public class AuthController {
     @GetMapping("/oauth/google/callback")
     public ResponseEntity<String> handleGoogleCallback(@RequestParam("code") String code) {
         System.out.println("[OAUTH] Google code received: " + code);
-        return ResponseEntity.ok("Code received: " + code);
+
+        // Get data from Google :)
+        WebClient webClient = WebClient.create();
+        OAuthGoogleRequest tokenResponse = webClient.post()
+                .uri("https://oauth2.googleapis.com/token")
+                .contentType(MediaType.APPLICATION_FORM_URLENCODED)
+                .body(BodyInserters.fromFormData("code", code)
+                        .with("client_id", "568242201835-bvt8okdpe6s364f0b57ea75mqod8ge8t.apps.googleusercontent.com")
+                        .with("client_secret", "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")
+                        .with("redirect_uri", "https://6f07-5-159-173-156.ngrok-free.app/auth/oauth/google/callback")
+                        .with("grant_type", "authorization_code"))
+                .retrieve()
+                .bodyToMono(OAuthGoogleRequest.class)
+                .block();
+
+        // Inspect JWT token data
+        GoogleTokenVerifier.GoogleUser user = googleTokenVerifier.extractUserInfo(tokenResponse.getIdToken());
+        System.out.println(user.toString());
+
+        // Check if user exists: if yes login, if not register
+        if (userLoginRepository.existsByProviderKey(ProviderKey.of(user.googleId()))) {
+            System.out.println("We got the user :)");
+        } else {
+            System.out.println("We should register the user :)");
+        }
+
+
+
+        return ResponseEntity.ok(tokenResponse.toString());
     }
 
 }
