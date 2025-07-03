@@ -6,6 +6,9 @@ import com.filmdb.auth.auth_service.adapter.in.web.mapper.AuthRequestCommandMapp
 import com.filmdb.auth.auth_service.application.commands.*;
 import com.filmdb.auth.auth_service.application.context.RequestContext;
 import com.filmdb.auth.auth_service.domain.model.User;
+import com.filmdb.auth.auth_service.domain.model.valueobject.ProviderKey;
+import com.filmdb.auth.auth_service.domain.repository.UserLoginRepository;
+import com.filmdb.auth.auth_service.infrastructure.security.oauth.GoogleTokenVerifier;
 import lombok.AllArgsConstructor;
 import org.springframework.stereotype.Service;
 
@@ -20,7 +23,11 @@ public class AuthUseCaseImpl implements AuthUseCase {
     private final ChangeUserEmailUseCase changeUserEmailService;
     private final DeleteUserUseCase deleteUserService;
     private final RefreshAccessTokenUseCase refreshAccessTokenService;
+    private final OAuthGoogleRegisterUserUseCase oAuthGoogleRegisterService;
+    private final OAuthGoogleLoginUserUseCase oAuthGoogleLoginService;
     private final AuthRequestCommandMapper mapper;
+    private final GoogleTokenVerifier googleTokenVerifier;
+    private final UserLoginRepository userLoginRepository;
 
     @Override
     public UserResponse register(RegisterRequest request) {
@@ -57,6 +64,24 @@ public class AuthUseCaseImpl implements AuthUseCase {
         ChangeUserEmailCommand command = mapper.toChangeUserEmailCommand(request, user.id().value());
         return changeUserEmailService.execute(command);
 
+    }
+
+    @Override
+    public LoginResponse OAuthGoogleFlow(OAuthGoogleRequest request, RequestContext context) {
+        GoogleTokenVerifier.GoogleUser user = googleTokenVerifier.extractUserInfo(request.getIdToken());
+        // TODO: Object for this?
+        String userGoogleId = user.googleId();
+        String userGoogleEmail = user.email();
+        if (userLoginRepository.existsByProviderKey(ProviderKey.of(user.googleId()))) {
+            OAuthGoogleLoginUserCommand command = mapper.toOAuthGoogleLoginUserCommand(userGoogleId, userGoogleEmail,
+                    context);
+            return oAuthGoogleLoginService.execute(command);
+        } else {
+            OAuthGoogleRegisterUserCommand command = mapper.toOAuthGoogleRegisterUserCommand(userGoogleId,
+                    userGoogleEmail, context);
+            return oAuthGoogleRegisterService.execute(command);
+        }
+        //return null;
     }
 
     @Override

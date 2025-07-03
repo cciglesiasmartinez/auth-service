@@ -70,6 +70,27 @@ public final class Username {
     }
 
     /**
+     * Creates a {@code Username} instance with a default value for external authenticated users (OAuth).
+     *
+     * @param providerName provider name for the user.
+     * @param providerKey provider id for the user.
+     * @return a validated default {@code Username} instance.
+     * @throws InvalidUsernameException if params are null or empty.
+     */
+    public static Username createDefaultExternalUsername(ProviderName providerName, ProviderKey providerKey) {
+        if ( providerKey == null || providerName == null ) {
+            throw new InvalidUsernameException("ProviderName and providerKey cannot be null.");
+        }
+        String trimmedProviderName = providerName.value().trim();
+        String trimmedProviderKey = providerKey.value().trim();
+        if (trimmedProviderName.isEmpty() || trimmedProviderKey.isEmpty()) {
+            throw new InvalidUsernameException("ProviderName and providerKey cannot be empty.");
+        }
+        String username = providerName.value().toLowerCase() + providerKey.value();
+        return new Username(username);
+    }
+
+    /**
      * Returns the raw string value of the username.
      *
      * @return the username string

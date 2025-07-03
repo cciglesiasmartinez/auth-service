@@ -14,5 +14,9 @@ public interface AuthRequestCommandMapper {
     ChangeUserUsernameCommand toChangeUserUsernameCommand(ChangeUsernameRequest request, String userId);
     DeleteUserCommand toDeleteUserCommand(DeleteUserRequest request, String userId);
     RefreshAccessTokenCommand toRefreshAccessTokenCommand(RefreshAccessTokenRequest request);
+    OAuthGoogleLoginUserCommand toOAuthGoogleLoginUserCommand(String userGoogleId, String userGoogleEmail,
+                                                              RequestContext context);
+    OAuthGoogleRegisterUserCommand toOAuthGoogleRegisterUserCommand(String userGoogleId, String userGoogleEmail,
+                                                                    RequestContext context);
 
 }

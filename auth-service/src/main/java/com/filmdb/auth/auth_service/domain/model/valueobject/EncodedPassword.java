@@ -14,10 +14,15 @@ public final class EncodedPassword {
     }
 
     public static EncodedPassword of(String encodedPassowrd) {
-        if (encodedPassowrd == null || encodedPassowrd.isEmpty()) {
-            throw new IllegalArgumentException("Password cannot be null or empty");
-        }
+        // TODO: Solve this in a graceful and consistent manner :)
+//        if (encodedPassowrd == null || encodedPassowrd.isEmpty()) {
+//            throw new IllegalArgumentException("Password cannot be null or empty");
+//        }
         return new EncodedPassword(encodedPassowrd);
+    }
+
+    public static EncodedPassword externalNullPassword() {
+        return new EncodedPassword(null);
     }
 
     public String value() {

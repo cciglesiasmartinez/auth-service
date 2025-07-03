@@ -53,6 +53,24 @@ public class User {
     }
 
     /**
+     * Factory method that creates a new {@link User} object for externally authenticated (ie: OAuth) users.
+     * <p>
+     * These users contain a {@code null} value {@link EncodedPassword} and a procedurally generated
+     * default {@link Username}.
+     *
+     * @param email Email from external provider.
+     * @param providerKey ID from external provider.
+     * @param providerName name of the external provider.
+     * @return a new {@link User} instance.
+     */
+    public static User createExternalUser(Email email, ProviderKey providerKey, ProviderName providerName) {
+        Username username = Username.createDefaultExternalUsername(providerName, providerKey);
+        EncodedPassword externalNullPassword = EncodedPassword.externalNullPassword();
+        return new User(UserId.generate(), username, externalNullPassword, email, LocalDateTime.now(),
+                LocalDateTime.now());
+    }
+
+    /**
      * Factory method used to reconstruct a {@link User} domain object from persistent data.
      * <p>
      * Intended to be used by mappers when converting from {@link UserEntity} to {@link User}.

@@ -24,7 +24,9 @@ public class UserLoginEntityMapperImpl implements  UserLoginEntityMapper {
     @Override
     public UserLoginEntity toEntity(UserLogin userLogin) {
         UserLoginEntity userLoginEntity = new UserLoginEntity();
-        userLoginEntity.setId(userLogin.id());
+        if ( userLogin.id() != null ) {
+            userLoginEntity.setId(userLogin.id());
+        }
         userLoginEntity.setUserId(userLogin.userId().value());
         userLoginEntity.setProviderKey(userLogin.providerKey().value());
         userLoginEntity.setProviderName(userLogin.providerName().value());

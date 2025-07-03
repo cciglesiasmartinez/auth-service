@@ -14,6 +14,7 @@ public interface AuthUseCase {
     ChangePasswordResponse changePassword(User user, ChangePasswordRequest request);
     ChangeUsernameResponse changeUsername(User user, ChangeUsernameRequest request);
     ChangeEmailResponse changeEmail(User user, ChangeEmailRequest request);
+    LoginResponse OAuthGoogleFlow(OAuthGoogleRequest request, RequestContext context);
     void deleteUser(User user, DeleteUserRequest request);
 
 }

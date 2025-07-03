@@ -70,4 +70,26 @@ public class AuthRequestCommandMapperImpl implements  AuthRequestCommandMapper {
                 request.getRefreshToken()
         );
     }
+
+    @Override
+    public OAuthGoogleLoginUserCommand toOAuthGoogleLoginUserCommand(String userGoogleId, String userGoogleEmail,
+                                                                     RequestContext context) {
+        return new OAuthGoogleLoginUserCommand(
+                userGoogleId,
+                userGoogleEmail,
+                context.getIp(),
+                context.getUserAgent()
+        );
+    }
+
+    @Override
+    public OAuthGoogleRegisterUserCommand toOAuthGoogleRegisterUserCommand(String userGoogleId, String userGoogleEmail,
+                                                                           RequestContext context) {
+        return new OAuthGoogleRegisterUserCommand(
+                userGoogleId,
+                userGoogleEmail,
+                context.getIp(),
+                context.getUserAgent()
+        );
+    }
 }
