@@ -7,7 +7,6 @@ import lombok.ToString;
 
 @Getter
 @Setter
-@ToString // TODO: Delete in production
 public class OAuthGoogleRequest {
 
     private String accessToken;

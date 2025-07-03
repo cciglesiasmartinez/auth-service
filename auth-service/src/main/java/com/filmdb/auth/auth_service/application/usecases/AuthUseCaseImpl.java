@@ -81,7 +81,6 @@ public class AuthUseCaseImpl implements AuthUseCase {
                     userGoogleEmail, context);
             return oAuthGoogleRegisterService.execute(command);
         }
-        //return null;
     }
 
     @Override

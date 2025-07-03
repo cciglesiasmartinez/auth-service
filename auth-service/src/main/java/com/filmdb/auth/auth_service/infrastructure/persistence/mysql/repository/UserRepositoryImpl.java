@@ -43,7 +43,6 @@ public class UserRepositoryImpl implements UserRepository {
         springDataUserRepository.save(mapper.toEntity(user));
     }
 
-    // TODO: Consider returning the deleted User entity.
     @Override
     public void delete(User user) {
         springDataUserRepository.delete(mapper.toEntity(user));
