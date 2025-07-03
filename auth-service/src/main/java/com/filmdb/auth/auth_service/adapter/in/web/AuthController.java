@@ -9,6 +9,7 @@ import com.filmdb.auth.auth_service.application.exception.InvalidCredentialsExce
 import com.filmdb.auth.auth_service.infrastructure.security.CustomUserDetails;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.validation.Valid;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
@@ -100,10 +101,11 @@ public class AuthController {
     }
 
     @GetMapping("/oauth/google")
-    public RedirectView redirectToGoogle() {
+    public RedirectView redirectToGoogle(@Value("${google.oauth.client-id}") String clientId,
+                                         @Value("${google.oauth.redirect-uri}") String redirectUri) {
         String uri = "https://accounts.google.com/o/oauth2/v2/auth" +
-                "?client_id=568242201835-bvt8okdpe6s364f0b57ea75mqod8ge8t.apps.googleusercontent.com" +
-                "&redirect_uri=https://6f07-5-159-173-156.ngrok-free.app/auth/oauth/google/callback" +
+                "?client_id=" + clientId +
+                "&redirect_uri=" + redirectUri +
                 "&response_type=code" +
                 "&scope=openid%20email%20profile" +
                 "&access_type=offline" +
@@ -112,28 +114,28 @@ public class AuthController {
     }
 
     @GetMapping("/oauth/google/callback")
-    public ResponseEntity<LoginResponse> handleGoogleCallback(@RequestParam("code") String code,
-                                                       HttpServletRequest httpRequest) {
-        System.out.println("[OAUTH] Google code received: " + code);
-
-        // Get data from Google :)
+    public ResponseEntity<LoginResponse> handleGoogleCallback(
+            @RequestParam("code") String code,
+            HttpServletRequest httpRequest,
+            @Value("${google.oauth.client-id}") String clientId,
+            @Value("${google.oauth.redirect-uri}") String redirectUri,
+            @Value("${google.oauth.client-secret}") String clientSecret) {
         WebClient webClient = WebClient.create();
-        OAuthGoogleRequest tokenResponse = webClient.post()
+        OAuthGoogleRequest googleResponse = webClient.post()
                 .uri("https://oauth2.googleapis.com/token")
                 .contentType(MediaType.APPLICATION_FORM_URLENCODED)
                 .body(BodyInserters.fromFormData("code", code)
-                        .with("client_id", "568242201835-bvt8okdpe6s364f0b57ea75mqod8ge8t.apps.googleusercontent.com")
-                        .with("client_secret", "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")
-                        .with("redirect_uri", "https://6f07-5-159-173-156.ngrok-free.app/auth/oauth/google/callback")
+                        .with("client_id", clientId)
+                        .with("client_secret", clientSecret)
+                        .with("redirect_uri", redirectUri)
                         .with("grant_type", "authorization_code"))
                 .retrieve()
                 .bodyToMono(OAuthGoogleRequest.class)
                 .block();
-
         String ip = httpRequest.getRemoteAddr();
         String userAgent = httpRequest.getHeader("User-Agent");
         RequestContext context = new RequestContext(ip, userAgent);
-        LoginResponse response = authUseCase.OAuthGoogleFlow(tokenResponse, context);
+        LoginResponse response = authUseCase.OAuthGoogleFlow(googleResponse, context);
         return new ResponseEntity<>(response, HttpStatus.ACCEPTED);
     }
 
