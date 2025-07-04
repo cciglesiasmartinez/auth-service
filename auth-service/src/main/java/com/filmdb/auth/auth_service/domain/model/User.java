@@ -1,6 +1,7 @@
 package com.filmdb.auth.auth_service.domain.model;
 
 import com.filmdb.auth.auth_service.application.exception.InvalidCredentialsException;
+import com.filmdb.auth.auth_service.application.usecases.OAuthGoogleLoginUserUseCase;
 import com.filmdb.auth.auth_service.domain.model.valueobject.*;
 import com.filmdb.auth.auth_service.domain.services.PasswordEncoder;
 import com.filmdb.auth.auth_service.domain.exception.PasswordMismatchException;
@@ -25,20 +26,24 @@ public class User {
     private Email email;
     private final LocalDateTime registeredAt;
     private LocalDateTime modifiedAt;
+    private LocalDateTime lastLogin;
+    private boolean isExternal;
 
     private User(UserId id, Username username, EncodedPassword password, Email email, LocalDateTime registeredAt,
-                 LocalDateTime modifiedAt) {
+                 LocalDateTime modifiedAt, LocalDateTime lastLogin, boolean isExternal) {
         this.id = id;
         this.username = username;
         this.password = password;
         this.email = email;
         this.registeredAt = registeredAt;
         this.modifiedAt = modifiedAt;
+        this.lastLogin = lastLogin;
+        this.isExternal = isExternal;
     }
 
     /**
      * Factory method that creates a new {@link User} object from {@link Username }, {@link Email}
-     * and {@link PlainPassword} value objects.
+     * and {@link PlainPassword} value objects for internally authenticated users.
      *
      * @param username Username for the new user.
      * @param email Email for the new user.
@@ -49,7 +54,8 @@ public class User {
     public static User create(Username username, Email email, PlainPassword plainPassword,
                               PasswordEncoder passwordEncoder) {
         EncodedPassword encodedPassword = passwordEncoder.encode(plainPassword);
-        return new User(UserId.generate(), username, encodedPassword, email, LocalDateTime.now(), LocalDateTime.now());
+        return new User(UserId.generate(), username, encodedPassword, email, LocalDateTime.now(), LocalDateTime.now(),
+                null, false);
     }
 
     /**
@@ -67,7 +73,7 @@ public class User {
         Username username = Username.createDefaultExternalUsername(providerName, providerKey);
         EncodedPassword externalNullPassword = EncodedPassword.externalNullPassword();
         return new User(UserId.generate(), username, externalNullPassword, email, LocalDateTime.now(),
-                LocalDateTime.now());
+                LocalDateTime.now(), null, true);
     }
 
     /**
@@ -84,8 +90,9 @@ public class User {
      * @return a fully constructed {@link User} domain object
      */
     public static User of(UserId id, Username username, EncodedPassword password, Email email,
-                          LocalDateTime registeredAt, LocalDateTime modifiedAt) {
-        return new User(id, username, password, email, registeredAt, modifiedAt);
+                          LocalDateTime registeredAt, LocalDateTime modifiedAt, LocalDateTime lastLogin,
+                          boolean isExternal) {
+        return new User(id, username, password, email, registeredAt, modifiedAt, lastLogin, isExternal);
     }
 
     /**
@@ -171,6 +178,26 @@ public class User {
         this.modifiedAt = LocalDateTime.now();
     }
 
+    /**
+     * Updates {@code lastLogin} field with current timestamp.
+     */
+    public void recordLogin() {
+        this.lastLogin = LocalDateTime.now();
+    }
+
+    /**
+     * Updates {@code email} field for external users. Intended to be used in
+     * {@link OAuthGoogleLoginUserUseCase} use case when mail
+     * received in user's Google JWT token does not match the current mail for the user persisted in our db.
+     *
+     * @param newEmail new email for the user.
+     */
+    public void updateEmailIfDifferent(Email newEmail) {
+        if (!this.email.equals(newEmail)) {
+            this.email = newEmail;
+        }
+    }
+
     public UserId id() {
         return id;
     }
@@ -193,6 +220,14 @@ public class User {
 
     public LocalDateTime modifiedAt() {
         return modifiedAt;
+    }
+
+    public LocalDateTime lastLogin() {
+        return lastLogin;
+    }
+
+    public boolean isExternal() {
+        return isExternal;
     }
 
 }

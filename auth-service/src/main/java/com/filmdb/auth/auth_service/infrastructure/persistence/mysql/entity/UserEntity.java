@@ -35,6 +35,12 @@ public class UserEntity implements Serializable {
     @Column(name="modified_at")
     private LocalDateTime modifiedAt;
 
+    @Column(name="last_login")
+    private LocalDateTime lastLogin;
+
+    @Column(name="is_external")
+    private boolean isExternal;
+
     /**
      * Updates automatically the modified_at value each time we update (SQL) the entity.
      */

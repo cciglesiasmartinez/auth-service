@@ -19,7 +19,9 @@ public class UserEntityMapperImpl implements UserEntityMapper {
                 EncodedPassword.of(entity.getPassword()),
                 Email.of(entity.getEmail()),
                 entity.getRegisteredAt(),
-                entity.getModifiedAt()
+                entity.getModifiedAt(),
+                entity.getLastLogin(),
+                entity.isExternal()
         );
     }
 
@@ -32,6 +34,8 @@ public class UserEntityMapperImpl implements UserEntityMapper {
         entity.setEmail(user.email().value());
         entity.setRegisteredAt(user.registeredAt());
         entity.setModifiedAt(user.modifiedAt());
+        entity.setLastLogin(user.lastLogin());
+        entity.setExternal(user.isExternal());
         return entity;
     }
 
