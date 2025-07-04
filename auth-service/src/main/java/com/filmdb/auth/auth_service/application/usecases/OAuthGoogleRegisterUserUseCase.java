@@ -2,6 +2,7 @@ package com.filmdb.auth.auth_service.application.usecases;
 
 import com.filmdb.auth.auth_service.adapter.in.web.dto.responses.LoginResponse;
 import com.filmdb.auth.auth_service.application.commands.OAuthGoogleRegisterUserCommand;
+import com.filmdb.auth.auth_service.application.exception.EmailAlreadyExistsException;
 import com.filmdb.auth.auth_service.application.services.RefreshTokenService;
 import com.filmdb.auth.auth_service.domain.model.RefreshToken;
 import com.filmdb.auth.auth_service.domain.model.User;
@@ -32,8 +33,10 @@ public class OAuthGoogleRegisterUserUseCase {
         ProviderKey providerKey = ProviderKey.of(command.googleId());
         ProviderName providerName = ProviderName.GOOGLE;
         Email googleEmail = Email.of(command.googleEmail());
+        if (userRepository.existsByEmail(googleEmail)) {
+            throw new EmailAlreadyExistsException();
+        }
         User user = User.createExternalUser(googleEmail, providerKey, providerName);
-        // TODO: Should we validate the actual googleEmail against existing emails in the db?
         userRepository.save(user);
         UserLogin userLogin = UserLogin.create(user.id(), providerKey, providerName);
         userLoginRepository.save(userLogin);
