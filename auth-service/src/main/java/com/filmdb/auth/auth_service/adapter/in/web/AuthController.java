@@ -139,4 +139,20 @@ public class AuthController {
         return new ResponseEntity<>(response, HttpStatus.ACCEPTED);
     }
 
+    @PutMapping("/oauth/me/username")
+    public ResponseEntity<ChangeUsernameResponse> changeExternalUserUsername(
+            @Valid @RequestBody ChangeExternalUserUsernameRequest request,
+            Authentication authentication) {
+        User user = getAuthenticatedUser(authentication);
+        ChangeUsernameResponse response = authUseCase.changeExternalUserUsername(user, request);
+        return new ResponseEntity<>(response, HttpStatus.ACCEPTED);
+    }
+
+    @DeleteMapping("/oauth/me")
+    public ResponseEntity<?> deleteExternalUser(Authentication authentication) {
+        User user = getAuthenticatedUser(authentication);
+        authUseCase.deleteExternalUser(user);
+        return ResponseEntity.noContent().build();
+    }
+
 }

@@ -12,7 +12,10 @@ public interface AuthRequestCommandMapper {
     ChangePasswordCommand toChangePasswordCommand(ChangePasswordRequest request, String userId);
     ChangeUserEmailCommand toChangeUserEmailCommand(ChangeEmailRequest request, String userId);
     ChangeUserUsernameCommand toChangeUserUsernameCommand(ChangeUsernameRequest request, String userId);
+    ChangeExternalUserUsernameCommand toChangeExternalUserUsernameCommand(ChangeExternalUserUsernameRequest request,
+                                                                          String userId);
     DeleteUserCommand toDeleteUserCommand(DeleteUserRequest request, String userId);
+    DeleteExternalUserCommand toDeleteExternalUserCommand(String userId);
     RefreshAccessTokenCommand toRefreshAccessTokenCommand(RefreshAccessTokenRequest request);
     OAuthGoogleLoginUserCommand toOAuthGoogleLoginUserCommand(String userGoogleId, String userGoogleEmail,
                                                               RequestContext context);

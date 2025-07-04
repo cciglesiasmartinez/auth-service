@@ -159,6 +159,8 @@ public class User {
     /**
      * Validates the provided password during the login flow. This version throws a generic
      * {@link InvalidCredentialsException} to avoid revealing whether the user exists or the password is wrong.
+     * <p>
+     * This prevents user enumeration attacks.
      *
      * @param loginPassword the raw password provided at login.
      * @param passwordEncoder the encoder used to check password match.
@@ -196,6 +198,16 @@ public class User {
         if (!this.email.equals(newEmail)) {
             this.email = newEmail;
         }
+    }
+
+    /**
+     * Updates {@code username} field for external users. It works in a more straightforward way than the standard
+     * changeUsername method, since we don't have a password to check against.
+     *
+     * @param username the new username for the user.
+     */
+    public void changeUsernameForExternalUser(Username username) {
+        this.username = username;
     }
 
     public UserId id() {

@@ -60,4 +60,9 @@ public class GlobalExceptionHandler {
         return ResponseEntity.status(HttpStatus.UNAUTHORIZED).body("Unauthorized");
     }
 
+    @ExceptionHandler(UserIsNotExternalException.class)
+    public ResponseEntity<?> handleUserIsNotExternalException(UserIsNotExternalException e) {
+        return ResponseEntity.status(HttpStatus.UNAUTHORIZED).body(e.getMessage());
+    }
+
 }

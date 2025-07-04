@@ -57,11 +57,24 @@ public class AuthRequestCommandMapperImpl implements  AuthRequestCommandMapper {
     }
 
     @Override
+    public ChangeExternalUserUsernameCommand toChangeExternalUserUsernameCommand(ChangeExternalUserUsernameRequest request, String userId) {
+        return new ChangeExternalUserUsernameCommand(
+                userId,
+                request.getUsername()
+        );
+    }
+
+    @Override
     public DeleteUserCommand toDeleteUserCommand(DeleteUserRequest request, String userId) {
         return new DeleteUserCommand(
                 userId,
                 request.getCurrentPassword()
         );
+    }
+
+    @Override
+    public DeleteExternalUserCommand toDeleteExternalUserCommand(String userId) {
+        return new DeleteExternalUserCommand(userId);
     }
 
     @Override

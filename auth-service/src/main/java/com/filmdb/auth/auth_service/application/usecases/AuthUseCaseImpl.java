@@ -20,8 +20,10 @@ public class AuthUseCaseImpl implements AuthUseCase {
     private final LoginUserUseCase loginUserService;
     private final ChangePasswordUseCase changePasswordService;
     private final ChangeUserUsernameUseCase changeUserUsernameService;
+    private final ChangeExternalUserUsernameUseCase changeExternalUserUsernameService;
     private final ChangeUserEmailUseCase changeUserEmailService;
     private final DeleteUserUseCase deleteUserService;
+    private final DeleteExternalUserUseCase deleteExternalUserService;
     private final RefreshAccessTokenUseCase refreshAccessTokenService;
     private final OAuthGoogleRegisterUserUseCase oAuthGoogleRegisterService;
     private final OAuthGoogleLoginUserUseCase oAuthGoogleLoginService;
@@ -60,10 +62,17 @@ public class AuthUseCaseImpl implements AuthUseCase {
     }
 
     @Override
+    public ChangeUsernameResponse changeExternalUserUsername(User user, ChangeExternalUserUsernameRequest request) {
+        ChangeExternalUserUsernameCommand command = mapper.toChangeExternalUserUsernameCommand(
+                request,
+                user.id().value());
+        return changeExternalUserUsernameService.execute(command);
+    }
+
+    @Override
     public ChangeEmailResponse changeEmail(User user, ChangeEmailRequest request) {
         ChangeUserEmailCommand command = mapper.toChangeUserEmailCommand(request, user.id().value());
         return changeUserEmailService.execute(command);
-
     }
 
     @Override
@@ -87,6 +96,12 @@ public class AuthUseCaseImpl implements AuthUseCase {
     public void deleteUser(User user, DeleteUserRequest request) {
         DeleteUserCommand command = mapper.toDeleteUserCommand(request, user.id().value());
         deleteUserService.execute(command);
+    }
+
+    @Override
+    public void deleteExternalUser(User user) {
+        DeleteExternalUserCommand command = mapper.toDeleteExternalUserCommand(user.id().value());
+        deleteExternalUserService.execute(command);
     }
 
 }
