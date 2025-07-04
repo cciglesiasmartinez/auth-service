@@ -41,6 +41,7 @@ public class ChangeUserUsernameUseCase {
      */
     public ChangeUsernameResponse execute(ChangeUserUsernameCommand command) {
         // TODO: try-catch for log.warn?
+        // TODO: Consider how to handle username changes for externally authenticated users.
         PlainPassword currentPassword = PlainPassword.of(command.currentPassword());
         Username newUsername = Username.of(command.newUsername());
         if (userRepository.existsByUsername(newUsername)) {
@@ -50,7 +51,7 @@ public class ChangeUserUsernameUseCase {
         User user = userRepository.findById(UserId.of(command.userId()))
                 .orElseThrow(() -> {
                     log.warn("User {} not found on the database.", command.userId());
-                    throw new UserNotFoundException();
+                    return new UserNotFoundException();
                 });
         user.changeUsername(currentPassword, newUsername, passwordEncoder);
         userRepository.save(user);

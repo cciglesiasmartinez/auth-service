@@ -37,7 +37,7 @@ public class LoginUserUseCase {
      *
      * @param command {@link LoginUserCommand} command containing email and password and context data (ip, userAgent).
      * @return {@link LoginResponse} object containing jwt token, expiration time and username.
-     * @throws InvalidCredentialsException if the user is not found.
+     * @throws InvalidCredentialsException if the user is not found or is externally authenticated.
      * @throws PasswordMismatchException if provided password does not match stored password.
      */
     public LoginResponse execute(LoginUserCommand command) {
@@ -47,8 +47,14 @@ public class LoginUserUseCase {
                     log.warn("User not found for email {}", email.value());
                     return new InvalidCredentialsException("Invalid credentials.");
                 });
+        if (user.isExternal()) {
+            log.warn("External user {} tried to log in internally.", user.id().value());
+            throw new InvalidCredentialsException("Invalid credentials.");
+        }
         PlainPassword plainPassword = PlainPassword.forLogin(command.password());
         user.validateLoginPassword(plainPassword, passwordEncoder);
+        user.recordLogin();
+        userRepository.save(user);
         String token = tokenProvider.generateToken(user.id().value());
         long expiresIn = tokenProvider.getTokenExpirationInSeconds();
         RefreshToken refreshToken = refreshTokenService.generate(user.id(), command.ip(), command.userAgent());

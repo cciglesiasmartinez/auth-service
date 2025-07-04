@@ -9,10 +9,10 @@ import com.filmdb.auth.auth_service.domain.model.User;
 import com.filmdb.auth.auth_service.domain.model.UserLogin;
 import com.filmdb.auth.auth_service.domain.model.valueobject.Email;
 import com.filmdb.auth.auth_service.domain.model.valueobject.ProviderKey;
-import com.filmdb.auth.auth_service.domain.model.valueobject.ProviderName;
 import com.filmdb.auth.auth_service.domain.repository.UserLoginRepository;
 import com.filmdb.auth.auth_service.domain.repository.UserRepository;
 import com.filmdb.auth.auth_service.domain.services.TokenProvider;
+import jakarta.transaction.Transactional;
 import lombok.AllArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
@@ -27,10 +27,9 @@ public class OAuthGoogleLoginUserUseCase {
     private final TokenProvider tokenProvider;
     private final RefreshTokenService refreshTokenService;
 
+    @Transactional
     public LoginResponse execute(OAuthGoogleLoginUserCommand command) {
-        // TODO: Add email validation. If mail from Google changes, then change in our db.
         ProviderKey providerKey = ProviderKey.of(command.googleId());
-        ProviderName providerName = ProviderName.GOOGLE;
         Email googleEmail = Email.of(command.googleEmail());
         UserLogin userLogin = userLoginRepository.findByProviderKey(providerKey)
                 .orElseThrow(() -> {
@@ -42,6 +41,9 @@ public class OAuthGoogleLoginUserUseCase {
                     log.warn("User not found for userId {}", userLogin.userId().value());
                     return new UserNotFoundException();
                 });
+        user.recordLogin();
+        user.updateEmailIfDifferent(googleEmail);
+        userRepository.save(user);
         // Token logic
         String token = tokenProvider.generateToken(user.id().value());
         long expiresIn = tokenProvider.getTokenExpirationInSeconds();

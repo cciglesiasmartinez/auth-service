@@ -12,6 +12,7 @@ import com.filmdb.auth.auth_service.domain.model.valueobject.ProviderName;
 import com.filmdb.auth.auth_service.domain.repository.UserLoginRepository;
 import com.filmdb.auth.auth_service.domain.repository.UserRepository;
 import com.filmdb.auth.auth_service.domain.services.TokenProvider;
+import jakarta.transaction.Transactional;
 import lombok.AllArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
@@ -26,6 +27,7 @@ public class OAuthGoogleRegisterUserUseCase {
     private final TokenProvider tokenProvider;
     private final RefreshTokenService refreshTokenService;
 
+    @Transactional
     public LoginResponse execute(OAuthGoogleRegisterUserCommand command) {
         ProviderKey providerKey = ProviderKey.of(command.googleId());
         ProviderName providerName = ProviderName.GOOGLE;

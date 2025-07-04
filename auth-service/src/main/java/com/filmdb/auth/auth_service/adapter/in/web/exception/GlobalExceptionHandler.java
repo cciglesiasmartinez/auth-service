@@ -54,4 +54,10 @@ public class GlobalExceptionHandler {
         return ResponseEntity.status(HttpStatus.UNAUTHORIZED).body(e.getMessage());
     }
 
+    // TODO: Reconsider the body message for this case. Also consider standard DTO's for exceptions.
+    @ExceptionHandler(UserIsExternalException.class)
+    public ResponseEntity<?> handleUserIsExternalException(UserIsExternalException e) {
+        return ResponseEntity.status(HttpStatus.UNAUTHORIZED).body("Unauthorized");
+    }
+
 }

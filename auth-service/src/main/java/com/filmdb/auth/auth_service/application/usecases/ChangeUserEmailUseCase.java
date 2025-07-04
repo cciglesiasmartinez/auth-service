@@ -2,6 +2,7 @@ package com.filmdb.auth.auth_service.application.usecases;
 
 import com.filmdb.auth.auth_service.application.commands.ChangeUserEmailCommand;
 import com.filmdb.auth.auth_service.application.exception.EmailAlreadyExistsException;
+import com.filmdb.auth.auth_service.application.exception.UserIsExternalException;
 import com.filmdb.auth.auth_service.application.exception.UserNotFoundException;
 import com.filmdb.auth.auth_service.domain.model.valueobject.Email;
 import com.filmdb.auth.auth_service.domain.model.valueobject.PlainPassword;
@@ -38,6 +39,7 @@ public class ChangeUserEmailUseCase {
      * @throws UserNotFoundException if current email is already in use.
      * @throws PasswordMismatchException if provided password does not match the stored one.
      * @throws EmailAlreadyExistsException if email already exists.
+     * @throws UserIsExternalException if user is externally authenticated.
      */
     public ChangeEmailResponse execute(ChangeUserEmailCommand command) {
         PlainPassword currentPassword = PlainPassword.of(command.currentPassword());
@@ -49,8 +51,12 @@ public class ChangeUserEmailUseCase {
         User user = userRepository.findById(UserId.of(command.userId()))
                 .orElseThrow(() -> {
                     log.warn("UserId {} not found in database.", command.userId());
-                    throw new UserNotFoundException();
+                    return new UserNotFoundException();
                 });
+        if (user.isExternal()) {
+            log.warn("External user {} tried to change their email unsuccessfully.", user.id().value());
+            throw new UserIsExternalException();
+        }
         user.changeEmail(currentPassword, newEmail, passwordEncoder);
         userRepository.save(user);
         log.info("Changed email to {} successfully.", newEmail);
