@@ -34,13 +34,13 @@ public class OAuthGoogleLoginUserUseCase {
         Email googleEmail = Email.of(command.googleEmail());
         UserLogin userLogin = userLoginRepository.findByProviderKey(providerKey)
                 .orElseThrow(() -> {
-                    log.warn("User not found for providerKey", providerKey.value());
-                    throw new UserNotFoundException();
+                    log.warn("User not found for providerKey {}", providerKey.value());
+                    return new UserNotFoundException();
                 });
         User user = userRepository.findById(userLogin.userId())
                 .orElseThrow(() -> {
-                    log.warn("User not found for userId", userLogin.userId().value());
-                    throw new UserNotFoundException();
+                    log.warn("User not found for userId {}", userLogin.userId().value());
+                    return new UserNotFoundException();
                 });
         // Token logic
         String token = tokenProvider.generateToken(user.id().value());
