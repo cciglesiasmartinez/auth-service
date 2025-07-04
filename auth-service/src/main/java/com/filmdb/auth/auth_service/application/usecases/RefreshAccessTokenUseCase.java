@@ -28,7 +28,7 @@ public class RefreshAccessTokenUseCase {
                 .orElseThrow(() -> {
                     log.warn("Token not found in database.");
                     // TODO: Create custom exception and think about how to manage it.
-                    throw new RuntimeException("Token not found.");
+                    return new RuntimeException("Token not found.");
                 });
         if (storedToken.expiresAt().isBefore(LocalDateTime.now())) {
             log.warn("Refresh token expired.");
