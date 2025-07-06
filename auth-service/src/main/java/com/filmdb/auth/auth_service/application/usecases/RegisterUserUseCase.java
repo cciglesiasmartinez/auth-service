@@ -3,10 +3,12 @@ package com.filmdb.auth.auth_service.application.usecases;
 import com.filmdb.auth.auth_service.application.commands.RegisterUserCommand;
 import com.filmdb.auth.auth_service.application.exception.UserAlreadyRegisteredException;
 import com.filmdb.auth.auth_service.domain.model.valueobject.Email;
+import com.filmdb.auth.auth_service.domain.model.valueobject.EmailMessage;
 import com.filmdb.auth.auth_service.domain.model.valueobject.PlainPassword;
 import com.filmdb.auth.auth_service.domain.model.User;
 import com.filmdb.auth.auth_service.domain.model.valueobject.Username;
 import com.filmdb.auth.auth_service.domain.repository.UserRepository;
+import com.filmdb.auth.auth_service.domain.services.MailProvider;
 import com.filmdb.auth.auth_service.domain.services.PasswordEncoder;
 import com.filmdb.auth.auth_service.adapter.in.web.dto.responses.UserResponse;
 import lombok.AllArgsConstructor;
@@ -26,6 +28,7 @@ public class RegisterUserUseCase {
 
     private final UserRepository userRepository;
     private final PasswordEncoder passwordEncoder;
+    private final MailProvider mailProvider;
 
     /**
      * Executes the user registration use case.
@@ -44,6 +47,8 @@ public class RegisterUserUseCase {
         }
         User user = User.create(username, email, plainPassword, passwordEncoder);
         userRepository.save(user);
+        EmailMessage confirmationMail = EmailMessage.of(email, "foo", "bar");
+        mailProvider.sendMail(confirmationMail);
         log.info("User with username {} registered successfully.", user.username().value());
         return UserResponse.fromDomainUser(user);
     }
