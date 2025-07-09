@@ -1,5 +1,7 @@
 package com.filmdb.auth.auth_service.domain.model.valueobject;
 
+import com.fasterxml.jackson.annotation.JsonCreator;
+import com.fasterxml.jackson.annotation.JsonProperty;
 import lombok.EqualsAndHashCode;
 import lombok.ToString;
 
@@ -9,7 +11,8 @@ public final class EncodedPassword {
 
     private final String value;
 
-    private EncodedPassword(String value) {
+    @JsonCreator
+    private EncodedPassword(@JsonProperty("value") String value) {
         this.value = value;
     }
 
@@ -26,6 +29,10 @@ public final class EncodedPassword {
     }
 
     public String value() {
+        return this.value;
+    }
+
+    public String getValue() {
         return this.value;
     }
 
