@@ -33,6 +33,8 @@ public class VerifyUserRegistrationUseCase {
         User user = User.register(verificationCode.username(), verificationCode.email(), verificationCode.password());
         user.pullEvents().forEach(eventPublisher::publish);
         userRepository.save(user);
+        verificationCodeRepository.delete(verificationCode);
+        log.info("User {} verified their registration email successfully.", user.id().value());
         return UserResponse.fromDomainUser(user);
     }
 
