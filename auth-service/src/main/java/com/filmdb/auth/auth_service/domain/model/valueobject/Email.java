@@ -1,5 +1,7 @@
 package com.filmdb.auth.auth_service.domain.model.valueobject;
 
+import com.fasterxml.jackson.annotation.JsonCreator;
+import com.fasterxml.jackson.annotation.JsonProperty;
 import lombok.EqualsAndHashCode;
 import lombok.ToString;
 
@@ -15,7 +17,8 @@ public final class Email {
 
     private final String value;
 
-    private Email(String value) {
+    @JsonCreator
+    private Email(@JsonProperty("value") String value) {
         this.value = value;
     }
 
@@ -32,6 +35,10 @@ public final class Email {
 
     public String value() {
         return value;
+    }
+
+    public String getValue() {
+            return value;
     }
 
 }

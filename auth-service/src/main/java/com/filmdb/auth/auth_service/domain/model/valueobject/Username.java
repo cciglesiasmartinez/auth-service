@@ -1,5 +1,7 @@
 package com.filmdb.auth.auth_service.domain.model.valueobject;
 
+import com.fasterxml.jackson.annotation.JsonCreator;
+import com.fasterxml.jackson.annotation.JsonProperty;
 import com.filmdb.auth.auth_service.domain.exception.InvalidUsernameException;
 import lombok.EqualsAndHashCode;
 import lombok.ToString;
@@ -25,7 +27,8 @@ public final class Username {
 
     private final String value;
 
-    private Username(String value) {
+    @JsonCreator
+    private Username(@JsonProperty("value") String value) {
         this.value = value;
     }
 
@@ -96,6 +99,10 @@ public final class Username {
      * @return the username string
      */
     public String value() {
+        return value;
+    }
+
+    public String getValue() {
         return value;
     }
 
