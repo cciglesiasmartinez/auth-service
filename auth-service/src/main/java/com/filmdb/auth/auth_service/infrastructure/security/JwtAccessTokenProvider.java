@@ -1,6 +1,6 @@
 package com.filmdb.auth.auth_service.infrastructure.security;
 
-import com.filmdb.auth.auth_service.domain.services.TokenProvider;
+import com.filmdb.auth.auth_service.domain.services.AccessTokenProvider;
 import io.jsonwebtoken.*;
 import io.jsonwebtoken.security.Keys;
 import jakarta.annotation.PostConstruct;
@@ -14,7 +14,7 @@ import java.util.Date;
 
 @Getter
 @Component
-public class JwtTokenProvider implements TokenProvider {
+public class JwtAccessTokenProvider implements AccessTokenProvider {
 
     @Value("${jwt.secret}")
     private String jwtSecret;
