@@ -6,7 +6,7 @@ import com.filmdb.auth.auth_service.application.services.RefreshTokenService;
 import com.filmdb.auth.auth_service.domain.model.RefreshToken;
 import com.filmdb.auth.auth_service.domain.model.valueobject.RefreshTokenString;
 import com.filmdb.auth.auth_service.domain.repository.RefreshTokenRepository;
-import com.filmdb.auth.auth_service.domain.services.TokenProvider;
+import com.filmdb.auth.auth_service.domain.services.AccessTokenProvider;
 import lombok.AllArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
@@ -19,7 +19,7 @@ import java.time.LocalDateTime;
 public class RefreshAccessTokenUseCase {
 
     private final RefreshTokenService refreshTokenService;
-    private final TokenProvider tokenProvider;
+    private final AccessTokenProvider accessTokenProvider;
     private final RefreshTokenRepository refreshTokenRepository;
 
     public RefreshAccessTokenResponse execute(RefreshAccessTokenCommand command) {
@@ -36,7 +36,7 @@ public class RefreshAccessTokenUseCase {
         }
         String subject = storedToken.getUserId().value();
         // TODO: generateToken() should ask for exp time? Then we can pass it to the response obj.
-        String accessToken = tokenProvider.generateToken(subject);
+        String accessToken = accessTokenProvider.generateToken(subject);
         // TODO: NoArgConstructor to avoid passing tokenType?
         RefreshToken newToken = refreshTokenService.rotate(storedToken);
         log.info("New refresh token generated successfully.");

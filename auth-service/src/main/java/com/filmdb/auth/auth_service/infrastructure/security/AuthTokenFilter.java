@@ -1,6 +1,6 @@
 package com.filmdb.auth.auth_service.infrastructure.security;
 
-import com.filmdb.auth.auth_service.domain.services.TokenProvider;
+import com.filmdb.auth.auth_service.domain.services.AccessTokenProvider;
 import jakarta.servlet.FilterChain;
 import jakarta.servlet.ServletException;
 import jakarta.servlet.http.HttpServletRequest;
@@ -17,7 +17,7 @@ import java.io.IOException;
 public class AuthTokenFilter extends OncePerRequestFilter {
 
     @Autowired
-    private TokenProvider tokenProvider;
+    private AccessTokenProvider accessTokenProvider;
 
     @Autowired
     private CustomUserDetailsService userDetailsService;
@@ -31,8 +31,8 @@ public class AuthTokenFilter extends OncePerRequestFilter {
     ) throws ServletException, IOException {
         try {
             String jwt = parseJwt(request);
-            if (jwt != null && tokenProvider.validateJwtToken(jwt)) {
-                String userId = tokenProvider.getUserIdFromToken(jwt);
+            if (jwt != null && accessTokenProvider.validateJwtToken(jwt)) {
+                String userId = accessTokenProvider.getUserIdFromToken(jwt);
                 CustomUserDetails userDetails = (CustomUserDetails) userDetailsService.loadUserByUserId(userId);
                 UsernamePasswordAuthenticationToken authentication =
                         new UsernamePasswordAuthenticationToken(
