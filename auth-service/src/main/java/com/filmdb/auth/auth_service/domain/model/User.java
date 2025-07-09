@@ -1,13 +1,18 @@
 package com.filmdb.auth.auth_service.domain.model;
 
+import ch.qos.logback.core.encoder.EchoEncoder;
 import com.filmdb.auth.auth_service.application.exception.InvalidCredentialsException;
 import com.filmdb.auth.auth_service.application.usecases.OAuthGoogleLoginUserUseCase;
+import com.filmdb.auth.auth_service.domain.event.DomainEvent;
+import com.filmdb.auth.auth_service.domain.event.UserRegisteredEvent;
 import com.filmdb.auth.auth_service.domain.model.valueobject.*;
 import com.filmdb.auth.auth_service.domain.services.PasswordEncoder;
 import com.filmdb.auth.auth_service.domain.exception.PasswordMismatchException;
 import com.filmdb.auth.auth_service.infrastructure.persistence.mysql.entity.UserEntity;
 
 import java.time.LocalDateTime;
+import java.util.ArrayList;
+import java.util.List;
 
 /**
  * Domain model representing a User within the system.
@@ -28,6 +33,7 @@ public class User {
     private LocalDateTime modifiedAt;
     private LocalDateTime lastLogin;
     private boolean isExternal;
+    private List<DomainEvent> events = new ArrayList<>();
 
     private User(UserId id, Username username, EncodedPassword password, Email email, LocalDateTime registeredAt,
                  LocalDateTime modifiedAt, LocalDateTime lastLogin, boolean isExternal) {
@@ -47,13 +53,10 @@ public class User {
      *
      * @param username Username for the new user.
      * @param email Email for the new user.
-     * @param plainPassword Password in plaintext for the new user.
-     * @param passwordEncoder Encoder needed to encrypt the plaintext password.
+     * @param encodedPassword Encoded password for the new user.
      * @return a new {@link User} instance.
      */
-    public static User create(Username username, Email email, PlainPassword plainPassword,
-                              PasswordEncoder passwordEncoder) {
-        EncodedPassword encodedPassword = passwordEncoder.encode(plainPassword);
+    public static User create(Username username, Email email, EncodedPassword encodedPassword) {
         return new User(UserId.generate(), username, encodedPassword, email, LocalDateTime.now(), LocalDateTime.now(),
                 null, false);
     }
@@ -74,6 +77,21 @@ public class User {
         EncodedPassword externalNullPassword = EncodedPassword.externalNullPassword();
         return new User(UserId.generate(), username, externalNullPassword, email, LocalDateTime.now(),
                 LocalDateTime.now(), null, true);
+    }
+
+    /**
+     * Wrapper factory method intended to send a {@link DomainEvent} {@link UserRegisteredEvent} after creating a
+     * {@code User} instance via {@code create()} method.
+     *
+     * @param username Username for the new user.
+     * @param email Email for the new user.
+     * @param encodedPassword Encoded password for the new user.
+     * @return a new {@link User} instance.
+     */
+    public static User register(Username username, Email email, EncodedPassword encodedPassword) {
+        User user = User.create(username, email, encodedPassword);
+        user.events.add(new UserRegisteredEvent(user.id(), user.email()));
+        return user;
     }
 
     /**
@@ -208,6 +226,16 @@ public class User {
      */
     public void changeUsernameForExternalUser(Username username) {
         this.username = username;
+    }
+
+    /**
+     *
+     * @return
+     */
+    public List<DomainEvent> pullEvents() {
+        List<DomainEvent> result = new ArrayList<>(this.events);
+        events.clear();
+        return result;
     }
 
     public UserId id() {
