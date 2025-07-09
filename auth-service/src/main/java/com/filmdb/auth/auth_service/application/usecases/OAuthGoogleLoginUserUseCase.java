@@ -11,7 +11,7 @@ import com.filmdb.auth.auth_service.domain.model.valueobject.Email;
 import com.filmdb.auth.auth_service.domain.model.valueobject.ProviderKey;
 import com.filmdb.auth.auth_service.domain.repository.UserLoginRepository;
 import com.filmdb.auth.auth_service.domain.repository.UserRepository;
-import com.filmdb.auth.auth_service.domain.services.TokenProvider;
+import com.filmdb.auth.auth_service.domain.services.AccessTokenProvider;
 import jakarta.transaction.Transactional;
 import lombok.AllArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
@@ -24,7 +24,7 @@ public class OAuthGoogleLoginUserUseCase {
 
     private final UserRepository userRepository;
     private final UserLoginRepository userLoginRepository;
-    private final TokenProvider tokenProvider;
+    private final AccessTokenProvider accessTokenProvider;
     private final RefreshTokenService refreshTokenService;
 
     @Transactional
@@ -45,8 +45,8 @@ public class OAuthGoogleLoginUserUseCase {
         user.updateEmailIfDifferent(googleEmail);
         userRepository.save(user);
         // Token logic
-        String token = tokenProvider.generateToken(user.id().value());
-        long expiresIn = tokenProvider.getTokenExpirationInSeconds();
+        String token = accessTokenProvider.generateToken(user.id().value());
+        long expiresIn = accessTokenProvider.getTokenExpirationInSeconds();
         RefreshToken refreshToken = refreshTokenService.generate(user.id(), command.ip(), command.userAgent());
         log.info("User logged in via Google OAuth successfully");
         return new LoginResponse(token, refreshToken.token().value() , expiresIn, user.username().value());
