@@ -39,9 +39,15 @@ public class AuthController {
     }
 
     @PostMapping("/register")
-    public ResponseEntity<UserResponse> register(@Valid @RequestBody RegisterRequest request) {
-        UserResponse response = authUseCase.register(request);
+    public ResponseEntity<RegisterResponse> register(@Valid @RequestBody RegisterRequest request) {
+        RegisterResponse response = authUseCase.register(request);
         return new ResponseEntity<>(response, HttpStatus.CREATED);
+    }
+
+    @GetMapping("/register/verify")
+    public ResponseEntity<?> verifyRegistration(@RequestParam("code") String code) {
+        UserResponse response = authUseCase.verifyRegistration(code);
+        return new ResponseEntity<>(response, HttpStatus.ACCEPTED);
     }
 
     @PostMapping("/login")

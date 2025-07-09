@@ -8,7 +8,8 @@ import com.filmdb.auth.auth_service.domain.model.User;
 
 public interface AuthUseCase {
 
-    UserResponse register(RegisterRequest request);
+    RegisterResponse register(RegisterRequest request);
+    UserResponse verifyRegistration(String code);
     LoginResponse login(LoginRequest request, RequestContext context);
     RefreshAccessTokenResponse refreshAccessToken(RefreshAccessTokenRequest request);
     ChangePasswordResponse changePassword(User user, ChangePasswordRequest request);

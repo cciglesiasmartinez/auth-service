@@ -1,18 +1,18 @@
 package com.filmdb.auth.auth_service.application.usecases;
 
+import com.filmdb.auth.auth_service.adapter.in.web.dto.responses.RegisterResponse;
 import com.filmdb.auth.auth_service.application.commands.RegisterUserCommand;
+import com.filmdb.auth.auth_service.application.event.VerificationEmailRequestedEvent;
 import com.filmdb.auth.auth_service.application.exception.UserAlreadyRegisteredException;
-import com.filmdb.auth.auth_service.domain.model.valueobject.Email;
-import com.filmdb.auth.auth_service.domain.model.valueobject.EmailMessage;
-import com.filmdb.auth.auth_service.domain.model.valueobject.PlainPassword;
-import com.filmdb.auth.auth_service.domain.model.User;
-import com.filmdb.auth.auth_service.domain.model.valueobject.Username;
+import com.filmdb.auth.auth_service.application.services.VerificationCodeService;
+import com.filmdb.auth.auth_service.domain.model.VerificationCode;
+import com.filmdb.auth.auth_service.domain.model.valueobject.*;
 import com.filmdb.auth.auth_service.domain.repository.UserRepository;
-import com.filmdb.auth.auth_service.domain.services.MailProvider;
 import com.filmdb.auth.auth_service.domain.services.PasswordEncoder;
 import com.filmdb.auth.auth_service.adapter.in.web.dto.responses.UserResponse;
 import lombok.AllArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
+import org.springframework.context.ApplicationEventPublisher;
 import org.springframework.stereotype.Service;
 
 /**
@@ -28,7 +28,8 @@ public class RegisterUserUseCase {
 
     private final UserRepository userRepository;
     private final PasswordEncoder passwordEncoder;
-    private final MailProvider mailProvider;
+    private final VerificationCodeService verificationCodeService;
+    private final ApplicationEventPublisher springPublisher;
 
     /**
      * Executes the user registration use case.
@@ -37,7 +38,7 @@ public class RegisterUserUseCase {
      * @return A {@link UserResponse} representing the newly registered user.
      * @throws UserAlreadyRegisteredException if a user with the same email or username already exists.
      */
-    public UserResponse execute(RegisterUserCommand command) {
+    public RegisterResponse execute(RegisterUserCommand command) {
         Username username = Username.of(command.username());
         Email email = Email.of(command.email());
         PlainPassword plainPassword = PlainPassword.of(command.password());
@@ -45,12 +46,12 @@ public class RegisterUserUseCase {
             log.warn("Email {} or username {} already exist.", email.value(), username.value());
             throw new UserAlreadyRegisteredException();
         }
-        User user = User.create(username, email, plainPassword, passwordEncoder);
-        userRepository.save(user);
-        EmailMessage confirmationMail = EmailMessage.of(email, "foo", "bar");
-        mailProvider.sendMail(confirmationMail);
-        log.info("User with username {} registered successfully.", user.username().value());
-        return UserResponse.fromDomainUser(user);
+        EncodedPassword encodedPassword = passwordEncoder.encode(plainPassword);
+        VerificationCode verificationCode = verificationCodeService.generate(username, email, encodedPassword);
+        springPublisher.publishEvent(new VerificationEmailRequestedEvent(email,
+                verificationCode.verificationCodeString()));
+        log.info("User with username {} initiated registration process successfully", username.value());
+        return new RegisterResponse("Verification code sent to email.", email.value());
     }
 
 }

@@ -17,6 +17,7 @@ import org.springframework.stereotype.Service;
 public class AuthUseCaseImpl implements AuthUseCase {
 
     private final RegisterUserUseCase registerUserService;
+    private final VerifyUserRegistrationUseCase verifyUserRegistrationService;
     private final LoginUserUseCase loginUserService;
     private final ChangePasswordUseCase changePasswordService;
     private final ChangeUserUsernameUseCase changeUserUsernameService;
@@ -32,9 +33,15 @@ public class AuthUseCaseImpl implements AuthUseCase {
     private final UserLoginRepository userLoginRepository;
 
     @Override
-    public UserResponse register(RegisterRequest request) {
+    public RegisterResponse register(RegisterRequest request) {
         RegisterUserCommand command = mapper.toRegisterUserCommand(request);
         return registerUserService.execute(command);
+    }
+
+    @Override
+    public UserResponse verifyRegistration(String code) {
+        VerifyUserRegistrationCommand command = mapper.toVerifyUserRegistrationCommand(code);
+        return verifyUserRegistrationService.execute(command);
     }
 
     @Override
