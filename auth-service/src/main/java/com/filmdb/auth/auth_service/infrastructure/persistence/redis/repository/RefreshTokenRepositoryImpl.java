@@ -4,6 +4,7 @@ import com.filmdb.auth.auth_service.domain.model.RefreshToken;
 import com.filmdb.auth.auth_service.domain.model.valueobject.RefreshTokenString;
 import com.filmdb.auth.auth_service.domain.repository.RefreshTokenRepository;
 import lombok.AllArgsConstructor;
+import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.data.redis.core.RedisTemplate;
 import org.springframework.stereotype.Repository;
 
@@ -14,6 +15,7 @@ import java.util.Optional;
 @AllArgsConstructor
 public class RefreshTokenRepositoryImpl implements RefreshTokenRepository {
 
+    @Qualifier("refreshTokenRedisTemplate")
     private final RedisTemplate<String, RefreshToken> redisTemplate;
 
     private String buildKey(String key) {
