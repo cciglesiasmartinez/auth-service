@@ -2,6 +2,7 @@ package com.filmdb.auth.auth_service.application.usecases;
 
 import com.filmdb.auth.auth_service.adapter.in.web.dto.responses.UserResponse;
 import com.filmdb.auth.auth_service.application.commands.VerifyUserRegistrationCommand;
+import com.filmdb.auth.auth_service.application.exception.VerificationCodeNotFoundException;
 import com.filmdb.auth.auth_service.domain.event.DomainEventPublisher;
 import com.filmdb.auth.auth_service.domain.model.User;
 import com.filmdb.auth.auth_service.domain.model.VerificationCode;
@@ -27,7 +28,7 @@ public class VerifyUserRegistrationUseCase {
         VerificationCode verificationCode = verificationCodeRepository.findByCodeString(verificationCodeString)
                 .orElseThrow(() -> {
                     log.warn("Failed to retrieved verification code {}.", verificationCodeString.value());
-                    return new RuntimeException("Wrong code");
+                    return new VerificationCodeNotFoundException();
                 });
         User user = User.register(verificationCode.username(), verificationCode.email(), verificationCode.password());
         user.pullEvents().forEach(eventPublisher::publish);
