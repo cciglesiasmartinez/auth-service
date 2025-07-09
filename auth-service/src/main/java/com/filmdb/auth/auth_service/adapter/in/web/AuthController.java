@@ -7,8 +7,12 @@ import com.filmdb.auth.auth_service.application.usecases.AuthUseCase;
 import com.filmdb.auth.auth_service.domain.model.User;
 import com.filmdb.auth.auth_service.application.exception.InvalidCredentialsException;
 import com.filmdb.auth.auth_service.infrastructure.security.CustomUserDetails;
+import io.swagger.v3.oas.annotations.Operation;
+import io.swagger.v3.oas.annotations.responses.ApiResponses;
+import io.swagger.v3.oas.annotations.responses.ApiResponse;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.validation.Valid;
+import lombok.AllArgsConstructor;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
@@ -21,16 +25,20 @@ import org.springframework.web.servlet.view.RedirectView;
 
 import java.time.LocalDateTime;
 
+@AllArgsConstructor
 @RestController
 @RequestMapping("/auth")
 public class AuthController {
 
     private final AuthUseCase authUseCase;
 
-    public AuthController(AuthUseCase authUseCase) {
-        this.authUseCase = authUseCase;
-    }
-
+    /**
+     * Helper method that obtains a model {@link User} instance from the {@link Authentication} instance in a request.
+     *
+     * @param authentication {@link Authentication} instance containing the authentication data from the request.
+     * @throws InvalidCredentialsException if credentials are nonexistent or malformed.
+     * @return a {@link User} instance.
+     */
     private User getAuthenticatedUser(Authentication authentication) {
         if (authentication == null || !(authentication.getPrincipal() instanceof CustomUserDetails customUserDetails)) {
             throw new InvalidCredentialsException("Unauthorized");
@@ -38,18 +46,40 @@ public class AuthController {
         return customUserDetails.getUser();
     }
 
+    @Operation(
+            summary = "Register a new user.",
+            description = "Initiates the registration process by sending a verification email. User will not be " +
+                    "persisted until verification is complete."
+    )
+    @ApiResponses(value = {
+            @ApiResponse(responseCode = "201", description = "Verification email sent successfully.")
+    })
     @PostMapping("/register")
     public ResponseEntity<RegisterResponse> register(@Valid @RequestBody RegisterRequest request) {
         RegisterResponse response = authUseCase.register(request);
         return new ResponseEntity<>(response, HttpStatus.CREATED);
     }
 
+    @Operation(
+            summary="Verify a registration code.",
+            description="Verifies an email account thus completing the registration process and persisting the user."
+    )
+    @ApiResponses(value = {
+            @ApiResponse(responseCode = "202", description = "User registration completed.")
+    })
     @GetMapping("/register/verify")
     public ResponseEntity<?> verifyRegistration(@RequestParam("code") String code) {
         UserResponse response = authUseCase.verifyRegistration(code);
         return new ResponseEntity<>(response, HttpStatus.ACCEPTED);
     }
 
+    @Operation(
+            summary = "Authenticate user.",
+            description = "Validates user credentials and returns access and refresh tokens."
+    )
+    @ApiResponses(value = {
+            @ApiResponse(responseCode = "202", description = "Authentication successful.")
+    })
     @PostMapping("/login")
     public ResponseEntity<LoginResponse> login(@Valid @RequestBody LoginRequest request,
                                                HttpServletRequest httpRequest) {
@@ -60,12 +90,26 @@ public class AuthController {
         return new ResponseEntity<>(response, HttpStatus.ACCEPTED);
     }
 
+    @Operation(
+            summary = "Get an access token and a new refresh token.",
+            description = "Provides a signed access token and a new refresh token."
+    )
+    @ApiResponses(value = {
+            @ApiResponse(responseCode = "200", description = "Access token and new refresh token issued.")
+    })
     @PostMapping("/refresh")
     public ResponseEntity<RefreshAccessTokenResponse> refresh(@Valid @RequestBody RefreshAccessTokenRequest request) {
         RefreshAccessTokenResponse response = authUseCase.refreshAccessToken(request);
         return new ResponseEntity<>(response, HttpStatus.OK);
     }
 
+    @Operation(
+            summary = "Retrieves user information (self).",
+            description = "Retrieves all available user (self) information excluding sensitive data."
+    )
+    @ApiResponses(value = {
+            @ApiResponse(responseCode = "200", description = "User information successfully retrieved.")
+    })
     @GetMapping("/me")
     public ResponseEntity<UserResponse> getCurrentUser(Authentication authentication) {
         User user = getAuthenticatedUser(authentication);
@@ -73,6 +117,13 @@ public class AuthController {
         return new ResponseEntity<>(response, HttpStatus.OK);
     }
 
+    @Operation(
+            summary = "Change user (self) password,",
+            description = "Changes user (self) password if provided current password matches stored one."
+    )
+    @ApiResponses(value = {
+            @ApiResponse(responseCode = "200", description = "User (self) password changed successfully.")
+    })
     @PutMapping("/me/password")
     public ResponseEntity<ChangePasswordResponse> changeUserPassword(@Valid @RequestBody ChangePasswordRequest request,
                                                                      Authentication authentication) {
@@ -82,6 +133,13 @@ public class AuthController {
         return new ResponseEntity<>(response, HttpStatus.OK);
     }
 
+    @Operation(
+            summary = "Change user (self) username.",
+            description = "Changes user (self) username if provided current password matches stored one."
+    )
+    @ApiResponses(value = {
+            @ApiResponse(responseCode = "200", description = "User (self) username changed successfully.")
+    })
     @PutMapping("/me/username")
     public ResponseEntity<ChangeUsernameResponse> changeUserUsername(@Valid @RequestBody ChangeUsernameRequest request,
                                                                      Authentication authentication) {
@@ -90,6 +148,13 @@ public class AuthController {
         return new ResponseEntity<>(response, HttpStatus.OK);
     }
 
+    @Operation(
+            summary = "Change user (self) email.",
+            description = "Changes user (self) email if provided current password matches stored one."
+    )
+    @ApiResponses(value = {
+            @ApiResponse(responseCode = "200", description = "User (self) email changed successfully.")
+    })
     @PutMapping("/me/email")
     public ResponseEntity<ChangeEmailResponse> changeUserEmail(@Valid @RequestBody ChangeEmailRequest request,
                                                                Authentication authentication) {
@@ -98,6 +163,13 @@ public class AuthController {
         return new ResponseEntity<>(response, HttpStatus.OK);
     }
 
+    @Operation(
+            summary = "Delete user (self).",
+            description = "Deletes user (self) account if provided current password matches stored one."
+    )
+    @ApiResponses(value = {
+            @ApiResponse(responseCode = "204", description = "User (self) account deleted successfully.")
+    })
     @DeleteMapping("/me")
     public ResponseEntity<?> deleteUser(@Valid @RequestBody DeleteUserRequest request,
                                         Authentication authentication) {
@@ -106,6 +178,10 @@ public class AuthController {
         return ResponseEntity.noContent().build();
     }
 
+    @Operation(
+            summary = "Redirect user to Google OAuth2 login.",
+            description = "Redirects user to Google OAuth2 sign in."
+    )
     @GetMapping("/oauth/google")
     public RedirectView redirectToGoogle(@Value("${google.oauth.client-id}") String clientId,
                                          @Value("${google.oauth.redirect-uri}") String redirectUri) {
@@ -119,6 +195,15 @@ public class AuthController {
         return new RedirectView(uri);
     }
 
+    @Operation(
+            summary = "Callback route for Google OAuth2.",
+            description = "Intended for internal application use. Handles Google OAuth data request for the user. " +
+                    "If user is not registered yet, it registers them in our database. If yes, proceeds to login " +
+                    "the user in our system. "
+    )
+    @ApiResponses(value = {
+            @ApiResponse(responseCode = "201", description = "User successfully logged in via Google OAuth2.")
+    })
     @GetMapping("/oauth/google/callback")
     public ResponseEntity<LoginResponse> handleGoogleCallback(
             @RequestParam("code") String code,
@@ -145,6 +230,14 @@ public class AuthController {
         return new ResponseEntity<>(response, HttpStatus.ACCEPTED);
     }
 
+    @Operation(
+            summary = "Changes user (self) username (OAuth2).",
+            description = "Changes user (self) username. This is the right endpoint if user is authenticated via" +
+                    "OAuth2."
+    )
+    @ApiResponses(value = {
+            @ApiResponse(responseCode = "201", description = "User successfully logged in via Google OAuth2.")
+    })
     @PutMapping("/oauth/me/username")
     public ResponseEntity<ChangeUsernameResponse> changeExternalUserUsername(
             @Valid @RequestBody ChangeExternalUserUsernameRequest request,
@@ -154,6 +247,14 @@ public class AuthController {
         return new ResponseEntity<>(response, HttpStatus.ACCEPTED);
     }
 
+    @Operation(
+            summary = "Delete OAuth2 user (self).",
+            description = "Deletes OAuth2 user (self). This is the right endpoint if user is authenticated via" +
+                    "OAuth2."
+    )
+    @ApiResponses(value = {
+            @ApiResponse(responseCode = "204", description = "OAuth2 user (self) deleted successfully.")
+    })
     @DeleteMapping("/oauth/me")
     public ResponseEntity<?> deleteExternalUser(Authentication authentication) {
         User user = getAuthenticatedUser(authentication);
