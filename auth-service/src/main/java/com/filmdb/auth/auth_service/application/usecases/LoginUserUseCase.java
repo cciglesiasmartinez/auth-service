@@ -9,7 +9,7 @@ import com.filmdb.auth.auth_service.domain.model.valueobject.PlainPassword;
 import com.filmdb.auth.auth_service.domain.model.User;
 import com.filmdb.auth.auth_service.domain.repository.UserRepository;
 import com.filmdb.auth.auth_service.domain.services.PasswordEncoder;
-import com.filmdb.auth.auth_service.domain.services.TokenProvider;
+import com.filmdb.auth.auth_service.domain.services.AccessTokenProvider;
 import com.filmdb.auth.auth_service.adapter.in.web.dto.responses.LoginResponse;
 import com.filmdb.auth.auth_service.domain.exception.PasswordMismatchException;
 import lombok.AllArgsConstructor;
@@ -29,7 +29,7 @@ public class LoginUserUseCase {
 
     private final UserRepository userRepository;
     private final PasswordEncoder passwordEncoder;
-    private final TokenProvider tokenProvider;
+    private final AccessTokenProvider accessTokenProvider;
     private final RefreshTokenService refreshTokenService;
 
     /**
@@ -55,8 +55,8 @@ public class LoginUserUseCase {
         user.validateLoginPassword(plainPassword, passwordEncoder);
         user.recordLogin();
         userRepository.save(user);
-        String token = tokenProvider.generateToken(user.id().value());
-        long expiresIn = tokenProvider.getTokenExpirationInSeconds();
+        String token = accessTokenProvider.generateToken(user.id().value());
+        long expiresIn = accessTokenProvider.getTokenExpirationInSeconds();
         RefreshToken refreshToken = refreshTokenService.generate(user.id(), command.ip(), command.userAgent());
         log.info("User {} authenticated successfully.", user.username().value());
         return new LoginResponse(token, refreshToken.token().value() , expiresIn, user.username().value());
