@@ -8,6 +8,7 @@ import com.filmdb.auth.auth_service.application.context.RequestContext;
 public interface AuthRequestCommandMapper {
 
     RegisterUserCommand toRegisterUserCommand(RegisterRequest request);
+    VerifyUserRegistrationCommand toVerifyUserRegistrationCommand(String code);
     LoginUserCommand toLoginUserCommand(LoginRequest request, RequestContext context);
     ChangePasswordCommand toChangePasswordCommand(ChangePasswordRequest request, String userId);
     ChangeUserEmailCommand toChangeUserEmailCommand(ChangeEmailRequest request, String userId);

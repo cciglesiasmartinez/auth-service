@@ -20,6 +20,11 @@ public class AuthRequestCommandMapperImpl implements  AuthRequestCommandMapper {
     }
 
     @Override
+    public VerifyUserRegistrationCommand toVerifyUserRegistrationCommand(String code) {
+        return new VerifyUserRegistrationCommand(code);
+    }
+
+    @Override
     public LoginUserCommand toLoginUserCommand(LoginRequest request, RequestContext context) {
         return new LoginUserCommand(
                 request.getEmail(),
