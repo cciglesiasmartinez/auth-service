@@ -5,6 +5,7 @@ import com.filmdb.auth.auth_service.application.commands.RegisterUserCommand;
 import com.filmdb.auth.auth_service.application.event.VerificationEmailRequestedEvent;
 import com.filmdb.auth.auth_service.application.exception.UserAlreadyRegisteredException;
 import com.filmdb.auth.auth_service.application.services.VerificationCodeService;
+import com.filmdb.auth.auth_service.domain.exception.InvalidPasswordException;
 import com.filmdb.auth.auth_service.domain.model.VerificationCode;
 import com.filmdb.auth.auth_service.domain.model.valueobject.*;
 import com.filmdb.auth.auth_service.domain.repository.UserRepository;
@@ -37,6 +38,7 @@ public class RegisterUserUseCase {
      * @param command The registration command containing username, email, and raw password.
      * @return A {@link UserResponse} representing the newly registered user.
      * @throws UserAlreadyRegisteredException if a user with the same email or username already exists.
+     * @throws InvalidPasswordException if the provided password does not meet security requirements.
      */
     public RegisterResponse execute(RegisterUserCommand command) {
         Username username = Username.of(command.username());
