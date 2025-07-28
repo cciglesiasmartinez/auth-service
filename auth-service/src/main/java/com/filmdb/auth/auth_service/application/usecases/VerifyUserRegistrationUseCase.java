@@ -13,6 +13,13 @@ import lombok.AllArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
 
+/**
+ *  Application service for verifying a user registry code.
+ *  <p>
+ *  Looks for a {@link VerificationCodeString} in our {@link VerificationCodeRepository}. If it exists, creates a new
+ *  {@link User} instance with the data contained in the {@link VerificationCode} instance stored and persists it in our
+ *  database and publishes the resulting domain event. Finally, deletes the {@link VerificationCode} instance.
+ */
 @Slf4j
 @Service
 @AllArgsConstructor
@@ -22,6 +29,13 @@ public class VerifyUserRegistrationUseCase {
     private final VerificationCodeRepository verificationCodeRepository;
     private final DomainEventPublisher eventPublisher;
 
+    /**
+     * Executes the verify registration use case.
+     *
+     * @param command {@link VerifyUserRegistrationCommand} containing the verification code.
+     * @return {@link UserResponse} containing the newly registered user data.
+     * @throws VerificationCodeNotFoundException if the verification code is not found.
+     */
     public UserResponse execute(VerifyUserRegistrationCommand command) {
         // TODO: Change the response DTO for this use case
         VerificationCodeString verificationCodeString = VerificationCodeString.of(command.verificationCode());
