@@ -17,6 +17,13 @@ import lombok.AllArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
 
+/**
+ * Application service for login users via Google OAuth2.
+ * <p>
+ * Receives user data from Google OAuth2 system, checks {@link ProviderKey} against our {@link UserLogin} repository
+ * and if providerKey is found logs the user in and records the login date in {@code lastLogin} attribute. It
+ * also provides both access and refresh token to the user in a {@link LoginResponse} instance.
+ */
 @Slf4j
 @Service
 @AllArgsConstructor
@@ -27,6 +34,13 @@ public class OAuthGoogleLoginUserUseCase {
     private final AccessTokenProvider accessTokenProvider;
     private final RefreshTokenService refreshTokenService;
 
+    /**
+     * Execute the login user via Google OAuth2 use case.
+     *
+     * @param command containing provider key (google id), email, ip and user agent for the user.
+     * @return a {@link LoginResponse} instance containing access and refresh tokens for the user.
+     * @throws UserNotFoundException if provider key or user id are not found in our repositories.
+     */
     @Transactional
     public LoginResponse execute(OAuthGoogleLoginUserCommand command) {
         ProviderKey providerKey = ProviderKey.of(command.googleId());

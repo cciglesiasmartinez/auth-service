@@ -18,6 +18,13 @@ import lombok.AllArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
 
+/**
+ * Application service for registering users via Google OAuth2
+ * <p>
+ * Checks if Google {@link Email} exists in repository. If yes, throws an exception. If not, proceeds creating a
+ * {@link User} instance using Google provided data and saves it into our {@link UserRepository}. Then, generates
+ * both access and refresh tokens and delivers them.
+ */
 @Slf4j
 @Service
 @AllArgsConstructor
@@ -28,6 +35,13 @@ public class OAuthGoogleRegisterUserUseCase {
     private final AccessTokenProvider accessTokenProvider;
     private final RefreshTokenService refreshTokenService;
 
+    /**
+     * Executes the user registration via Google OAuth2 use case.
+     *
+     * @param command Registration command containing email and provider key (user id).
+     * @return {@link LoginResponse} instance containing access and refresh tokens, expiration time and username.
+     * @throws EmailAlreadyExistsException if email is already registered in our database.
+     */
     @Transactional
     public LoginResponse execute(OAuthGoogleRegisterUserCommand command) {
         ProviderKey providerKey = ProviderKey.of(command.googleId());

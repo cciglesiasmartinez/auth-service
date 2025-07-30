@@ -13,6 +13,12 @@ import org.springframework.stereotype.Service;
 
 import java.time.LocalDateTime;
 
+/**
+ * Application service for issuing a new refresh and access token.
+ * <p>
+ * Verifies if current refresh token is valid. In that case, creates an access token, creates a new
+ * {@link RefreshToken} refresh token and deletes the provided (current) {@link RefreshToken}.
+ */
 @Slf4j
 @Service
 @AllArgsConstructor
@@ -22,6 +28,14 @@ public class RefreshAccessTokenUseCase {
     private final AccessTokenProvider accessTokenProvider;
     private final RefreshTokenRepository refreshTokenRepository;
 
+    /**
+     * Executes the refresh and access token use case.
+     *
+     * @param command containing the current refresh token.
+     * @return a {@link RefreshAccessTokenResponse} instance containing the new access and refresh tokens.
+     * @throws RuntimeException if token is not found.
+     * @throws RuntimeException if token has expired.
+     */
     public RefreshAccessTokenResponse execute(RefreshAccessTokenCommand command) {
         RefreshTokenString tokenString = RefreshTokenString.of(command.refreshToken());
         RefreshToken storedToken =  refreshTokenRepository.findByTokenString(tokenString)

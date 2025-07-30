@@ -15,6 +15,12 @@ import org.springframework.stereotype.Service;
 
 import java.time.LocalDateTime;
 
+/**
+ * Application service for changing the username of an externally identified user.
+ * <p>
+ * Checks if the requested {@link Username} is available and if the {@link User} exists in our repository.
+ * In that case, we proceed with the change and persists it in our repository.
+ */
 @Slf4j
 @Service
 @AllArgsConstructor
@@ -22,6 +28,15 @@ public class ChangeExternalUserUsernameUseCase {
 
     private final UserRepository userRepository;
 
+    /**
+     * Executes the externally authenticated user (self) change username use case.
+     *
+     * @param command containing the new username and user id.
+     * @return a {@link ChangeUsernameResponse} instance with the new username.
+     * @throws UserNotFoundException if user is not on our repository.
+     * @throws UserIsNotExternalException is user is not externally authenticated.
+     * @throws UsernameAlreadyExistsException if requested username already exists in our repository.
+     */
     public ChangeUsernameResponse execute(ChangeExternalUserUsernameCommand command) {
         Username newUsername = Username.of(command.newUsername());
         User user = userRepository.findById(UserId.of(command.userId()))
