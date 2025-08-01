@@ -28,8 +28,8 @@ public class LoginResponse {
     private String refreshToken;
 
     @Schema(
-            description = "Token expiration date.",
-            example = "2025-08-02T23:41:37.3468196"
+            description = "Token expiration term,",
+            example = "600"
     )
     private long expiresIn;
 
