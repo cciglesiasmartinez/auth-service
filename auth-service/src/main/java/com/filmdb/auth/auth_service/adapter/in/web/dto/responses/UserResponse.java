@@ -1,6 +1,7 @@
 package com.filmdb.auth.auth_service.adapter.in.web.dto.responses;
 
 import com.fasterxml.jackson.annotation.JsonInclude;
+import io.swagger.v3.oas.annotations.media.Schema;
 import lombok.*;
 
 import java.time.LocalDateTime;
@@ -12,12 +13,46 @@ import java.time.LocalDateTime;
 @JsonInclude(JsonInclude.Include.NON_NULL)
 public class UserResponse {
 
+    @Schema(
+            description = "",
+            example = ""
+    )
     private String id;
+
+    @Schema(
+            description = "",
+            example = ""
+    )
     private String username;
+
+    @Schema(
+            description = "",
+            example = ""
+    )
     private String email;
+
+    @Schema(
+            description = "",
+            example = ""
+    )
     private String password; // Remove before production
-    private boolean isAdmin;
+
+//    @Schema(
+//            description = "",
+//            example = ""
+//    )
+//    private boolean isAdmin;
+
+    @Schema(
+            description = "",
+            example = ""
+    )
     private LocalDateTime registeredAt;
+
+    @Schema(
+            description = "",
+            example = ""
+    )
     private LocalDateTime modifiedAt;
 
     public static UserResponse fromDomainUser(com.filmdb.auth.auth_service.domain.model.User user) {
