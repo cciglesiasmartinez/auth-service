@@ -1,4 +1,4 @@
-package com.filmdb.auth.auth_service.infrastructure.persistence.redis.config;
+package com.filmdb.auth.auth_service.adapter.out.persistence.redis.config;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.fasterxml.jackson.databind.SerializationFeature;

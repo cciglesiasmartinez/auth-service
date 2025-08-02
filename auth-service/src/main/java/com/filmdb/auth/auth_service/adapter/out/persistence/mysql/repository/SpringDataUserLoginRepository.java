@@ -1,8 +1,6 @@
-package com.filmdb.auth.auth_service.infrastructure.persistence.mysql.repository;
+package com.filmdb.auth.auth_service.adapter.out.persistence.mysql.repository;
 
-import com.filmdb.auth.auth_service.domain.model.valueobject.ProviderKey;
-import com.filmdb.auth.auth_service.domain.model.valueobject.UserId;
-import com.filmdb.auth.auth_service.infrastructure.persistence.mysql.entity.UserLoginEntity;
+import com.filmdb.auth.auth_service.adapter.out.persistence.mysql.entity.UserLoginEntity;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.stereotype.Repository;
 

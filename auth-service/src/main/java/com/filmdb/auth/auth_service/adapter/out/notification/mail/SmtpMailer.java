@@ -1,4 +1,4 @@
-package com.filmdb.auth.auth_service.infrastructure.notification.mail;
+package com.filmdb.auth.auth_service.adapter.out.notification.mail;
 
 import com.filmdb.auth.auth_service.domain.model.valueobject.EmailMessage;
 import com.filmdb.auth.auth_service.domain.services.MailProvider;

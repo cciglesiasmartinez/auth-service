@@ -1,4 +1,4 @@
-package com.filmdb.auth.auth_service.infrastructure.persistence.redis.repository;
+package com.filmdb.auth.auth_service.adapter.out.persistence.redis.repository;
 
 import com.filmdb.auth.auth_service.domain.model.VerificationCode;
 import com.filmdb.auth.auth_service.domain.model.valueobject.VerificationCodeString;

@@ -1,10 +1,10 @@
-package com.filmdb.auth.auth_service.infrastructure.persistence.mysql.mapper;
+package com.filmdb.auth.auth_service.adapter.out.persistence.mysql.mapper;
 
 import com.filmdb.auth.auth_service.domain.model.UserLogin;
 import com.filmdb.auth.auth_service.domain.model.valueobject.ProviderKey;
 import com.filmdb.auth.auth_service.domain.model.valueobject.ProviderName;
 import com.filmdb.auth.auth_service.domain.model.valueobject.UserId;
-import com.filmdb.auth.auth_service.infrastructure.persistence.mysql.entity.UserLoginEntity;
+import com.filmdb.auth.auth_service.adapter.out.persistence.mysql.entity.UserLoginEntity;
 import org.springframework.stereotype.Component;
 
 @Component
