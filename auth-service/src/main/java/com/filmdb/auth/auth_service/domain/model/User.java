@@ -1,6 +1,5 @@
 package com.filmdb.auth.auth_service.domain.model;
 
-import ch.qos.logback.core.encoder.EchoEncoder;
 import com.filmdb.auth.auth_service.application.exception.InvalidCredentialsException;
 import com.filmdb.auth.auth_service.application.usecases.OAuthGoogleLoginUserUseCase;
 import com.filmdb.auth.auth_service.domain.event.DomainEvent;
