@@ -2,13 +2,13 @@ package com.filmdb.auth.auth_service.application.usecases;
 
 import com.filmdb.auth.auth_service.adapter.in.web.dto.responses.UserResponse;
 import com.filmdb.auth.auth_service.application.commands.VerifyUserRegistrationCommand;
-import com.filmdb.auth.auth_service.application.exception.VerificationCodeNotFoundException;
+import com.filmdb.auth.auth_service.domain.exception.VerificationCodeNotFoundException;
 import com.filmdb.auth.auth_service.domain.event.DomainEventPublisher;
 import com.filmdb.auth.auth_service.domain.model.User;
 import com.filmdb.auth.auth_service.domain.model.VerificationCode;
 import com.filmdb.auth.auth_service.domain.model.valueobject.VerificationCodeString;
-import com.filmdb.auth.auth_service.domain.repository.UserRepository;
-import com.filmdb.auth.auth_service.domain.repository.VerificationCodeRepository;
+import com.filmdb.auth.auth_service.domain.port.out.UserRepository;
+import com.filmdb.auth.auth_service.domain.port.out.VerificationCodeRepository;
 import lombok.AllArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;

@@ -1,8 +1,7 @@
-package com.filmdb.auth.auth_service.domain.repository;
+package com.filmdb.auth.auth_service.domain.port.out;
 
 import com.filmdb.auth.auth_service.domain.model.RefreshToken;
 import com.filmdb.auth.auth_service.domain.model.valueobject.RefreshTokenString;
-import com.filmdb.auth.auth_service.domain.model.valueobject.UserId;
 
 import java.util.Optional;
 

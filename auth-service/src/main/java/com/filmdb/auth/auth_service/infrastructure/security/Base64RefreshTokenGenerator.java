@@ -1,7 +1,7 @@
 package com.filmdb.auth.auth_service.infrastructure.security;
 
 import com.filmdb.auth.auth_service.domain.model.valueobject.RefreshTokenString;
-import com.filmdb.auth.auth_service.domain.services.RefreshTokenGenerator;
+import com.filmdb.auth.auth_service.domain.port.out.RefreshTokenGenerator;
 import org.springframework.stereotype.Component;
 
 import java.security.SecureRandom;

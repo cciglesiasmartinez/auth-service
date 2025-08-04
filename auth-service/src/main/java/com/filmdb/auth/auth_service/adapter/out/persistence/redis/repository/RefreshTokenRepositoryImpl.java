@@ -2,7 +2,7 @@ package com.filmdb.auth.auth_service.adapter.out.persistence.redis.repository;
 
 import com.filmdb.auth.auth_service.domain.model.RefreshToken;
 import com.filmdb.auth.auth_service.domain.model.valueobject.RefreshTokenString;
-import com.filmdb.auth.auth_service.domain.repository.RefreshTokenRepository;
+import com.filmdb.auth.auth_service.domain.port.out.RefreshTokenRepository;
 import lombok.AllArgsConstructor;
 import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.data.redis.core.RedisTemplate;

@@ -5,8 +5,8 @@ import com.filmdb.auth.auth_service.domain.model.valueobject.EncodedPassword;
 import com.filmdb.auth.auth_service.domain.model.valueobject.Username;
 import com.filmdb.auth.auth_service.domain.model.VerificationCode;
 import com.filmdb.auth.auth_service.domain.model.valueobject.VerificationCodeString;
-import com.filmdb.auth.auth_service.domain.repository.VerificationCodeRepository;
-import com.filmdb.auth.auth_service.domain.services.VerificationCodeGenerator;
+import com.filmdb.auth.auth_service.domain.port.out.VerificationCodeRepository;
+import com.filmdb.auth.auth_service.domain.port.out.VerificationCodeGenerator;
 import lombok.AllArgsConstructor;
 import org.springframework.stereotype.Service;
 

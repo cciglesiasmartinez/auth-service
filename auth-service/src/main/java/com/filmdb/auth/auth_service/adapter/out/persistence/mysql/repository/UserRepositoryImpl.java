@@ -4,7 +4,7 @@ import com.filmdb.auth.auth_service.domain.model.valueobject.Email;
 import com.filmdb.auth.auth_service.domain.model.User;
 import com.filmdb.auth.auth_service.domain.model.valueobject.UserId;
 import com.filmdb.auth.auth_service.domain.model.valueobject.Username;
-import com.filmdb.auth.auth_service.domain.repository.UserRepository;
+import com.filmdb.auth.auth_service.domain.port.out.UserRepository;
 import com.filmdb.auth.auth_service.adapter.out.persistence.mysql.mapper.UserEntityMapper;
 import lombok.AllArgsConstructor;
 import org.springframework.stereotype.Repository;

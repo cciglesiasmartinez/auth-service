@@ -7,7 +7,7 @@ import com.filmdb.auth.auth_service.application.commands.*;
 import com.filmdb.auth.auth_service.application.context.RequestContext;
 import com.filmdb.auth.auth_service.domain.model.User;
 import com.filmdb.auth.auth_service.domain.model.valueobject.ProviderKey;
-import com.filmdb.auth.auth_service.domain.repository.UserLoginRepository;
+import com.filmdb.auth.auth_service.domain.port.out.UserLoginRepository;
 import com.filmdb.auth.auth_service.infrastructure.security.oauth.GoogleTokenVerifier;
 import lombok.AllArgsConstructor;
 import org.springframework.stereotype.Service;

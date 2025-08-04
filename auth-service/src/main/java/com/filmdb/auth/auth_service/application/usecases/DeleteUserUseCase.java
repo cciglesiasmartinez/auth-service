@@ -1,12 +1,12 @@
 package com.filmdb.auth.auth_service.application.usecases;
 
 import com.filmdb.auth.auth_service.application.commands.DeleteUserCommand;
-import com.filmdb.auth.auth_service.application.exception.UserNotFoundException;
+import com.filmdb.auth.auth_service.domain.exception.UserNotFoundException;
 import com.filmdb.auth.auth_service.domain.model.valueobject.PlainPassword;
 import com.filmdb.auth.auth_service.domain.model.User;
 import com.filmdb.auth.auth_service.domain.model.valueobject.UserId;
-import com.filmdb.auth.auth_service.domain.repository.UserRepository;
-import com.filmdb.auth.auth_service.domain.services.PasswordEncoder;
+import com.filmdb.auth.auth_service.domain.port.out.UserRepository;
+import com.filmdb.auth.auth_service.domain.port.out.PasswordEncoder;
 import com.filmdb.auth.auth_service.domain.exception.PasswordMismatchException;
 import lombok.AllArgsConstructor;
 import lombok.extern.slf4j.Slf4j;

@@ -2,7 +2,7 @@ package com.filmdb.auth.auth_service.infrastructure.event;
 
 import com.filmdb.auth.auth_service.application.event.VerificationEmailRequestedEvent;
 import com.filmdb.auth.auth_service.domain.model.valueobject.EmailMessage;
-import com.filmdb.auth.auth_service.domain.services.MailProvider;
+import com.filmdb.auth.auth_service.domain.port.out.MailProvider;
 import lombok.AllArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.context.event.EventListener;

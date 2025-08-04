@@ -1,7 +1,7 @@
 package com.filmdb.auth.auth_service.adapter.out.notification.mail;
 
 import com.filmdb.auth.auth_service.domain.model.valueobject.EmailMessage;
-import com.filmdb.auth.auth_service.domain.services.MailProvider;
+import com.filmdb.auth.auth_service.domain.port.out.MailProvider;
 import jakarta.mail.MessagingException;
 import jakarta.mail.internet.MimeMessage;
 import lombok.AllArgsConstructor;

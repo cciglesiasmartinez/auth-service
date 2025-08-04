@@ -5,8 +5,8 @@ import com.filmdb.auth.auth_service.application.commands.RefreshAccessTokenComma
 import com.filmdb.auth.auth_service.application.services.RefreshTokenService;
 import com.filmdb.auth.auth_service.domain.model.RefreshToken;
 import com.filmdb.auth.auth_service.domain.model.valueobject.RefreshTokenString;
-import com.filmdb.auth.auth_service.domain.repository.RefreshTokenRepository;
-import com.filmdb.auth.auth_service.domain.services.AccessTokenProvider;
+import com.filmdb.auth.auth_service.domain.port.out.RefreshTokenRepository;
+import com.filmdb.auth.auth_service.domain.port.out.AccessTokenProvider;
 import lombok.AllArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;

@@ -2,7 +2,7 @@ package com.filmdb.auth.auth_service.infrastructure.security;
 
 import com.filmdb.auth.auth_service.domain.model.valueobject.EncodedPassword;
 import com.filmdb.auth.auth_service.domain.model.valueobject.PlainPassword;
-import com.filmdb.auth.auth_service.domain.services.PasswordEncoder;
+import com.filmdb.auth.auth_service.domain.port.out.PasswordEncoder;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.stereotype.Component;
 

@@ -2,7 +2,7 @@ package com.filmdb.auth.auth_service.adapter.out.persistence.redis.repository;
 
 import com.filmdb.auth.auth_service.domain.model.VerificationCode;
 import com.filmdb.auth.auth_service.domain.model.valueobject.VerificationCodeString;
-import com.filmdb.auth.auth_service.domain.repository.VerificationCodeRepository;
+import com.filmdb.auth.auth_service.domain.port.out.VerificationCodeRepository;
 import lombok.AllArgsConstructor;
 import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.data.redis.core.RedisTemplate;

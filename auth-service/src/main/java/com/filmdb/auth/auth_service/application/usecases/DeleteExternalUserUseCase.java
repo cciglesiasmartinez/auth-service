@@ -1,11 +1,11 @@
 package com.filmdb.auth.auth_service.application.usecases;
 
 import com.filmdb.auth.auth_service.application.commands.DeleteExternalUserCommand;
-import com.filmdb.auth.auth_service.application.exception.UserIsNotExternalException;
-import com.filmdb.auth.auth_service.application.exception.UserNotFoundException;
+import com.filmdb.auth.auth_service.domain.exception.UserIsNotExternalException;
+import com.filmdb.auth.auth_service.domain.exception.UserNotFoundException;
 import com.filmdb.auth.auth_service.domain.model.User;
 import com.filmdb.auth.auth_service.domain.model.valueobject.UserId;
-import com.filmdb.auth.auth_service.domain.repository.UserRepository;
+import com.filmdb.auth.auth_service.domain.port.out.UserRepository;
 import lombok.AllArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;

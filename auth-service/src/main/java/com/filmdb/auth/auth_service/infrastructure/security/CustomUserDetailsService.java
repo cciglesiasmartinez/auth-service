@@ -1,9 +1,9 @@
 package com.filmdb.auth.auth_service.infrastructure.security;
 
-import com.filmdb.auth.auth_service.application.exception.UserNotFoundException;
+import com.filmdb.auth.auth_service.domain.exception.UserNotFoundException;
 import com.filmdb.auth.auth_service.domain.model.valueobject.UserId;
 import com.filmdb.auth.auth_service.domain.model.valueobject.Username;
-import com.filmdb.auth.auth_service.domain.repository.UserRepository;
+import com.filmdb.auth.auth_service.domain.port.out.UserRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.core.userdetails.*;
 import org.springframework.stereotype.Service;

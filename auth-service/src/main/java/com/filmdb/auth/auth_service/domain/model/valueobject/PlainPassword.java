@@ -1,6 +1,6 @@
 package com.filmdb.auth.auth_service.domain.model.valueobject;
 
-import com.filmdb.auth.auth_service.application.exception.InvalidCredentialsException;
+import com.filmdb.auth.auth_service.domain.exception.InvalidCredentialsException;
 import com.filmdb.auth.auth_service.domain.exception.InvalidPasswordException;
 import lombok.EqualsAndHashCode;
 import lombok.ToString;

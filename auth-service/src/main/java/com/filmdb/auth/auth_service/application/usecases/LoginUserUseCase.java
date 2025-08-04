@@ -1,15 +1,15 @@
 package com.filmdb.auth.auth_service.application.usecases;
 
 import com.filmdb.auth.auth_service.application.commands.LoginUserCommand;
-import com.filmdb.auth.auth_service.application.exception.InvalidCredentialsException;
+import com.filmdb.auth.auth_service.domain.exception.InvalidCredentialsException;
 import com.filmdb.auth.auth_service.application.services.RefreshTokenService;
 import com.filmdb.auth.auth_service.domain.model.RefreshToken;
 import com.filmdb.auth.auth_service.domain.model.valueobject.Email;
 import com.filmdb.auth.auth_service.domain.model.valueobject.PlainPassword;
 import com.filmdb.auth.auth_service.domain.model.User;
-import com.filmdb.auth.auth_service.domain.repository.UserRepository;
-import com.filmdb.auth.auth_service.domain.services.PasswordEncoder;
-import com.filmdb.auth.auth_service.domain.services.AccessTokenProvider;
+import com.filmdb.auth.auth_service.domain.port.out.UserRepository;
+import com.filmdb.auth.auth_service.domain.port.out.PasswordEncoder;
+import com.filmdb.auth.auth_service.domain.port.out.AccessTokenProvider;
 import com.filmdb.auth.auth_service.adapter.in.web.dto.responses.LoginResponse;
 import com.filmdb.auth.auth_service.domain.exception.PasswordMismatchException;
 import lombok.AllArgsConstructor;

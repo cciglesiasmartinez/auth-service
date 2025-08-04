@@ -5,7 +5,7 @@ import com.filmdb.auth.auth_service.adapter.in.web.dto.responses.*;
 import com.filmdb.auth.auth_service.application.context.RequestContext;
 import com.filmdb.auth.auth_service.application.usecases.AuthUseCase;
 import com.filmdb.auth.auth_service.domain.model.User;
-import com.filmdb.auth.auth_service.application.exception.InvalidCredentialsException;
+import com.filmdb.auth.auth_service.domain.exception.InvalidCredentialsException;
 import com.filmdb.auth.auth_service.infrastructure.security.CustomUserDetails;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.responses.ApiResponses;

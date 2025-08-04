@@ -1,6 +1,6 @@
 package com.filmdb.auth.auth_service.infrastructure.security;
 
-import com.filmdb.auth.auth_service.domain.services.AccessTokenProvider;
+import com.filmdb.auth.auth_service.domain.port.out.AccessTokenProvider;
 import io.jsonwebtoken.*;
 import io.jsonwebtoken.security.Keys;
 import jakarta.annotation.PostConstruct;

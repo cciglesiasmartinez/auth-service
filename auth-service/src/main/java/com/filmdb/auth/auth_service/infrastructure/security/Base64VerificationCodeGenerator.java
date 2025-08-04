@@ -1,7 +1,7 @@
 package com.filmdb.auth.auth_service.infrastructure.security;
 
 import com.filmdb.auth.auth_service.domain.model.valueobject.VerificationCodeString;
-import com.filmdb.auth.auth_service.domain.services.VerificationCodeGenerator;
+import com.filmdb.auth.auth_service.domain.port.out.VerificationCodeGenerator;
 import org.springframework.stereotype.Component;
 
 import java.security.SecureRandom;

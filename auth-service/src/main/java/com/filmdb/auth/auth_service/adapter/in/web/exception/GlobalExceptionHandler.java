@@ -1,9 +1,6 @@
 package com.filmdb.auth.auth_service.adapter.in.web.exception;
 
-import com.filmdb.auth.auth_service.application.exception.*;
-import com.filmdb.auth.auth_service.domain.exception.InvalidPasswordException;
-import com.filmdb.auth.auth_service.domain.exception.InvalidUsernameException;
-import com.filmdb.auth.auth_service.domain.exception.PasswordMismatchException;
+import com.filmdb.auth.auth_service.domain.exception.*;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.ControllerAdvice;

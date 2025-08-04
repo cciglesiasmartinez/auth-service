@@ -1,4 +1,4 @@
-package com.filmdb.auth.auth_service.domain.services;
+package com.filmdb.auth.auth_service.domain.port.out;
 
 public interface AccessTokenProvider {
 
