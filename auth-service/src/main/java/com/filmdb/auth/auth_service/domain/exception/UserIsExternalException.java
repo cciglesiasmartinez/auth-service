@@ -1,4 +1,4 @@
-package com.filmdb.auth.auth_service.application.exception;
+package com.filmdb.auth.auth_service.domain.exception;
 
 public class UserIsExternalException extends RuntimeException {
 
