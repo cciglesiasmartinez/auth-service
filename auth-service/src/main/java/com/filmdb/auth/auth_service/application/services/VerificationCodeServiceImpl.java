@@ -21,7 +21,7 @@ public class VerificationCodeServiceImpl implements VerificationCodeService{
 
     @Override
     public VerificationCode generate(Username username, Email email, EncodedPassword password) {
-        VerificationCodeString code =verificationCodeGenerator.generate();
+        VerificationCodeString code = verificationCodeGenerator.generate();
         LocalDateTime issuedAt = LocalDateTime.now();
         LocalDateTime expiresAt = issuedAt.plusMinutes(30);
         VerificationCode verificationCode = VerificationCode.create(code, username, email, password, issuedAt,
