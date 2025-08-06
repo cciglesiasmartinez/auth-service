@@ -5,6 +5,7 @@ import com.filmdb.auth.auth_service.adapter.in.web.dto.responses.*;
 import com.filmdb.auth.auth_service.adapter.in.web.mapper.AuthRequestCommandMapper;
 import com.filmdb.auth.auth_service.application.commands.*;
 import com.filmdb.auth.auth_service.application.context.RequestContext;
+import com.filmdb.auth.auth_service.application.port.in.AuthUseCase;
 import com.filmdb.auth.auth_service.domain.model.User;
 import com.filmdb.auth.auth_service.domain.model.valueobject.ProviderKey;
 import com.filmdb.auth.auth_service.domain.port.out.UserLoginRepository;
