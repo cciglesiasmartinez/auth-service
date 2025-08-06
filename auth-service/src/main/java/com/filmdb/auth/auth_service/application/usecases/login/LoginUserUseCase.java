@@ -1,6 +1,5 @@
-package com.filmdb.auth.auth_service.application.usecases;
+package com.filmdb.auth.auth_service.application.usecases.login;
 
-import com.filmdb.auth.auth_service.application.commands.LoginUserCommand;
 import com.filmdb.auth.auth_service.domain.exception.InvalidCredentialsException;
 import com.filmdb.auth.auth_service.application.services.RefreshTokenService;
 import com.filmdb.auth.auth_service.domain.model.RefreshToken;

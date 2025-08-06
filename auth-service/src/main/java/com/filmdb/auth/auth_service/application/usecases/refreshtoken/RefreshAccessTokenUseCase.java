@@ -1,7 +1,6 @@
-package com.filmdb.auth.auth_service.application.usecases;
+package com.filmdb.auth.auth_service.application.usecases.refreshtoken;
 
 import com.filmdb.auth.auth_service.adapter.in.web.dto.responses.RefreshAccessTokenResponse;
-import com.filmdb.auth.auth_service.application.commands.RefreshAccessTokenCommand;
 import com.filmdb.auth.auth_service.application.services.RefreshTokenService;
 import com.filmdb.auth.auth_service.domain.model.RefreshToken;
 import com.filmdb.auth.auth_service.domain.model.valueobject.RefreshTokenString;

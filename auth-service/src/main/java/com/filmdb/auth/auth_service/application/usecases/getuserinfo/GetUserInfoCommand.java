@@ -1,9 +1,9 @@
-package com.filmdb.auth.auth_service.application.commands;
+package com.filmdb.auth.auth_service.application.usecases.getuserinfo;
 
 import lombok.AllArgsConstructor;
 
 @AllArgsConstructor
-public class DeleteExternalUserCommand {
+public class GetUserInfoCommand {
 
     private final String userId;
 

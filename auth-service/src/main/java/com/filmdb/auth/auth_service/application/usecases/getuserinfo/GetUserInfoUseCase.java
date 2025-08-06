@@ -1,6 +1,5 @@
-package com.filmdb.auth.auth_service.application.usecases;
+package com.filmdb.auth.auth_service.application.usecases.getuserinfo;
 
-import com.filmdb.auth.auth_service.application.commands.GetUserInfoCommand;
 import com.filmdb.auth.auth_service.domain.exception.UserNotFoundException;
 import com.filmdb.auth.auth_service.domain.model.User;
 import com.filmdb.auth.auth_service.domain.model.valueobject.UserId;

@@ -1,7 +1,6 @@
-package com.filmdb.auth.auth_service.application.usecases;
+package com.filmdb.auth.auth_service.application.usecases.registergoogle;
 
 import com.filmdb.auth.auth_service.adapter.in.web.dto.responses.LoginResponse;
-import com.filmdb.auth.auth_service.application.commands.OAuthGoogleRegisterUserCommand;
 import com.filmdb.auth.auth_service.domain.exception.EmailAlreadyExistsException;
 import com.filmdb.auth.auth_service.application.services.RefreshTokenService;
 import com.filmdb.auth.auth_service.domain.model.RefreshToken;

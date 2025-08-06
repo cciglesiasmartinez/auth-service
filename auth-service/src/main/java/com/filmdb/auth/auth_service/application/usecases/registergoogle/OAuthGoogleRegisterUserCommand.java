@@ -1,9 +1,9 @@
-package com.filmdb.auth.auth_service.application.commands;
+package com.filmdb.auth.auth_service.application.usecases.registergoogle;
 
 import lombok.AllArgsConstructor;
 
 @AllArgsConstructor
-public class OAuthGoogleLoginUserCommand {
+public class OAuthGoogleRegisterUserCommand {
 
     private final String googleId;
     private final String googleEmail;

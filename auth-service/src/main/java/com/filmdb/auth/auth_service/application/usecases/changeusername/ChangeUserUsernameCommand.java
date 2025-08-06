@@ -1,13 +1,13 @@
-package com.filmdb.auth.auth_service.application.commands;
+package com.filmdb.auth.auth_service.application.usecases.changeusername;
 
 import lombok.AllArgsConstructor;
 
 @AllArgsConstructor
-public class ChangeUserEmailCommand {
+public class ChangeUserUsernameCommand {
 
     private final String userId;
     private final String currentPassword;
-    private final String newEmail;
+    private final String newUsername;
 
     public String userId() {
         return userId;
@@ -17,8 +17,8 @@ public class ChangeUserEmailCommand {
         return currentPassword;
     }
 
-    public String newEmail() {
-        return newEmail;
+    public String newUsername() {
+        return newUsername;
     }
 
 }

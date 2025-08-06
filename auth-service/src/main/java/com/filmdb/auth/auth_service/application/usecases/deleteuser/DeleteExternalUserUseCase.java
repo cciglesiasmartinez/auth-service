@@ -1,6 +1,5 @@
-package com.filmdb.auth.auth_service.application.usecases;
+package com.filmdb.auth.auth_service.application.usecases.deleteuser;
 
-import com.filmdb.auth.auth_service.application.commands.DeleteExternalUserCommand;
 import com.filmdb.auth.auth_service.domain.exception.UserIsNotExternalException;
 import com.filmdb.auth.auth_service.domain.exception.UserNotFoundException;
 import com.filmdb.auth.auth_service.domain.model.User;

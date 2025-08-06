@@ -1,6 +1,5 @@
-package com.filmdb.auth.auth_service.application.usecases;
+package com.filmdb.auth.auth_service.application.usecases.changeemail;
 
-import com.filmdb.auth.auth_service.application.commands.ChangeUserEmailCommand;
 import com.filmdb.auth.auth_service.domain.exception.EmailAlreadyExistsException;
 import com.filmdb.auth.auth_service.domain.exception.UserIsExternalException;
 import com.filmdb.auth.auth_service.domain.exception.UserNotFoundException;

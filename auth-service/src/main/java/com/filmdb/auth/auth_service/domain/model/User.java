@@ -1,7 +1,7 @@
 package com.filmdb.auth.auth_service.domain.model;
 
 import com.filmdb.auth.auth_service.domain.exception.InvalidCredentialsException;
-import com.filmdb.auth.auth_service.application.usecases.OAuthGoogleLoginUserUseCase;
+import com.filmdb.auth.auth_service.application.usecases.logingoogle.OAuthGoogleLoginUserUseCase;
 import com.filmdb.auth.auth_service.domain.event.DomainEvent;
 import com.filmdb.auth.auth_service.domain.event.UserRegisteredEvent;
 import com.filmdb.auth.auth_service.domain.model.valueobject.*;

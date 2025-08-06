@@ -1,4 +1,4 @@
-package com.filmdb.auth.auth_service.application.commands;
+package com.filmdb.auth.auth_service.application.usecases.login;
 
 import lombok.AllArgsConstructor;
 

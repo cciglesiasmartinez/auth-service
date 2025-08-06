@@ -1,6 +1,5 @@
-package com.filmdb.auth.auth_service.application.usecases;
+package com.filmdb.auth.auth_service.application.usecases.changeusername;
 
-import com.filmdb.auth.auth_service.application.commands.ChangeUserUsernameCommand;
 import com.filmdb.auth.auth_service.domain.exception.UserNotFoundException;
 import com.filmdb.auth.auth_service.domain.exception.UsernameAlreadyExistsException;
 import com.filmdb.auth.auth_service.domain.model.valueobject.PlainPassword;

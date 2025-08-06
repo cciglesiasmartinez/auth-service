@@ -1,6 +1,5 @@
-package com.filmdb.auth.auth_service.application.usecases;
+package com.filmdb.auth.auth_service.application.usecases.deleteuser;
 
-import com.filmdb.auth.auth_service.application.commands.DeleteUserCommand;
 import com.filmdb.auth.auth_service.domain.exception.UserNotFoundException;
 import com.filmdb.auth.auth_service.domain.model.valueobject.PlainPassword;
 import com.filmdb.auth.auth_service.domain.model.User;
