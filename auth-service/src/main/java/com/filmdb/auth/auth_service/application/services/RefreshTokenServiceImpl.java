@@ -7,10 +7,12 @@ import com.filmdb.auth.auth_service.domain.port.out.RefreshTokenRepository;
 import com.filmdb.auth.auth_service.domain.port.out.RefreshTokenGenerator;
 import lombok.AllArgsConstructor;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 
 import java.time.LocalDateTime;
 
 @Service
+@Transactional
 @AllArgsConstructor
 public class RefreshTokenServiceImpl implements RefreshTokenService {
 
@@ -20,6 +22,7 @@ public class RefreshTokenServiceImpl implements RefreshTokenService {
     @Override
     public RefreshToken generate(UserId userId, String ipAddress, String userAgent) {
         RefreshTokenString tokenString = refreshTokenGenerator.generate();
+        // TODO: Use injected Clock + customizable TTL
         LocalDateTime issuedAt = LocalDateTime.now();
         LocalDateTime expiresAt = issuedAt.plusDays(1);
         RefreshToken refreshToken = RefreshToken.create(tokenString, userId, issuedAt, expiresAt, ipAddress, userAgent);
