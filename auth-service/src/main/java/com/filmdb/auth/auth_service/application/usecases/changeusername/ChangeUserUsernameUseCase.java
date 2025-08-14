@@ -8,7 +8,7 @@ import com.filmdb.auth.auth_service.domain.model.valueobject.UserId;
 import com.filmdb.auth.auth_service.domain.model.valueobject.Username;
 import com.filmdb.auth.auth_service.domain.port.out.UserRepository;
 import com.filmdb.auth.auth_service.domain.port.out.PasswordEncoder;
-import com.filmdb.auth.auth_service.adapter.in.web.dto.responses.ChangeUsernameResponse;
+import com.filmdb.auth.auth_service.infrastructure.adapter.in.web.dto.responses.ChangeUsernameResponse;
 import com.filmdb.auth.auth_service.domain.exception.PasswordMismatchException;
 import lombok.AllArgsConstructor;
 import lombok.extern.slf4j.Slf4j;

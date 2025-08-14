@@ -1,9 +1,10 @@
 package com.filmdb.auth.auth_service.application.port.in;
 
-import com.filmdb.auth.auth_service.adapter.in.web.dto.requests.*;
-import com.filmdb.auth.auth_service.adapter.in.web.dto.responses.*;
+import com.filmdb.auth.auth_service.infrastructure.adapter.in.web.dto.requests.*;
 import com.filmdb.auth.auth_service.application.context.RequestContext;
 import com.filmdb.auth.auth_service.domain.model.User;
+import com.filmdb.auth.auth_service.infrastructure.adapter.in.web.dto.requests.*;
+import com.filmdb.auth.auth_service.infrastructure.adapter.in.web.dto.responses.*;
 
 
 public interface AuthUseCase {

@@ -1,6 +1,6 @@
 package com.filmdb.auth.auth_service.application.usecases.logingoogle;
 
-import com.filmdb.auth.auth_service.adapter.in.web.dto.responses.LoginResponse;
+import com.filmdb.auth.auth_service.infrastructure.adapter.in.web.dto.responses.LoginResponse;
 import com.filmdb.auth.auth_service.domain.exception.UserNotFoundException;
 import com.filmdb.auth.auth_service.application.services.RefreshTokenService;
 import com.filmdb.auth.auth_service.domain.model.RefreshToken;

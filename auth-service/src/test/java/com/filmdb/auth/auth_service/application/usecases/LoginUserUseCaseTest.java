@@ -1,6 +1,6 @@
 package com.filmdb.auth.auth_service.application.usecases;
 
-import com.filmdb.auth.auth_service.adapter.in.web.dto.responses.LoginResponse;
+import com.filmdb.auth.auth_service.infrastructure.adapter.in.web.dto.responses.LoginResponse;
 import com.filmdb.auth.auth_service.application.usecases.login.LoginUserCommand;
 import com.filmdb.auth.auth_service.application.usecases.login.LoginUserUseCase;
 import com.filmdb.auth.auth_service.domain.exception.InvalidCredentialsException;

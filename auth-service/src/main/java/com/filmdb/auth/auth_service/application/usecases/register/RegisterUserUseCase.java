@@ -1,6 +1,6 @@
 package com.filmdb.auth.auth_service.application.usecases.register;
 
-import com.filmdb.auth.auth_service.adapter.in.web.dto.responses.RegisterResponse;
+import com.filmdb.auth.auth_service.infrastructure.adapter.in.web.dto.responses.RegisterResponse;
 import com.filmdb.auth.auth_service.application.event.VerificationEmailRequestedEvent;
 import com.filmdb.auth.auth_service.domain.exception.UserAlreadyRegisteredException;
 import com.filmdb.auth.auth_service.application.services.VerificationCodeService;
@@ -9,7 +9,7 @@ import com.filmdb.auth.auth_service.domain.model.VerificationCode;
 import com.filmdb.auth.auth_service.domain.model.valueobject.*;
 import com.filmdb.auth.auth_service.domain.port.out.UserRepository;
 import com.filmdb.auth.auth_service.domain.port.out.PasswordEncoder;
-import com.filmdb.auth.auth_service.adapter.in.web.dto.responses.UserResponse;
+import com.filmdb.auth.auth_service.infrastructure.adapter.in.web.dto.responses.UserResponse;
 import lombok.AllArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.context.ApplicationEventPublisher;

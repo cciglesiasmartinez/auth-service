@@ -1,6 +1,6 @@
 package com.filmdb.auth.auth_service.application.usecases;
 
-import com.filmdb.auth.auth_service.adapter.in.web.dto.responses.RegisterResponse;
+import com.filmdb.auth.auth_service.infrastructure.adapter.in.web.dto.responses.RegisterResponse;
 import com.filmdb.auth.auth_service.application.usecases.register.RegisterUserCommand;
 import com.filmdb.auth.auth_service.application.event.VerificationEmailRequestedEvent;
 import com.filmdb.auth.auth_service.application.usecases.register.RegisterUserUseCase;
