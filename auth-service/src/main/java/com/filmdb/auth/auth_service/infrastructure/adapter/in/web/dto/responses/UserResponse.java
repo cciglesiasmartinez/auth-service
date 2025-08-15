@@ -40,12 +40,6 @@ public class UserResponse {
     )
     private String password; // Remove before production
 
-//    @Schema(
-//            description = "",
-//            example = ""
-//    )
-//    private boolean isAdmin;
-
     @Schema(
             description = "",
             example = ""
