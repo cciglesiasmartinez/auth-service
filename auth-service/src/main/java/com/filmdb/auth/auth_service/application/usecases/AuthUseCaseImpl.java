@@ -1,6 +1,8 @@
 package com.filmdb.auth.auth_service.application.usecases;
 
-import com.filmdb.auth.auth_service.infrastructure.adapter.in.web.dto.requests.*;
+import com.filmdb.auth.auth_service.application.usecases.getuserinfo.GetUserInfoCommand;
+import com.filmdb.auth.auth_service.application.usecases.getuserinfo.GetUserInfoUseCase;
+import com.filmdb.auth.auth_service.domain.model.valueobject.UserId;
 import com.filmdb.auth.auth_service.infrastructure.adapter.in.web.dto.requests.*;
 import com.filmdb.auth.auth_service.infrastructure.adapter.in.web.dto.responses.*;
 import com.filmdb.auth.auth_service.infrastructure.adapter.in.web.mapper.AuthRequestCommandMapper;
@@ -53,6 +55,7 @@ public class AuthUseCaseImpl implements AuthUseCase {
     private final RefreshAccessTokenUseCase refreshAccessTokenService;
     private final OAuthGoogleRegisterUserUseCase oAuthGoogleRegisterService;
     private final OAuthGoogleLoginUserUseCase oAuthGoogleLoginService;
+    private final GetUserInfoUseCase getUserInfoUseCase;
     private final AuthRequestCommandMapper mapper;
     private final GoogleTokenVerifier googleTokenVerifier;
     private final UserLoginRepository userLoginRepository;
@@ -122,6 +125,12 @@ public class AuthUseCaseImpl implements AuthUseCase {
                     userGoogleEmail, context);
             return oAuthGoogleRegisterService.execute(command);
         }
+    }
+
+    @Override
+    public Envelope<UserResponse> getUserInfo(UserId userId) {
+        GetUserInfoCommand command = mapper.toGetUserInfoCommand(userId.value());
+        return getUserInfoUseCase.execute(command);
     }
 
     @Override

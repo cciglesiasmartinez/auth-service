@@ -1,13 +1,12 @@
 package com.filmdb.auth.auth_service.infrastructure.adapter.in.web;
 
+import com.filmdb.auth.auth_service.domain.model.valueobject.UserId;
 import com.filmdb.auth.auth_service.infrastructure.adapter.in.web.dto.requests.*;
 import com.filmdb.auth.auth_service.infrastructure.adapter.in.web.dto.responses.*;
 import com.filmdb.auth.auth_service.application.context.RequestContext;
 import com.filmdb.auth.auth_service.application.port.in.AuthUseCase;
 import com.filmdb.auth.auth_service.domain.model.User;
 import com.filmdb.auth.auth_service.domain.exception.InvalidCredentialsException;
-import com.filmdb.auth.auth_service.infrastructure.adapter.in.web.dto.requests.*;
-import com.filmdb.auth.auth_service.infrastructure.adapter.in.web.dto.responses.*;
 import com.filmdb.auth.auth_service.infrastructure.security.CustomUserDetails;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.responses.ApiResponses;
@@ -116,9 +115,9 @@ public class AuthController {
             @ApiResponse(responseCode = "200", description = "User information successfully retrieved.")
     })
     @GetMapping("/me")
-    public ResponseEntity<UserResponse> getCurrentUser(Authentication authentication) {
-        User user = getAuthenticatedUser(authentication);
-        UserResponse response = UserResponse.fromDomainUser(user);
+    public ResponseEntity<Envelope> getCurrentUser(Authentication authentication) {
+        UserId userId = getAuthenticatedUser(authentication).id();
+        Envelope<UserResponse> response = authUseCase.getUserInfo(userId);
         return new ResponseEntity<>(response, HttpStatus.OK);
     }
 

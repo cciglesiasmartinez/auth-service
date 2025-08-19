@@ -4,6 +4,8 @@ import com.filmdb.auth.auth_service.domain.exception.UserNotFoundException;
 import com.filmdb.auth.auth_service.domain.model.User;
 import com.filmdb.auth.auth_service.domain.model.valueobject.UserId;
 import com.filmdb.auth.auth_service.domain.port.out.UserRepository;
+import com.filmdb.auth.auth_service.infrastructure.adapter.in.web.dto.responses.Envelope;
+import com.filmdb.auth.auth_service.infrastructure.adapter.in.web.dto.responses.Meta;
 import com.filmdb.auth.auth_service.infrastructure.adapter.in.web.dto.responses.UserResponse;
 import lombok.AllArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
@@ -25,17 +27,17 @@ public class GetUserInfoUseCase {
      * Executes get user info use case.
      *
      * @param command {@link GetUserInfoCommand} object containing the user id.
-     * @return {@link UserResponse} object with user data.
+     * @return {@link Envelope <UserResponse>} of {@link UserResponse} type object with user data.
      * @throws UserNotFoundException if user does not exist.
      */
-    public UserResponse execute(GetUserInfoCommand command) {
+    public Envelope<UserResponse> execute(GetUserInfoCommand command) {
         User user = userRepository.findById(UserId.of(command.userId()))
                 .orElseThrow(() -> {
                     log.warn("UserId {} not found in database.", command.userId());
-                    throw new UserNotFoundException();
+                    return new UserNotFoundException();
                 });
         log.info("User checked their information successfully.");
-        return UserResponse.fromDomainUser(user);
+        return new Envelope<UserResponse>(UserResponse.fromDomainUser(user), new Meta());
     }
 
 }

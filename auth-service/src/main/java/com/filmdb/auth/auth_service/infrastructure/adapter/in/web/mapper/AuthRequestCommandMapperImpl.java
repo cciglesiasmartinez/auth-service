@@ -1,5 +1,6 @@
 package com.filmdb.auth.auth_service.infrastructure.adapter.in.web.mapper;
 
+import com.filmdb.auth.auth_service.application.usecases.getuserinfo.GetUserInfoCommand;
 import com.filmdb.auth.auth_service.infrastructure.adapter.in.web.dto.requests.*;
 import com.filmdb.auth.auth_service.application.context.RequestContext;
 import com.filmdb.auth.auth_service.application.usecases.changeemail.ChangeUserEmailCommand;
@@ -14,7 +15,6 @@ import com.filmdb.auth.auth_service.application.usecases.refreshtoken.RefreshAcc
 import com.filmdb.auth.auth_service.application.usecases.register.RegisterUserCommand;
 import com.filmdb.auth.auth_service.application.usecases.registergoogle.OAuthGoogleRegisterUserCommand;
 import com.filmdb.auth.auth_service.application.usecases.verifyregistration.VerifyUserRegistrationCommand;
-import com.filmdb.auth.auth_service.infrastructure.adapter.in.web.dto.requests.*;
 import org.springframework.stereotype.Component;
 
 @Component
@@ -99,6 +99,11 @@ public class AuthRequestCommandMapperImpl implements  AuthRequestCommandMapper {
         return new RefreshAccessTokenCommand(
                 request.getRefreshToken()
         );
+    }
+
+    @Override
+    public GetUserInfoCommand toGetUserInfoCommand(String userId) {
+        return new GetUserInfoCommand(userId);
     }
 
     @Override
