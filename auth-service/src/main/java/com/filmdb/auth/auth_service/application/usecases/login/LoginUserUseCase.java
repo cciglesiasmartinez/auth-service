@@ -9,8 +9,10 @@ import com.filmdb.auth.auth_service.domain.model.User;
 import com.filmdb.auth.auth_service.domain.port.out.UserRepository;
 import com.filmdb.auth.auth_service.domain.port.out.PasswordEncoder;
 import com.filmdb.auth.auth_service.domain.port.out.AccessTokenProvider;
+import com.filmdb.auth.auth_service.infrastructure.adapter.in.web.dto.responses.Envelope;
 import com.filmdb.auth.auth_service.infrastructure.adapter.in.web.dto.responses.LoginResponse;
 import com.filmdb.auth.auth_service.domain.exception.PasswordMismatchException;
+import com.filmdb.auth.auth_service.infrastructure.adapter.in.web.dto.responses.Meta;
 import lombok.AllArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
@@ -39,7 +41,7 @@ public class LoginUserUseCase {
      * @throws InvalidCredentialsException if the user is not found or is externally authenticated.
      * @throws PasswordMismatchException if provided password does not match stored password.
      */
-    public LoginResponse execute(LoginUserCommand command) {
+    public Envelope<LoginResponse> execute(LoginUserCommand command) {
         Email email = Email.of(command.email());
         User user = userRepository.findByEmail(email)
                 .orElseThrow(() -> {
@@ -58,7 +60,8 @@ public class LoginUserUseCase {
         long expiresIn = accessTokenProvider.getTokenExpirationInSeconds();
         RefreshToken refreshToken = refreshTokenService.generate(user.id(), command.ip(), command.userAgent());
         log.info("User {} authenticated successfully.", user.username().value());
-        return new LoginResponse(token, refreshToken.token().value() , expiresIn, user.username().value());
+        LoginResponse response = new LoginResponse(token, refreshToken.token().value() , expiresIn, user.username().value());
+        return new Envelope<LoginResponse>(response, new Meta());
     }
 
 }

@@ -11,7 +11,7 @@ public interface AuthUseCase {
 
     RegisterResponse register(RegisterRequest request);
     UserResponse verifyRegistration(String code);
-    LoginResponse login(LoginRequest request, RequestContext context);
+    Envelope<LoginResponse> login(LoginRequest request, RequestContext context);
     RefreshAccessTokenResponse refreshAccessToken(RefreshAccessTokenRequest request);
     ChangePasswordResponse changePassword(User user, ChangePasswordRequest request);
     ChangeUsernameResponse changeUsername(User user, ChangeUsernameRequest request);

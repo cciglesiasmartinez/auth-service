@@ -85,12 +85,12 @@ public class AuthController {
             @ApiResponse(responseCode = "202", description = "Authentication successful.")
     })
     @PostMapping("/login")
-    public ResponseEntity<LoginResponse> login(@Valid @RequestBody LoginRequest request,
+    public ResponseEntity<Envelope> login(@Valid @RequestBody LoginRequest request,
                                                HttpServletRequest httpRequest) {
         String ip = httpRequest.getRemoteAddr();
         String userAgent = httpRequest.getHeader("User-Agent");
         RequestContext context = new RequestContext(ip, userAgent);
-        LoginResponse response = authUseCase.login(request, context);
+        Envelope<LoginResponse> response = authUseCase.login(request, context);
         return new ResponseEntity<>(response, HttpStatus.ACCEPTED);
     }
 

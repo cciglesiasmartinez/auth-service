@@ -73,7 +73,7 @@ public class AuthUseCaseImpl implements AuthUseCase {
     }
 
     @Override
-    public LoginResponse login(LoginRequest request, RequestContext context) {
+    public Envelope<LoginResponse> login(LoginRequest request, RequestContext context) {
         LoginUserCommand command = mapper.toLoginUserCommand(request, context);
         return loginUserService.execute(command);
     }

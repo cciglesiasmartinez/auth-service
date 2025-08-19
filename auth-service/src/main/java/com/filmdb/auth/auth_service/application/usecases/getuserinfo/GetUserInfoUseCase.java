@@ -27,7 +27,7 @@ public class GetUserInfoUseCase {
      * Executes get user info use case.
      *
      * @param command {@link GetUserInfoCommand} object containing the user id.
-     * @return {@link Envelope <UserResponse>} of {@link UserResponse} type object with user data.
+     * @return {@link Envelope<UserResponse>} of {@link UserResponse} type object with user data.
      * @throws UserNotFoundException if user does not exist.
      */
     public Envelope<UserResponse> execute(GetUserInfoCommand command) {
