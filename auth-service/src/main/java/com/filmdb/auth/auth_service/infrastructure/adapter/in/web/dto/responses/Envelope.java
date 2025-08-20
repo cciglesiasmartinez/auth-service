@@ -21,6 +21,8 @@ public class Envelope<T> {
 //    private LocalDateTime timestamp;
 //    private Object data;
 
+    // TODO: Create a factory method like .of or .success to generate the envelopes in a more pro manner
+
     private T data;
     private Meta meta;
 
