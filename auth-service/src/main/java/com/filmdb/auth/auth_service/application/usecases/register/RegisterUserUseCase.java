@@ -1,5 +1,7 @@
 package com.filmdb.auth.auth_service.application.usecases.register;
 
+import com.filmdb.auth.auth_service.infrastructure.adapter.in.web.dto.responses.Envelope;
+import com.filmdb.auth.auth_service.infrastructure.adapter.in.web.dto.responses.Meta;
 import com.filmdb.auth.auth_service.infrastructure.adapter.in.web.dto.responses.RegisterResponse;
 import com.filmdb.auth.auth_service.application.event.VerificationEmailRequestedEvent;
 import com.filmdb.auth.auth_service.domain.exception.UserAlreadyRegisteredException;
@@ -39,7 +41,7 @@ public class RegisterUserUseCase {
      * @throws UserAlreadyRegisteredException if a user with the same email or username already exists.
      * @throws InvalidPasswordException if the provided password does not meet security requirements.
      */
-    public RegisterResponse execute(RegisterUserCommand command) {
+    public Envelope<RegisterResponse> execute(RegisterUserCommand command) {
         Username username = Username.of(command.username());
         Email email = Email.of(command.email());
         PlainPassword plainPassword = PlainPassword.of(command.password());
@@ -52,7 +54,8 @@ public class RegisterUserUseCase {
         springPublisher.publishEvent(new VerificationEmailRequestedEvent(email,
                 verificationCode.verificationCodeString()));
         log.info("User with username {} initiated registration process successfully", username.value());
-        return new RegisterResponse("Verification code sent to email.", email.value());
+        RegisterResponse data = new RegisterResponse("verification_sent", email.value());
+        return new Envelope<>(data, new Meta());
     }
 
 }

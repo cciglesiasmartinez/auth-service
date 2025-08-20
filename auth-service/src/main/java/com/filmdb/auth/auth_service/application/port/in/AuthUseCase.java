@@ -9,15 +9,15 @@ import com.filmdb.auth.auth_service.infrastructure.adapter.in.web.dto.responses.
 
 public interface AuthUseCase {
 
-    RegisterResponse register(RegisterRequest request);
-    UserResponse verifyRegistration(String code);
+    Envelope<RegisterResponse> register(RegisterRequest request);
+    Envelope<UserResponse> verifyRegistration(String code);
     Envelope<LoginResponse> login(LoginRequest request, RequestContext context);
-    RefreshAccessTokenResponse refreshAccessToken(RefreshAccessTokenRequest request);
-    ChangePasswordResponse changePassword(User user, ChangePasswordRequest request);
-    ChangeUsernameResponse changeUsername(User user, ChangeUsernameRequest request);
-    ChangeUsernameResponse changeExternalUserUsername(User user, ChangeExternalUserUsernameRequest request);
-    ChangeEmailResponse changeEmail(User user, ChangeEmailRequest request);
-    LoginResponse OAuthGoogleFlow(OAuthGoogleRequest request, RequestContext context);
+    Envelope<RefreshAccessTokenResponse> refreshAccessToken(RefreshAccessTokenRequest request);
+    Envelope<ChangePasswordResponse> changePassword(User user, ChangePasswordRequest request);
+    Envelope<ChangeUsernameResponse> changeUsername(User user, ChangeUsernameRequest request);
+    Envelope<ChangeUsernameResponse> changeExternalUserUsername(User user, ChangeExternalUserUsernameRequest request);
+    Envelope<ChangeEmailResponse> changeEmail(User user, ChangeEmailRequest request);
+    Envelope<LoginResponse> OAuthGoogleFlow(OAuthGoogleRequest request, RequestContext context);
     Envelope<UserResponse> getUserInfo(UserId userId);
     void deleteUser(User user, DeleteUserRequest request);
     void deleteExternalUser(User user);

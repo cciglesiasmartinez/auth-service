@@ -61,13 +61,13 @@ public class AuthUseCaseImpl implements AuthUseCase {
     private final UserLoginRepository userLoginRepository;
 
     @Override
-    public RegisterResponse register(RegisterRequest request) {
+    public Envelope<RegisterResponse> register(RegisterRequest request) {
         RegisterUserCommand command = mapper.toRegisterUserCommand(request);
         return registerUserService.execute(command);
     }
 
     @Override
-    public UserResponse verifyRegistration(String code) {
+    public Envelope<UserResponse> verifyRegistration(String code) {
         VerifyUserRegistrationCommand command = mapper.toVerifyUserRegistrationCommand(code);
         return verifyUserRegistrationService.execute(command);
     }
@@ -79,25 +79,25 @@ public class AuthUseCaseImpl implements AuthUseCase {
     }
 
     @Override
-    public RefreshAccessTokenResponse refreshAccessToken(RefreshAccessTokenRequest request) {
+    public Envelope<RefreshAccessTokenResponse> refreshAccessToken(RefreshAccessTokenRequest request) {
         RefreshAccessTokenCommand command = mapper.toRefreshAccessTokenCommand(request);
         return refreshAccessTokenService.execute(command);
     }
 
     @Override
-    public ChangePasswordResponse changePassword(User user, ChangePasswordRequest request) {
+    public Envelope<ChangePasswordResponse> changePassword(User user, ChangePasswordRequest request) {
         ChangePasswordCommand command = mapper.toChangePasswordCommand(request, user.id().value());
         return changePasswordService.execute(command);
     }
 
     @Override
-    public ChangeUsernameResponse changeUsername(User user, ChangeUsernameRequest request) {
+    public Envelope<ChangeUsernameResponse> changeUsername(User user, ChangeUsernameRequest request) {
         ChangeUserUsernameCommand command = mapper.toChangeUserUsernameCommand(request, user.id().value());
         return changeUserUsernameService.execute(command);
     }
 
     @Override
-    public ChangeUsernameResponse changeExternalUserUsername(User user, ChangeExternalUserUsernameRequest request) {
+    public Envelope<ChangeUsernameResponse> changeExternalUserUsername(User user, ChangeExternalUserUsernameRequest request) {
         ChangeExternalUserUsernameCommand command = mapper.toChangeExternalUserUsernameCommand(
                 request,
                 user.id().value());
@@ -105,13 +105,13 @@ public class AuthUseCaseImpl implements AuthUseCase {
     }
 
     @Override
-    public ChangeEmailResponse changeEmail(User user, ChangeEmailRequest request) {
+    public Envelope<ChangeEmailResponse> changeEmail(User user, ChangeEmailRequest request) {
         ChangeUserEmailCommand command = mapper.toChangeUserEmailCommand(request, user.id().value());
         return changeUserEmailService.execute(command);
     }
 
     @Override
-    public LoginResponse OAuthGoogleFlow(OAuthGoogleRequest request, RequestContext context) {
+    public Envelope<LoginResponse> OAuthGoogleFlow(OAuthGoogleRequest request, RequestContext context) {
         GoogleTokenVerifier.GoogleUser user = googleTokenVerifier.extractUserInfo(request.getIdToken());
         // TODO: Object for this?
         String userGoogleId = user.googleId();

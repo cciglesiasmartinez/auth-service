@@ -9,6 +9,8 @@ import com.filmdb.auth.auth_service.domain.model.valueobject.UserId;
 import com.filmdb.auth.auth_service.domain.port.out.UserRepository;
 import com.filmdb.auth.auth_service.domain.port.out.PasswordEncoder;
 import com.filmdb.auth.auth_service.domain.exception.PasswordMismatchException;
+import com.filmdb.auth.auth_service.infrastructure.adapter.in.web.dto.responses.Envelope;
+import com.filmdb.auth.auth_service.infrastructure.adapter.in.web.dto.responses.Meta;
 import lombok.AllArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
@@ -38,7 +40,7 @@ public class ChangePasswordUseCase {
      * @throws PasswordMismatchException if the current password does not match the stored password.
      * @throws UserIsExternalException if user is externally authenticated.
      */
-    public ChangePasswordResponse execute(ChangePasswordCommand command) {
+    public Envelope<ChangePasswordResponse> execute(ChangePasswordCommand command) {
         PlainPassword currentPassword = PlainPassword.of(command.currentPassword());
         PlainPassword newPassword = PlainPassword.of(command.newPassword());
         User user = userRepository.findById(UserId.of(command.userId()))
@@ -53,7 +55,8 @@ public class ChangePasswordUseCase {
         user.changePassword(currentPassword, newPassword, passwordEncoder);
         userRepository.save(user);
         log.info("Password changed successfully.");
-        return new ChangePasswordResponse("Password changed.", LocalDateTime.now());
+        ChangePasswordResponse data = new ChangePasswordResponse("password_changed", LocalDateTime.now());
+        return new Envelope<>(data, new Meta());
     }
 
 }

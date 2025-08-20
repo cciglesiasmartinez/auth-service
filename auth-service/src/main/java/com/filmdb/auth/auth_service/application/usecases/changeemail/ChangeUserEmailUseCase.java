@@ -11,6 +11,8 @@ import com.filmdb.auth.auth_service.domain.port.out.UserRepository;
 import com.filmdb.auth.auth_service.domain.port.out.PasswordEncoder;
 import com.filmdb.auth.auth_service.infrastructure.adapter.in.web.dto.responses.ChangeEmailResponse;
 import com.filmdb.auth.auth_service.domain.exception.PasswordMismatchException;
+import com.filmdb.auth.auth_service.infrastructure.adapter.in.web.dto.responses.Envelope;
+import com.filmdb.auth.auth_service.infrastructure.adapter.in.web.dto.responses.Meta;
 import lombok.AllArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
@@ -40,7 +42,7 @@ public class ChangeUserEmailUseCase {
      * @throws EmailAlreadyExistsException if email already exists.
      * @throws UserIsExternalException if user is externally authenticated.
      */
-    public ChangeEmailResponse execute(ChangeUserEmailCommand command) {
+    public Envelope<ChangeEmailResponse> execute(ChangeUserEmailCommand command) {
         PlainPassword currentPassword = PlainPassword.of(command.currentPassword());
         Email newEmail = Email.of(command.newEmail());
         if (userRepository.existsByEmail(newEmail)) {
@@ -59,7 +61,8 @@ public class ChangeUserEmailUseCase {
         user.changeEmail(currentPassword, newEmail, passwordEncoder);
         userRepository.save(user);
         log.info("Changed email to {} successfully.", newEmail);
-        return new ChangeEmailResponse(newEmail.value(), LocalDateTime.now());
+        ChangeEmailResponse data = new ChangeEmailResponse(newEmail.value(), LocalDateTime.now());
+        return new Envelope<>(data, new Meta());
     }
 
 }

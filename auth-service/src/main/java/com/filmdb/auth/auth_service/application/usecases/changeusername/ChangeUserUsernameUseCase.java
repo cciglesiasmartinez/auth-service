@@ -10,6 +10,8 @@ import com.filmdb.auth.auth_service.domain.port.out.UserRepository;
 import com.filmdb.auth.auth_service.domain.port.out.PasswordEncoder;
 import com.filmdb.auth.auth_service.infrastructure.adapter.in.web.dto.responses.ChangeUsernameResponse;
 import com.filmdb.auth.auth_service.domain.exception.PasswordMismatchException;
+import com.filmdb.auth.auth_service.infrastructure.adapter.in.web.dto.responses.Envelope;
+import com.filmdb.auth.auth_service.infrastructure.adapter.in.web.dto.responses.Meta;
 import lombok.AllArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
@@ -38,7 +40,7 @@ public class ChangeUserUsernameUseCase {
      * @throws PasswordMismatchException if provided password does not match the stored one.
      * @throws UsernameAlreadyExistsException if username already exists in database.
      */
-    public ChangeUsernameResponse execute(ChangeUserUsernameCommand command) {
+    public Envelope<ChangeUsernameResponse> execute(ChangeUserUsernameCommand command) {
         // TODO: try-catch for log.warn?
         // TODO: Consider how to handle username changes for externally authenticated users.
         PlainPassword currentPassword = PlainPassword.of(command.currentPassword());
@@ -55,7 +57,8 @@ public class ChangeUserUsernameUseCase {
         user.changeUsername(currentPassword, newUsername, passwordEncoder);
         userRepository.save(user);
         log.info("Changed username to {} successfully.", user.username().value());
-        return new ChangeUsernameResponse(user.username().value(), LocalDateTime.now());
+        ChangeUsernameResponse data = new ChangeUsernameResponse(user.username().value(), LocalDateTime.now());
+        return new Envelope<>(data, new Meta());
     }
 
 }

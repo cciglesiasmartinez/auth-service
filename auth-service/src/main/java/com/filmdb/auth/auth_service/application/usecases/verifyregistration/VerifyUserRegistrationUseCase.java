@@ -1,5 +1,7 @@
 package com.filmdb.auth.auth_service.application.usecases.verifyregistration;
 
+import com.filmdb.auth.auth_service.infrastructure.adapter.in.web.dto.responses.Envelope;
+import com.filmdb.auth.auth_service.infrastructure.adapter.in.web.dto.responses.Meta;
 import com.filmdb.auth.auth_service.infrastructure.adapter.in.web.dto.responses.UserResponse;
 import com.filmdb.auth.auth_service.domain.exception.VerificationCodeNotFoundException;
 import com.filmdb.auth.auth_service.domain.event.DomainEventPublisher;
@@ -35,7 +37,7 @@ public class VerifyUserRegistrationUseCase {
      * @return {@link UserResponse} containing the newly registered user data.
      * @throws VerificationCodeNotFoundException if the verification code is not found.
      */
-    public UserResponse execute(VerifyUserRegistrationCommand command) {
+    public Envelope<UserResponse> execute(VerifyUserRegistrationCommand command) {
         // TODO: Change the response DTO for this use case
         VerificationCodeString verificationCodeString = VerificationCodeString.of(command.verificationCode());
         VerificationCode verificationCode = verificationCodeRepository.findByCodeString(verificationCodeString)
@@ -48,7 +50,8 @@ public class VerifyUserRegistrationUseCase {
         userRepository.save(user);
         verificationCodeRepository.delete(verificationCode);
         log.info("User {} verified their registration email successfully.", user.id().value());
-        return UserResponse.fromDomainUser(user);
+        UserResponse data = UserResponse.fromDomainUser(user);
+        return new Envelope<>(data, new Meta());
     }
 
 }

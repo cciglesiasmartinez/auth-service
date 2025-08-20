@@ -25,8 +25,6 @@ import org.springframework.web.reactive.function.BodyInserters;
 import org.springframework.web.reactive.function.client.WebClient;
 import org.springframework.web.servlet.view.RedirectView;
 
-import java.time.LocalDateTime;
-
 @AllArgsConstructor
 @RestController
 @RequestMapping("/auth")
@@ -59,8 +57,8 @@ public class AuthController {
             @ApiResponse(responseCode = "201", description = "Verification email sent successfully.")
     })
     @PostMapping("/register")
-    public ResponseEntity<RegisterResponse> register(@Valid @RequestBody RegisterRequest request) {
-        RegisterResponse response = authUseCase.register(request);
+    public ResponseEntity< Envelope<RegisterResponse>> register(@Valid @RequestBody RegisterRequest request) {
+        Envelope<RegisterResponse> response = authUseCase.register(request);
         return new ResponseEntity<>(response, HttpStatus.CREATED);
     }
 
@@ -72,8 +70,8 @@ public class AuthController {
             @ApiResponse(responseCode = "202", description = "User registration completed.")
     })
     @GetMapping("/register/verify")
-    public ResponseEntity<?> verifyRegistration(@RequestParam("code") String code) {
-        UserResponse response = authUseCase.verifyRegistration(code);
+    public ResponseEntity<Envelope<UserResponse>> verifyRegistration(@RequestParam("code") String code) {
+        Envelope<UserResponse> response = authUseCase.verifyRegistration(code);
         return new ResponseEntity<>(response, HttpStatus.ACCEPTED);
     }
 
@@ -85,7 +83,7 @@ public class AuthController {
             @ApiResponse(responseCode = "202", description = "Authentication successful.")
     })
     @PostMapping("/login")
-    public ResponseEntity<Envelope> login(@Valid @RequestBody LoginRequest request,
+    public ResponseEntity<Envelope<LoginResponse>> login(@Valid @RequestBody LoginRequest request,
                                                HttpServletRequest httpRequest) {
         String ip = httpRequest.getRemoteAddr();
         String userAgent = httpRequest.getHeader("User-Agent");
@@ -102,8 +100,8 @@ public class AuthController {
             @ApiResponse(responseCode = "200", description = "Access token and new refresh token issued.")
     })
     @PostMapping("/refresh")
-    public ResponseEntity<RefreshAccessTokenResponse> refresh(@Valid @RequestBody RefreshAccessTokenRequest request) {
-        RefreshAccessTokenResponse response = authUseCase.refreshAccessToken(request);
+    public ResponseEntity<Envelope<RefreshAccessTokenResponse>> refresh(@Valid @RequestBody RefreshAccessTokenRequest request) {
+        Envelope<RefreshAccessTokenResponse> response = authUseCase.refreshAccessToken(request);
         return new ResponseEntity<>(response, HttpStatus.OK);
     }
 
@@ -115,7 +113,7 @@ public class AuthController {
             @ApiResponse(responseCode = "200", description = "User information successfully retrieved.")
     })
     @GetMapping("/me")
-    public ResponseEntity<Envelope> getCurrentUser(Authentication authentication) {
+    public ResponseEntity<Envelope<UserResponse>> getCurrentUser(Authentication authentication) {
         UserId userId = getAuthenticatedUser(authentication).id();
         Envelope<UserResponse> response = authUseCase.getUserInfo(userId);
         return new ResponseEntity<>(response, HttpStatus.OK);
@@ -129,11 +127,10 @@ public class AuthController {
             @ApiResponse(responseCode = "200", description = "User (self) password changed successfully.")
     })
     @PutMapping("/me/password")
-    public ResponseEntity<ChangePasswordResponse> changeUserPassword(@Valid @RequestBody ChangePasswordRequest request,
+    public ResponseEntity<Envelope<ChangePasswordResponse>> changeUserPassword(@Valid @RequestBody ChangePasswordRequest request,
                                                                      Authentication authentication) {
         User user = getAuthenticatedUser(authentication);
-        authUseCase.changePassword(user, request);
-        ChangePasswordResponse response = new ChangePasswordResponse("Password changed", LocalDateTime.now());
+        Envelope<ChangePasswordResponse> response = authUseCase.changePassword(user, request);
         return new ResponseEntity<>(response, HttpStatus.OK);
     }
 
@@ -145,10 +142,10 @@ public class AuthController {
             @ApiResponse(responseCode = "200", description = "User (self) username changed successfully.")
     })
     @PutMapping("/me/username")
-    public ResponseEntity<ChangeUsernameResponse> changeUserUsername(@Valid @RequestBody ChangeUsernameRequest request,
+    public ResponseEntity<Envelope<ChangeUsernameResponse>> changeUserUsername(@Valid @RequestBody ChangeUsernameRequest request,
                                                                      Authentication authentication) {
         User user = getAuthenticatedUser(authentication);
-        ChangeUsernameResponse response = authUseCase.changeUsername(user, request);
+        Envelope<ChangeUsernameResponse> response = authUseCase.changeUsername(user, request);
         return new ResponseEntity<>(response, HttpStatus.OK);
     }
 
@@ -160,10 +157,10 @@ public class AuthController {
             @ApiResponse(responseCode = "200", description = "User (self) email changed successfully.")
     })
     @PutMapping("/me/email")
-    public ResponseEntity<ChangeEmailResponse> changeUserEmail(@Valid @RequestBody ChangeEmailRequest request,
+    public ResponseEntity<Envelope<ChangeEmailResponse>> changeUserEmail(@Valid @RequestBody ChangeEmailRequest request,
                                                                Authentication authentication) {
         User user = getAuthenticatedUser(authentication);
-        ChangeEmailResponse response = authUseCase.changeEmail(user, request);
+        Envelope<ChangeEmailResponse> response = authUseCase.changeEmail(user, request);
         return new ResponseEntity<>(response, HttpStatus.OK);
     }
 
@@ -209,7 +206,7 @@ public class AuthController {
             @ApiResponse(responseCode = "201", description = "User successfully logged in via Google OAuth2.")
     })
     @GetMapping("/oauth/google/callback")
-    public ResponseEntity<LoginResponse> handleGoogleCallback(
+    public ResponseEntity<Envelope<LoginResponse>> handleGoogleCallback(
             @RequestParam("code") String code,
             HttpServletRequest httpRequest,
             @Value("${google.oauth.client-id}") String clientId,
@@ -230,7 +227,7 @@ public class AuthController {
         String ip = httpRequest.getRemoteAddr();
         String userAgent = httpRequest.getHeader("User-Agent");
         RequestContext context = new RequestContext(ip, userAgent);
-        LoginResponse response = authUseCase.OAuthGoogleFlow(googleResponse, context);
+        Envelope<LoginResponse> response = authUseCase.OAuthGoogleFlow(googleResponse, context);
         return new ResponseEntity<>(response, HttpStatus.ACCEPTED);
     }
 
@@ -243,11 +240,11 @@ public class AuthController {
             @ApiResponse(responseCode = "201", description = "User successfully logged in via Google OAuth2.")
     })
     @PutMapping("/oauth/me/username")
-    public ResponseEntity<ChangeUsernameResponse> changeExternalUserUsername(
+    public ResponseEntity<Envelope<ChangeUsernameResponse>> changeExternalUserUsername(
             @Valid @RequestBody ChangeExternalUserUsernameRequest request,
             Authentication authentication) {
         User user = getAuthenticatedUser(authentication);
-        ChangeUsernameResponse response = authUseCase.changeExternalUserUsername(user, request);
+        Envelope<ChangeUsernameResponse> response = authUseCase.changeExternalUserUsername(user, request);
         return new ResponseEntity<>(response, HttpStatus.ACCEPTED);
     }
 

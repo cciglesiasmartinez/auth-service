@@ -37,7 +37,7 @@ public class GetUserInfoUseCase {
                     return new UserNotFoundException();
                 });
         log.info("User checked their information successfully.");
-        return new Envelope<UserResponse>(UserResponse.fromDomainUser(user), new Meta());
+        return new Envelope<>(UserResponse.fromDomainUser(user), new Meta());
     }
 
 }

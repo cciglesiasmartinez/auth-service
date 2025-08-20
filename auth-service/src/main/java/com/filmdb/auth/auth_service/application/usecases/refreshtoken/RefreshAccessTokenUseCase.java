@@ -1,5 +1,7 @@
 package com.filmdb.auth.auth_service.application.usecases.refreshtoken;
 
+import com.filmdb.auth.auth_service.infrastructure.adapter.in.web.dto.responses.Envelope;
+import com.filmdb.auth.auth_service.infrastructure.adapter.in.web.dto.responses.Meta;
 import com.filmdb.auth.auth_service.infrastructure.adapter.in.web.dto.responses.RefreshAccessTokenResponse;
 import com.filmdb.auth.auth_service.application.services.RefreshTokenService;
 import com.filmdb.auth.auth_service.domain.model.RefreshToken;
@@ -35,7 +37,7 @@ public class RefreshAccessTokenUseCase {
      * @throws RuntimeException if token is not found.
      * @throws RuntimeException if token has expired.
      */
-    public RefreshAccessTokenResponse execute(RefreshAccessTokenCommand command) {
+    public Envelope<RefreshAccessTokenResponse> execute(RefreshAccessTokenCommand command) {
         RefreshTokenString tokenString = RefreshTokenString.of(command.refreshToken());
         RefreshToken storedToken =  refreshTokenRepository.findByTokenString(tokenString)
                 .orElseThrow(() -> {
@@ -53,8 +55,9 @@ public class RefreshAccessTokenUseCase {
         // TODO: NoArgConstructor to avoid passing tokenType?
         RefreshToken newToken = refreshTokenService.rotate(storedToken);
         log.info("New refresh token generated successfully.");
-        return new RefreshAccessTokenResponse(accessToken, newToken.token().value(),
+        RefreshAccessTokenResponse data = new RefreshAccessTokenResponse(accessToken, newToken.token().value(),
                 "Bearer",3600, LocalDateTime.now());
+        return new Envelope<>(data, new Meta());
     }
 
 }

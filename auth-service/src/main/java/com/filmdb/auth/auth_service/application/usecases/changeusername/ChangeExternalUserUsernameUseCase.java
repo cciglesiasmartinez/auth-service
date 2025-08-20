@@ -8,6 +8,8 @@ import com.filmdb.auth.auth_service.domain.model.User;
 import com.filmdb.auth.auth_service.domain.model.valueobject.UserId;
 import com.filmdb.auth.auth_service.domain.model.valueobject.Username;
 import com.filmdb.auth.auth_service.domain.port.out.UserRepository;
+import com.filmdb.auth.auth_service.infrastructure.adapter.in.web.dto.responses.Envelope;
+import com.filmdb.auth.auth_service.infrastructure.adapter.in.web.dto.responses.Meta;
 import lombok.AllArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
@@ -36,7 +38,7 @@ public class ChangeExternalUserUsernameUseCase {
      * @throws UserIsNotExternalException is user is not externally authenticated.
      * @throws UsernameAlreadyExistsException if requested username already exists in our repository.
      */
-    public ChangeUsernameResponse execute(ChangeExternalUserUsernameCommand command) {
+    public Envelope<ChangeUsernameResponse> execute(ChangeExternalUserUsernameCommand command) {
         Username newUsername = Username.of(command.newUsername());
         User user = userRepository.findById(UserId.of(command.userId()))
                 .orElseThrow(() -> {
@@ -53,7 +55,8 @@ public class ChangeExternalUserUsernameUseCase {
         user.changeUsernameForExternalUser(newUsername);
         userRepository.save(user);
         log.info("Changed username to {} successfully.", user.username().value());
-        return new ChangeUsernameResponse(user.username().value(), LocalDateTime.now());
+        ChangeUsernameResponse data = new ChangeUsernameResponse(user.username().value(), LocalDateTime.now());
+        return new Envelope<>(data, new Meta());
     }
 
 }

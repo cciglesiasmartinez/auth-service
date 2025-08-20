@@ -1,5 +1,6 @@
 package com.filmdb.auth.auth_service.application.usecases.logingoogle;
 
+import com.filmdb.auth.auth_service.infrastructure.adapter.in.web.dto.responses.Envelope;
 import com.filmdb.auth.auth_service.infrastructure.adapter.in.web.dto.responses.LoginResponse;
 import com.filmdb.auth.auth_service.domain.exception.UserNotFoundException;
 import com.filmdb.auth.auth_service.application.services.RefreshTokenService;
@@ -11,6 +12,7 @@ import com.filmdb.auth.auth_service.domain.model.valueobject.ProviderKey;
 import com.filmdb.auth.auth_service.domain.port.out.UserLoginRepository;
 import com.filmdb.auth.auth_service.domain.port.out.UserRepository;
 import com.filmdb.auth.auth_service.domain.port.out.AccessTokenProvider;
+import com.filmdb.auth.auth_service.infrastructure.adapter.in.web.dto.responses.Meta;
 import jakarta.transaction.Transactional;
 import lombok.AllArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
@@ -41,7 +43,7 @@ public class OAuthGoogleLoginUserUseCase {
      * @throws UserNotFoundException if provider key or user id are not found in our repositories.
      */
     @Transactional
-    public LoginResponse execute(OAuthGoogleLoginUserCommand command) {
+    public Envelope<LoginResponse> execute(OAuthGoogleLoginUserCommand command) {
         ProviderKey providerKey = ProviderKey.of(command.googleId());
         Email googleEmail = Email.of(command.googleEmail());
         UserLogin userLogin = userLoginRepository.findByProviderKey(providerKey)
@@ -62,7 +64,8 @@ public class OAuthGoogleLoginUserUseCase {
         long expiresIn = accessTokenProvider.getTokenExpirationInSeconds();
         RefreshToken refreshToken = refreshTokenService.generate(user.id(), command.ip(), command.userAgent());
         log.info("User logged in via Google OAuth successfully");
-        return new LoginResponse(token, refreshToken.token().value() , expiresIn, user.username().value());
+        LoginResponse data = new LoginResponse(token, refreshToken.token().value() , expiresIn, user.username().value());
+        return new Envelope<>(data, new Meta());
     }
 
 }
