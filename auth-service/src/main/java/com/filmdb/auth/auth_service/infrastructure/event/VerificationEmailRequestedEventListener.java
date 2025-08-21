@@ -23,7 +23,7 @@ public class VerificationEmailRequestedEventListener {
         EmailMessage verificationEmail = EmailMessage.of(
                 event.getEmail(),
                 "Your verification link",
-                "https://bb72-5-159-172-11.ngrok-free.app/auth/register/verify?code="
+                "https://c5bb03dfc57e.ngrok-free.app/auth/register/verify?code="
                         + event.getCode().value()
         );
         mailProvider.sendMail(verificationEmail);
