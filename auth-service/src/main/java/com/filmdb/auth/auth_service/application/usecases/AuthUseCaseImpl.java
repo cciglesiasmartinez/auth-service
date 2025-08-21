@@ -4,6 +4,8 @@ import com.filmdb.auth.auth_service.application.usecases.getuserinfo.GetUserInfo
 import com.filmdb.auth.auth_service.application.usecases.getuserinfo.GetUserInfoUseCase;
 import com.filmdb.auth.auth_service.application.usecases.recoverpassword.RecoverPasswordCommand;
 import com.filmdb.auth.auth_service.application.usecases.recoverpassword.RecoverPasswordUseCase;
+import com.filmdb.auth.auth_service.application.usecases.resetpassword.ResetPasswordCommand;
+import com.filmdb.auth.auth_service.application.usecases.resetpassword.ResetPasswordUseCase;
 import com.filmdb.auth.auth_service.domain.model.valueobject.UserId;
 import com.filmdb.auth.auth_service.infrastructure.adapter.in.web.dto.requests.*;
 import com.filmdb.auth.auth_service.infrastructure.adapter.in.web.dto.responses.*;
@@ -48,6 +50,7 @@ public class AuthUseCaseImpl implements AuthUseCase {
     private final RegisterUserUseCase registerUserService;
     private final VerifyUserRegistrationUseCase verifyUserRegistrationService;
     private final RecoverPasswordUseCase recoverPasswordUseCase;
+    private final ResetPasswordUseCase resetPasswordUseCase;
     private final LoginUserUseCase loginUserService;
     private final ChangePasswordUseCase changePasswordService;
     private final ChangeUserUsernameUseCase changeUserUsernameService;
@@ -79,6 +82,12 @@ public class AuthUseCaseImpl implements AuthUseCase {
     public Envelope<RecoverPasswordResponse> recoverPassword(RecoverPasswordRequest request, RequestContext context) {
         RecoverPasswordCommand command = mapper.toRecoverPasswordCommand(request, context);
         return recoverPasswordUseCase.execute(command);
+    }
+
+    @Override
+    public Envelope<ResetPasswordResponse> resetPassword(ResetPasswordRequest request, RequestContext context) {
+        ResetPasswordCommand command = mapper.toResetPasswordCommand(request, context);
+        return resetPasswordUseCase.execute(command);
     }
 
     @Override

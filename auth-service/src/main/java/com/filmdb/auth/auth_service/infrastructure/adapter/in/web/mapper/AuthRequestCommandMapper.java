@@ -2,6 +2,7 @@ package com.filmdb.auth.auth_service.infrastructure.adapter.in.web.mapper;
 
 import com.filmdb.auth.auth_service.application.usecases.getuserinfo.GetUserInfoCommand;
 import com.filmdb.auth.auth_service.application.usecases.recoverpassword.RecoverPasswordCommand;
+import com.filmdb.auth.auth_service.application.usecases.resetpassword.ResetPasswordCommand;
 import com.filmdb.auth.auth_service.infrastructure.adapter.in.web.dto.requests.*;
 import com.filmdb.auth.auth_service.application.context.RequestContext;
 import com.filmdb.auth.auth_service.application.usecases.changeemail.ChangeUserEmailCommand;
@@ -23,6 +24,7 @@ public interface AuthRequestCommandMapper {
     RegisterUserCommand toRegisterUserCommand(RegisterRequest request);
     VerifyUserRegistrationCommand toVerifyUserRegistrationCommand(String code);
     RecoverPasswordCommand toRecoverPasswordCommand(RecoverPasswordRequest request, RequestContext context);
+    ResetPasswordCommand toResetPasswordCommand(ResetPasswordRequest request, RequestContext context);
     LoginUserCommand toLoginUserCommand(LoginRequest request, RequestContext context);
     ChangePasswordCommand toChangePasswordCommand(ChangePasswordRequest request, String userId);
     ChangeUserEmailCommand toChangeUserEmailCommand(ChangeEmailRequest request, String userId);

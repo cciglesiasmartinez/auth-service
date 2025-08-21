@@ -5,7 +5,6 @@ import com.filmdb.auth.auth_service.infrastructure.adapter.in.web.dto.requests.*
 import com.filmdb.auth.auth_service.application.context.RequestContext;
 import com.filmdb.auth.auth_service.domain.model.User;
 import com.filmdb.auth.auth_service.infrastructure.adapter.in.web.dto.responses.*;
-import org.apache.coyote.Request;
 
 
 public interface AuthUseCase {
@@ -13,6 +12,7 @@ public interface AuthUseCase {
     Envelope<RegisterResponse> register(RegisterRequest request);
     Envelope<UserResponse> verifyRegistration(String code);
     Envelope<RecoverPasswordResponse> recoverPassword(RecoverPasswordRequest request, RequestContext context);
+    Envelope<ResetPasswordResponse> resetPassword(ResetPasswordRequest request, RequestContext context);
     Envelope<LoginResponse> login(LoginRequest request, RequestContext context);
     Envelope<RefreshAccessTokenResponse> refreshAccessToken(RefreshAccessTokenRequest request);
     Envelope<ChangePasswordResponse> changePassword(User user, ChangePasswordRequest request);

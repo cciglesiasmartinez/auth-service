@@ -229,6 +229,16 @@ public class User {
 
     /**
      *
+     * @param newPassword
+     * @param passwordEncoder
+     */
+    public void resetPassword(PlainPassword newPassword, PasswordEncoder passwordEncoder) {
+        this.password = passwordEncoder.encode(newPassword);
+        markAsModified();
+    }
+
+    /**
+     *
      * @return
      */
     public List<DomainEvent> pullEvents() {
