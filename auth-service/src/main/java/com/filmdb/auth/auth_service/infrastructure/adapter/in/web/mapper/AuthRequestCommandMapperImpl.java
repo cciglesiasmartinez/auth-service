@@ -1,6 +1,7 @@
 package com.filmdb.auth.auth_service.infrastructure.adapter.in.web.mapper;
 
 import com.filmdb.auth.auth_service.application.usecases.getuserinfo.GetUserInfoCommand;
+import com.filmdb.auth.auth_service.application.usecases.recoverpassword.RecoverPasswordCommand;
 import com.filmdb.auth.auth_service.infrastructure.adapter.in.web.dto.requests.*;
 import com.filmdb.auth.auth_service.application.context.RequestContext;
 import com.filmdb.auth.auth_service.application.usecases.changeemail.ChangeUserEmailCommand;
@@ -34,6 +35,15 @@ public class AuthRequestCommandMapperImpl implements  AuthRequestCommandMapper {
     @Override
     public VerifyUserRegistrationCommand toVerifyUserRegistrationCommand(String code) {
         return new VerifyUserRegistrationCommand(code);
+    }
+
+    @Override
+    public RecoverPasswordCommand toRecoverPasswordCommand(RecoverPasswordRequest request, RequestContext context) {
+        return new RecoverPasswordCommand(
+                request.getEmail(),
+                context.getIp(),
+                context.getUserAgent()
+        );
     }
 
     @Override

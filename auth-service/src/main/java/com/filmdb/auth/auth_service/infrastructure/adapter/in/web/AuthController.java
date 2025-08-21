@@ -75,6 +75,17 @@ public class AuthController {
         return new ResponseEntity<>(response, HttpStatus.ACCEPTED);
     }
 
+    @PostMapping("/recover-password")
+    public ResponseEntity<Envelope<?>> recoverPassword(@Valid @RequestBody RecoverPasswordRequest request,
+                                                       HttpServletRequest httpRequest) {
+        String ip = httpRequest.getRemoteAddr();
+        String userAgent = httpRequest.getHeader("User-Agent");
+        RequestContext context = new RequestContext(ip, userAgent);
+        System.out.println("HEY!!!! ROUTE USED CORRECTLY!");
+        Envelope<?> response = authUseCase.recoverPassword(request, context);
+        return new ResponseEntity<>(response, HttpStatus.ACCEPTED);
+    }
+
     @Operation(
             summary = "Authenticate user.",
             description = "Validates user credentials and returns access and refresh tokens."

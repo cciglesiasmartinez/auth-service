@@ -3,6 +3,7 @@ package com.filmdb.auth.auth_service.infrastructure.adapter.out.persistence.redi
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.fasterxml.jackson.databind.SerializationFeature;
 import com.fasterxml.jackson.datatype.jsr310.JavaTimeModule;
+import com.filmdb.auth.auth_service.domain.model.RecoverCode;
 import com.filmdb.auth.auth_service.domain.model.RefreshToken;
 import com.filmdb.auth.auth_service.domain.model.VerificationCode;
 import org.springframework.context.annotation.Bean;
@@ -46,6 +47,28 @@ public class RedisConfig {
 
         Jackson2JsonRedisSerializer<VerificationCode> valueSerializer =
                 new Jackson2JsonRedisSerializer<>(VerificationCode.class);
+
+        ObjectMapper mapper = new ObjectMapper();
+        mapper.registerModule(new JavaTimeModule());
+        mapper.disable((SerializationFeature.WRITE_DATES_AS_TIMESTAMPS));
+        mapper.findAndRegisterModules();
+        valueSerializer.setObjectMapper(mapper);
+
+        template.setValueSerializer(valueSerializer);
+        template.setHashValueSerializer(valueSerializer);
+        template.afterPropertiesSet();
+        return template;
+    }
+
+    @Bean(name = "recoverCodeRedisTemplate")
+    public RedisTemplate<String, RecoverCode> recoverCodeRedisTemplate(RedisConnectionFactory connectionFactory) {
+        RedisTemplate<String, RecoverCode> template = new RedisTemplate<>();
+        template.setConnectionFactory(connectionFactory);
+
+        template.setKeySerializer(new StringRedisSerializer());
+
+        Jackson2JsonRedisSerializer<RecoverCode> valueSerializer =
+                new Jackson2JsonRedisSerializer<>(RecoverCode.class);
 
         ObjectMapper mapper = new ObjectMapper();
         mapper.registerModule(new JavaTimeModule());
