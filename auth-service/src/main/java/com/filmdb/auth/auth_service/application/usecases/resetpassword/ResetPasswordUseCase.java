@@ -40,7 +40,6 @@ public class ResetPasswordUseCase {
                     return new UserNotFoundException();
                 });
         // TODO: Consider renaming this method, since now has a more generic purpose (serves two use cases)
-        user.validateLoginPassword(newPassword, passwordEncoder);
         user.resetPassword(newPassword, passwordEncoder);
         userRepository.save(user);
         log.info("Password reset successfully for user email {} with code {}",
