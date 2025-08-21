@@ -76,14 +76,17 @@ public class AuthController {
     }
 
     @PostMapping("/recover-password")
-    public ResponseEntity<Envelope<?>> recoverPassword(@Valid @RequestBody RecoverPasswordRequest request,
+    public ResponseEntity<Envelope<RecoverPasswordResponse>> recoverPassword(@Valid @RequestBody RecoverPasswordRequest request,
                                                        HttpServletRequest httpRequest) {
         String ip = httpRequest.getRemoteAddr();
         String userAgent = httpRequest.getHeader("User-Agent");
         RequestContext context = new RequestContext(ip, userAgent);
-        System.out.println("HEY!!!! ROUTE USED CORRECTLY!");
-        Envelope<?> response = authUseCase.recoverPassword(request, context);
+        Envelope<RecoverPasswordResponse> response = authUseCase.recoverPassword(request, context);
         return new ResponseEntity<>(response, HttpStatus.ACCEPTED);
+    }
+
+    public ResponseEntity<Envelope<?>> resetPassword() {
+        return null;
     }
 
     @Operation(
