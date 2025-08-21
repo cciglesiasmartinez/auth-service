@@ -39,7 +39,6 @@ public class ResetPasswordUseCase {
                     log.warn("User not found for email {}", email.value());
                     return new UserNotFoundException();
                 });
-        // TODO: Consider renaming this method, since now has a more generic purpose (serves two use cases)
         user.resetPassword(newPassword, passwordEncoder);
         userRepository.save(user);
         log.info("Password reset successfully for user email {} with code {}",
