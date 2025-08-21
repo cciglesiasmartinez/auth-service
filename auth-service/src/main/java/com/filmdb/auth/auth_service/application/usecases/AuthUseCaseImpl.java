@@ -76,7 +76,7 @@ public class AuthUseCaseImpl implements AuthUseCase {
     }
 
     @Override
-    public Envelope<?> recoverPassword(RecoverPasswordRequest request, RequestContext context) {
+    public Envelope<RecoverPasswordResponse> recoverPassword(RecoverPasswordRequest request, RequestContext context) {
         RecoverPasswordCommand command = mapper.toRecoverPasswordCommand(request, context);
         return recoverPasswordUseCase.execute(command);
     }
