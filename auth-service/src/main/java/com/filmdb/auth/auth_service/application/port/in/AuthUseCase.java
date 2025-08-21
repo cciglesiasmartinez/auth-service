@@ -12,7 +12,7 @@ public interface AuthUseCase {
 
     Envelope<RegisterResponse> register(RegisterRequest request);
     Envelope<UserResponse> verifyRegistration(String code);
-    Envelope<?> recoverPassword(RecoverPasswordRequest request, RequestContext context);
+    Envelope<RecoverPasswordResponse> recoverPassword(RecoverPasswordRequest request, RequestContext context);
     Envelope<LoginResponse> login(LoginRequest request, RequestContext context);
     Envelope<RefreshAccessTokenResponse> refreshAccessToken(RefreshAccessTokenRequest request);
     Envelope<ChangePasswordResponse> changePassword(User user, ChangePasswordRequest request);
