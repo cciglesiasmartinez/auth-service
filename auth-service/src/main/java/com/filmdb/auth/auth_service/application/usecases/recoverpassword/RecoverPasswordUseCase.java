@@ -35,7 +35,6 @@ public class RecoverPasswordUseCase {
      * @return
      */
     public Envelope<RecoverPasswordResponse> execute(RecoverPasswordCommand command) {
-        System.out.println("CALLIN METHOD EXECUTE!");
         Email email = Email.of(command.email());
         if (!userRepository.existsByEmail(email)) {
             // TODO: Consider if it is apropiate throwing this exception
