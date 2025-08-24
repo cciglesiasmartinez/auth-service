@@ -85,8 +85,14 @@ public class AuthController {
         return new ResponseEntity<>(response, HttpStatus.ACCEPTED);
     }
 
-    public ResponseEntity<Envelope<?>> resetPassword() {
-        return null;
+    @PostMapping("/reset-password")
+    public ResponseEntity<Envelope<ResetPasswordResponse>> resetPassword(@Valid @RequestBody ResetPasswordRequest request,
+                                                     HttpServletRequest httpRequest) {
+        String ip = httpRequest.getRemoteAddr();
+        String userAgent = httpRequest.getHeader("User-Agent");
+        RequestContext context = new RequestContext(ip, userAgent);
+        Envelope<ResetPasswordResponse> response = authUseCase.resetPassword(request, context);
+        return new ResponseEntity<>(response, HttpStatus.ACCEPTED);
     }
 
     @Operation(
