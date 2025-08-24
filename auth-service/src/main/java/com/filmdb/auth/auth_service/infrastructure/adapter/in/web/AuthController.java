@@ -75,6 +75,13 @@ public class AuthController {
         return new ResponseEntity<>(response, HttpStatus.ACCEPTED);
     }
 
+    @Operation(
+            summary="Request a recover password code.",
+            description="Sends a one-time recover code to the user mail."
+    )
+    @ApiResponses(value = {
+            @ApiResponse(responseCode = "202", description = "Code sent.")
+    })
     @PostMapping("/recover-password")
     public ResponseEntity<Envelope<RecoverPasswordResponse>> recoverPassword(@Valid @RequestBody RecoverPasswordRequest request,
                                                        HttpServletRequest httpRequest) {
@@ -85,6 +92,13 @@ public class AuthController {
         return new ResponseEntity<>(response, HttpStatus.ACCEPTED);
     }
 
+    @Operation(
+            summary="Reset user password.",
+            description="Resets the user password via a one-time recover code sent to their mail."
+    )
+    @ApiResponses(value = {
+            @ApiResponse(responseCode = "202", description = "Password reset.")
+    })
     @PostMapping("/reset-password")
     public ResponseEntity<Envelope<ResetPasswordResponse>> resetPassword(@Valid @RequestBody ResetPasswordRequest request,
                                                      HttpServletRequest httpRequest) {
