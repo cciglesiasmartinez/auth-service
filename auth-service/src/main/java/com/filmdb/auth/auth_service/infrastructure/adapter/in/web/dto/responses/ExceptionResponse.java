@@ -13,9 +13,19 @@ import lombok.Getter;
 public class ExceptionResponse {
 
     @Schema(
+            description = "Error code.",
+            example = "invalid_password"
+    )
+    private String code;
+
+    @Schema(
             description = "Error message.",
-            example = "invalid_credentials"
+            example = "Password should contain more than 8 characters."
     )
     private String message;
+
+    public ExceptionResponse(String code) {
+        this.code = code;
+    }
 
 }
