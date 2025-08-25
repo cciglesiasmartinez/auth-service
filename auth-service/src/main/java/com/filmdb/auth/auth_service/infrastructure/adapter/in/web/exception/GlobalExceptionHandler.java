@@ -14,7 +14,7 @@ public class GlobalExceptionHandler {
 
     @ExceptionHandler(UserAlreadyRegisteredException.class)
     public ResponseEntity<?> handleUserAlreadyRegistered(UserAlreadyRegisteredException e) {
-        ExceptionResponse exceptionResponse = new ExceptionResponse(e.getMessage());
+        ExceptionResponse exceptionResponse = new ExceptionResponse("user_already_registered");
         Envelope<ExceptionResponse> response = new Envelope<>(exceptionResponse, new Meta());
         return new ResponseEntity<>(response, HttpStatus.CONFLICT);
     }
@@ -28,47 +28,46 @@ public class GlobalExceptionHandler {
 
     @ExceptionHandler(PasswordMismatchException.class)
     public ResponseEntity<?> handlePasswordMismatchException(PasswordMismatchException e) {
-        ExceptionResponse exceptionResponse = new ExceptionResponse(e.getMessage());
+        ExceptionResponse exceptionResponse = new ExceptionResponse("password_mismatch");
         Envelope<ExceptionResponse> response = new Envelope<>(exceptionResponse, new Meta());
         return new ResponseEntity<>(response, HttpStatus.BAD_REQUEST);
     }
 
     @ExceptionHandler(EmailAlreadyExistsException.class)
     public ResponseEntity<?> handleEmailAlreadyExistsException(EmailAlreadyExistsException e) {
-        ExceptionResponse exceptionResponse = new ExceptionResponse(e.getMessage());
+        ExceptionResponse exceptionResponse = new ExceptionResponse("email_already_exists");
         Envelope<ExceptionResponse> response = new Envelope<>(exceptionResponse, new Meta());
         return new ResponseEntity<>(response, HttpStatus.CONFLICT);
     }
 
     @ExceptionHandler(UsernameAlreadyExistsException.class)
     public ResponseEntity<?> handleUsernameAlreadyExistsException(UsernameAlreadyExistsException e) {
-        ExceptionResponse exceptionResponse = new ExceptionResponse(e.getMessage());
+        ExceptionResponse exceptionResponse = new ExceptionResponse("username_already_exists");
         Envelope<ExceptionResponse> response = new Envelope<>(exceptionResponse, new Meta());
         return new ResponseEntity<>(response, HttpStatus.CONFLICT);
     }
 
     @ExceptionHandler(InvalidPasswordException.class)
     public ResponseEntity<?> handleInvalidPasswordException(InvalidPasswordException e ) {
-        ExceptionResponse exceptionResponse = new ExceptionResponse(e.getMessage());
+        ExceptionResponse exceptionResponse = new ExceptionResponse("invalid_password", e.getMessage());
         Envelope<ExceptionResponse> response = new Envelope<>(exceptionResponse, new Meta());
         return new ResponseEntity<>(response, HttpStatus.BAD_REQUEST);
     }
 
     @ExceptionHandler(InvalidUsernameException.class)
     public ResponseEntity<?> handleInvalidUsernameException(InvalidUsernameException e ) {
-        ExceptionResponse exceptionResponse = new ExceptionResponse(e.getMessage());
+        ExceptionResponse exceptionResponse = new ExceptionResponse("invalid_username");
         Envelope<ExceptionResponse> response = new Envelope<>(exceptionResponse, new Meta());
         return new ResponseEntity<>(response, HttpStatus.BAD_REQUEST);
     }
 
     @ExceptionHandler(UserNotFoundException.class)
     public ResponseEntity<?> handleUserNotFoundException(UserNotFoundException e) {
-        ExceptionResponse exceptionResponse = new ExceptionResponse(e.getMessage());
+        ExceptionResponse exceptionResponse = new ExceptionResponse("user_not_Found");
         Envelope<ExceptionResponse> response = new Envelope<>(exceptionResponse, new Meta());
         return new ResponseEntity<>(response, HttpStatus.UNAUTHORIZED);
     }
 
-    // TODO: Reconsider the body message for this case. Also consider standard DTO's for exceptions.
     @ExceptionHandler(UserIsExternalException.class)
     public ResponseEntity<?> handleUserIsExternalException(UserIsExternalException e) {
         ExceptionResponse exceptionResponse = new ExceptionResponse("unauthorized");
@@ -78,14 +77,14 @@ public class GlobalExceptionHandler {
 
     @ExceptionHandler(UserIsNotExternalException.class)
     public ResponseEntity<?> handleUserIsNotExternalException(UserIsNotExternalException e) {
-        ExceptionResponse exceptionResponse = new ExceptionResponse(e.getMessage());
+        ExceptionResponse exceptionResponse = new ExceptionResponse("user_is_not_external");
         Envelope<ExceptionResponse> response = new Envelope<>(exceptionResponse, new Meta());
         return new ResponseEntity<>(response, HttpStatus.UNAUTHORIZED);
     }
 
     @ExceptionHandler(VerificationCodeNotFoundException.class)
     public ResponseEntity<?> handleVerificationCodeNotFoundException(VerificationCodeNotFoundException e) {
-        ExceptionResponse exceptionResponse = new ExceptionResponse(e.getMessage());
+        ExceptionResponse exceptionResponse = new ExceptionResponse("verification_code_not_found");
         Envelope<ExceptionResponse> response = new Envelope<>(exceptionResponse, new Meta());
         return new ResponseEntity<>(response, HttpStatus.BAD_REQUEST);
     }
