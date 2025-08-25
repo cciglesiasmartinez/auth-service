@@ -18,6 +18,12 @@ public class GlobalExceptionHandler {
         return new ResponseEntity<>(response, type);
     }
 
+    private ResponseEntity<Envelope<ExceptionResponse>> buildResponse(String code, String message, HttpStatus type) {
+        ExceptionResponse exceptionResponse = new ExceptionResponse(code, message);
+        Envelope<ExceptionResponse> response = new Envelope<>(exceptionResponse, new Meta());
+        return new ResponseEntity<>(response, type);
+    }
+
     @ExceptionHandler(UserAlreadyRegisteredException.class)
     public ResponseEntity<?> handleUserAlreadyRegistered(UserAlreadyRegisteredException e) {
         return buildResponse("user_already_registered", HttpStatus.CONFLICT);
@@ -45,7 +51,7 @@ public class GlobalExceptionHandler {
 
     @ExceptionHandler(InvalidPasswordException.class)
     public ResponseEntity<?> handleInvalidPasswordException(InvalidPasswordException e ) {
-        return buildResponse("invalid_password", HttpStatus.BAD_REQUEST);
+        return buildResponse("invalid_password", e.getMessage(), HttpStatus.BAD_REQUEST);
     }
 
     @ExceptionHandler(InvalidUsernameException.class)
