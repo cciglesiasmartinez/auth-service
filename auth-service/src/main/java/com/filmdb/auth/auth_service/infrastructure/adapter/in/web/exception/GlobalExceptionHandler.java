@@ -12,81 +12,65 @@ import org.springframework.web.bind.annotation.ExceptionHandler;
 @ControllerAdvice
 public class GlobalExceptionHandler {
 
+    private ResponseEntity<Envelope<ExceptionResponse>> buildResponse(String code, HttpStatus type) {
+        ExceptionResponse exceptionResponse = new ExceptionResponse(code);
+        Envelope<ExceptionResponse> response = new Envelope<>(exceptionResponse, new Meta());
+        return new ResponseEntity<>(response, type);
+    }
+
     @ExceptionHandler(UserAlreadyRegisteredException.class)
     public ResponseEntity<?> handleUserAlreadyRegistered(UserAlreadyRegisteredException e) {
-        ExceptionResponse exceptionResponse = new ExceptionResponse("user_already_registered");
-        Envelope<ExceptionResponse> response = new Envelope<>(exceptionResponse, new Meta());
-        return new ResponseEntity<>(response, HttpStatus.CONFLICT);
+        return buildResponse("user_already_registered", HttpStatus.CONFLICT);
     }
 
     @ExceptionHandler(InvalidCredentialsException.class)
     public ResponseEntity<?> handleInvalidCredentialsException(InvalidCredentialsException e) {
-        ExceptionResponse exceptionResponse = new ExceptionResponse("invalid_credentials");
-        Envelope<ExceptionResponse> response = new Envelope<>(exceptionResponse, new Meta());
-        return new ResponseEntity<>(response, HttpStatus.UNAUTHORIZED);
+        return buildResponse("invalid_credentials", HttpStatus.UNAUTHORIZED);
     }
 
     @ExceptionHandler(PasswordMismatchException.class)
     public ResponseEntity<?> handlePasswordMismatchException(PasswordMismatchException e) {
-        ExceptionResponse exceptionResponse = new ExceptionResponse("password_mismatch");
-        Envelope<ExceptionResponse> response = new Envelope<>(exceptionResponse, new Meta());
-        return new ResponseEntity<>(response, HttpStatus.BAD_REQUEST);
+        return buildResponse("password_mismatch", HttpStatus.BAD_REQUEST);
     }
 
     @ExceptionHandler(EmailAlreadyExistsException.class)
     public ResponseEntity<?> handleEmailAlreadyExistsException(EmailAlreadyExistsException e) {
-        ExceptionResponse exceptionResponse = new ExceptionResponse("email_already_exists");
-        Envelope<ExceptionResponse> response = new Envelope<>(exceptionResponse, new Meta());
-        return new ResponseEntity<>(response, HttpStatus.CONFLICT);
+        return buildResponse("email_already_exists", HttpStatus.CONFLICT);
     }
 
     @ExceptionHandler(UsernameAlreadyExistsException.class)
     public ResponseEntity<?> handleUsernameAlreadyExistsException(UsernameAlreadyExistsException e) {
-        ExceptionResponse exceptionResponse = new ExceptionResponse("username_already_exists");
-        Envelope<ExceptionResponse> response = new Envelope<>(exceptionResponse, new Meta());
-        return new ResponseEntity<>(response, HttpStatus.CONFLICT);
+        return buildResponse("username_already_exists", HttpStatus.CONFLICT);
     }
 
     @ExceptionHandler(InvalidPasswordException.class)
     public ResponseEntity<?> handleInvalidPasswordException(InvalidPasswordException e ) {
-        ExceptionResponse exceptionResponse = new ExceptionResponse("invalid_password", e.getMessage());
-        Envelope<ExceptionResponse> response = new Envelope<>(exceptionResponse, new Meta());
-        return new ResponseEntity<>(response, HttpStatus.BAD_REQUEST);
+        return buildResponse("invalid_password", HttpStatus.BAD_REQUEST);
     }
 
     @ExceptionHandler(InvalidUsernameException.class)
     public ResponseEntity<?> handleInvalidUsernameException(InvalidUsernameException e ) {
-        ExceptionResponse exceptionResponse = new ExceptionResponse("invalid_username");
-        Envelope<ExceptionResponse> response = new Envelope<>(exceptionResponse, new Meta());
-        return new ResponseEntity<>(response, HttpStatus.BAD_REQUEST);
+        return buildResponse("invalid_username", HttpStatus.BAD_REQUEST);
     }
 
     @ExceptionHandler(UserNotFoundException.class)
     public ResponseEntity<?> handleUserNotFoundException(UserNotFoundException e) {
-        ExceptionResponse exceptionResponse = new ExceptionResponse("user_not_Found");
-        Envelope<ExceptionResponse> response = new Envelope<>(exceptionResponse, new Meta());
-        return new ResponseEntity<>(response, HttpStatus.UNAUTHORIZED);
+        return buildResponse("user_not_found", HttpStatus.UNAUTHORIZED);
     }
 
     @ExceptionHandler(UserIsExternalException.class)
     public ResponseEntity<?> handleUserIsExternalException(UserIsExternalException e) {
-        ExceptionResponse exceptionResponse = new ExceptionResponse("unauthorized");
-        Envelope<ExceptionResponse> response = new Envelope<>(exceptionResponse, new Meta());
-        return new ResponseEntity<>(response, HttpStatus.UNAUTHORIZED);
+        return buildResponse("unauthorized", HttpStatus.UNAUTHORIZED);
     }
 
     @ExceptionHandler(UserIsNotExternalException.class)
     public ResponseEntity<?> handleUserIsNotExternalException(UserIsNotExternalException e) {
-        ExceptionResponse exceptionResponse = new ExceptionResponse("user_is_not_external");
-        Envelope<ExceptionResponse> response = new Envelope<>(exceptionResponse, new Meta());
-        return new ResponseEntity<>(response, HttpStatus.UNAUTHORIZED);
+        return buildResponse("user_is_not_external", HttpStatus.UNAUTHORIZED);
     }
 
     @ExceptionHandler(VerificationCodeNotFoundException.class)
     public ResponseEntity<?> handleVerificationCodeNotFoundException(VerificationCodeNotFoundException e) {
-        ExceptionResponse exceptionResponse = new ExceptionResponse("verification_code_not_found");
-        Envelope<ExceptionResponse> response = new Envelope<>(exceptionResponse, new Meta());
-        return new ResponseEntity<>(response, HttpStatus.BAD_REQUEST);
+        return buildResponse("verification_code_not_found", HttpStatus.UNAUTHORIZED);
     }
 
 }
