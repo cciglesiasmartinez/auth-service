@@ -1,5 +1,6 @@
 package io.github.cciglesiasmartinez.auth_service.application.usecases.register;
 
+import io.github.cciglesiasmartinez.auth_service.infrastructure.adapter.in.web.dto.responses.Envelope;
 import io.github.cciglesiasmartinez.auth_service.infrastructure.adapter.in.web.dto.responses.RegisterResponse;
 import io.github.cciglesiasmartinez.auth_service.application.event.VerificationEmailRequestedEvent;
 import io.github.cciglesiasmartinez.auth_service.domain.exception.UserAlreadyRegisteredException;
@@ -78,11 +79,11 @@ public class RegisterUserUseCaseTest {
         when(verificationCodeService.generate(username, email, encodedPassword)).thenReturn(verificationCode);
 
         // When
-        RegisterResponse response = useCase.execute(command);
+        Envelope<RegisterResponse> response = useCase.execute(command);
 
         // Then
-        assertEquals("Verification code sent to email.", response.getMessage());
-        assertEquals(email.value(), response.getEmail());
+        assertEquals("verification_sent", response.getData().getMessage());
+        assertEquals(email.value(), response.getData().getEmail());
         verify(springPublisher).publishEvent(any(VerificationEmailRequestedEvent.class));
     }
 
