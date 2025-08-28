@@ -1,9 +1,7 @@
-package io.github.cciglesiasmartinez.auth_service.application.usecases;
+package io.github.cciglesiasmartinez.auth_service.application.usecases.register;
 
 import io.github.cciglesiasmartinez.auth_service.infrastructure.adapter.in.web.dto.responses.RegisterResponse;
-import io.github.cciglesiasmartinez.auth_service.application.usecases.register.RegisterUserCommand;
 import io.github.cciglesiasmartinez.auth_service.application.event.VerificationEmailRequestedEvent;
-import io.github.cciglesiasmartinez.auth_service.application.usecases.register.RegisterUserUseCase;
 import io.github.cciglesiasmartinez.auth_service.domain.exception.UserAlreadyRegisteredException;
 import io.github.cciglesiasmartinez.auth_service.application.services.VerificationCodeService;
 import io.github.cciglesiasmartinez.auth_service.domain.exception.InvalidPasswordException;

@@ -1,15 +1,12 @@
-package io.github.cciglesiasmartinez.auth_service.application.usecases;
+package io.github.cciglesiasmartinez.auth_service.application.usecases.login;
 
 import io.github.cciglesiasmartinez.auth_service.domain.model.valueobject.*;
 import io.github.cciglesiasmartinez.auth_service.infrastructure.adapter.in.web.dto.responses.Envelope;
 import io.github.cciglesiasmartinez.auth_service.infrastructure.adapter.in.web.dto.responses.LoginResponse;
-import io.github.cciglesiasmartinez.auth_service.application.usecases.login.LoginUserCommand;
-import io.github.cciglesiasmartinez.auth_service.application.usecases.login.LoginUserUseCase;
 import io.github.cciglesiasmartinez.auth_service.domain.exception.InvalidCredentialsException;
 import io.github.cciglesiasmartinez.auth_service.application.services.RefreshTokenService;
 import io.github.cciglesiasmartinez.auth_service.domain.model.RefreshToken;
 import io.github.cciglesiasmartinez.auth_service.domain.model.User;
-import io.github.cciglesiasmartinez.auth_service.domain.model.valueobject.*;
 import io.github.cciglesiasmartinez.auth_service.domain.port.out.UserRepository;
 import io.github.cciglesiasmartinez.auth_service.domain.port.out.AccessTokenProvider;
 import io.github.cciglesiasmartinez.auth_service.domain.port.out.PasswordEncoder;
