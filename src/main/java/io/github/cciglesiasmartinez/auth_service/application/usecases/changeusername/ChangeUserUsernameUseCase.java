@@ -42,7 +42,6 @@ public class ChangeUserUsernameUseCase {
      */
     public Envelope<ChangeUsernameResponse> execute(ChangeUserUsernameCommand command) {
         // TODO: try-catch for log.warn?
-        // TODO: Consider how to handle username changes for externally authenticated users.
         PlainPassword currentPassword = PlainPassword.of(command.currentPassword());
         Username newUsername = Username.of(command.newUsername());
         if (userRepository.existsByUsername(newUsername)) {
