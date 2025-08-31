@@ -1,5 +1,7 @@
 package io.github.cciglesiasmartinez.auth_service.application.usecases.refreshtoken;
 
+import io.github.cciglesiasmartinez.auth_service.domain.exception.RefreshTokenExpiredException;
+import io.github.cciglesiasmartinez.auth_service.domain.exception.RefreshTokenNotFoundException;
 import io.github.cciglesiasmartinez.auth_service.infrastructure.adapter.in.web.dto.responses.Envelope;
 import io.github.cciglesiasmartinez.auth_service.infrastructure.adapter.in.web.dto.responses.Meta;
 import io.github.cciglesiasmartinez.auth_service.infrastructure.adapter.in.web.dto.responses.RefreshAccessTokenResponse;
@@ -42,12 +44,11 @@ public class RefreshAccessTokenUseCase {
         RefreshToken storedToken =  refreshTokenRepository.findByTokenString(tokenString)
                 .orElseThrow(() -> {
                     log.warn("Token not found in database.");
-                    // TODO: Create custom exception and think about how to manage it.
-                    return new RuntimeException("Token not found.");
+                    return new RefreshTokenNotFoundException();
                 });
         if (storedToken.expiresAt().isBefore(LocalDateTime.now())) {
             log.warn("Refresh token expired.");
-            throw new RuntimeException("Refresh token expired.");
+            throw new RefreshTokenExpiredException();
         }
         String subject = storedToken.getUserId().value();
         // TODO: generateToken() should ask for exp time? Then we can pass it to the response obj.

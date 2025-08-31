@@ -80,4 +80,14 @@ public class GlobalExceptionHandler {
         return buildResponse("verification_code_not_found", HttpStatus.UNAUTHORIZED);
     }
 
+    @ExceptionHandler(RefreshTokenExpiredException.class)
+    public ResponseEntity<?> handleRefreshTokenExpiredException(RefreshTokenExpiredException e ) {
+        return buildResponse("refresh_token_expired", HttpStatus.BAD_REQUEST);
+    }
+
+    @ExceptionHandler(RefreshTokenNotFoundException.class)
+    public ResponseEntity<?> handleRefreshTokenNotFoundException(RefreshTokenNotFoundException e) {
+        return buildResponse("refresh_token_not_found", HttpStatus.BAD_REQUEST);
+    }
+
 }
