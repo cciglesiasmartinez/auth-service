@@ -46,6 +46,7 @@ public class ChangeExternalUserUsernameUseCase {
                     return new UserNotFoundException();
                 });
         if (!user.isExternal()) {
+            log.warn("User {} is not external.", command.userId());
             throw new UserIsNotExternalException();
         }
         if (userRepository.existsByUsername(newUsername)) {

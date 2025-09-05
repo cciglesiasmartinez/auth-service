@@ -38,6 +38,7 @@ public class DeleteExternalUserUseCase {
                     return new UserNotFoundException();
                 });
         if (!user.isExternal()) {
+            log.warn("User {} is not external.", command.userId());
             throw new UserIsNotExternalException();
         }
         userRepository.delete(user);
