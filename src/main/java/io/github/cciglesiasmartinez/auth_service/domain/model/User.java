@@ -229,9 +229,10 @@ public class User {
     }
 
     /**
+     * This method resets the user password when the recover password use case is successfully executed.
      *
-     * @param newPassword
-     * @param passwordEncoder
+     * @param newPassword new password for the user.
+     * @param passwordEncoder the encoder needed.
      */
     public void resetPassword(PlainPassword newPassword, PasswordEncoder passwordEncoder) {
         this.password = passwordEncoder.encode(newPassword);
@@ -239,8 +240,9 @@ public class User {
     }
 
     /**
+     * Method used to get all the current events pending for the user.
      *
-     * @return
+     * @return the {@link DomainEvent} {@code events} {@code ArrayList} before the clearing.
      */
     public List<DomainEvent> pullEvents() {
         List<DomainEvent> result = new ArrayList<>(this.events);
