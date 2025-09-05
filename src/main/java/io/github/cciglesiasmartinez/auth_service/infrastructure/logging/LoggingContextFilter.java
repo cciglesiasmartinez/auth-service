@@ -1,5 +1,6 @@
 package io.github.cciglesiasmartinez.auth_service.infrastructure.logging;
 
+import io.github.cciglesiasmartinez.auth_service.infrastructure.security.CustomUserDetails;
 import jakarta.servlet.FilterChain;
 import jakarta.servlet.ServletException;
 import jakarta.servlet.http.HttpServletRequest;
@@ -30,8 +31,10 @@ public class LoggingContextFilter extends OncePerRequestFilter {
             MDC.put("ip", request.getRemoteAddr());
             MDC.put("userAgent", request.getHeader("User-Agent"));
             Authentication auth = SecurityContextHolder.getContext().getAuthentication();
-            if (auth != null && auth.isAuthenticated()) {
-                MDC.put("userId", auth.getName());
+            Object principal = auth.getPrincipal();
+            if (auth != null && auth.isAuthenticated() && principal instanceof CustomUserDetails) {
+                String userId = ((CustomUserDetails) principal).getUserId();
+                MDC.put("userId", userId);
             }
 
             filterChain.doFilter(request, response);
