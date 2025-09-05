@@ -15,9 +15,10 @@ import org.springframework.context.ApplicationEventPublisher;
 import org.springframework.stereotype.Service;
 
 /**
- * Application service for recovering user password.
+ * Application service for recovering the user password.
  * <p>
- * TODO: Explain it further.
+ * Creates a temporary {@link RecoverCode} instance and publishes a {@link RecoverCodeRequestedEvent}. It associates
+ * a temporary recover code with the given email.
  */
 @Slf4j
 @Service
@@ -29,15 +30,16 @@ public class RecoverPasswordUseCase {
     private final ApplicationEventPublisher springPublisher;
 
     /**
+     *  Executes the recover user password use case.
      *
-     * @param command
-     * @throws UserNotFoundException
-     * @return
+     * @param command containing the user email.
+     * @return a {@link RecoverPasswordResponse} instance containing the given mail and a message.
+     * @throws UserNotFoundException if user does not exist.
      */
     public Envelope<RecoverPasswordResponse> execute(RecoverPasswordCommand command) {
         Email email = Email.of(command.email());
         if (!userRepository.existsByEmail(email)) {
-            // TODO: Consider if it is apropiate throwing this exception
+            // TODO: Consider if it is appropriate throwing this exception
             log.warn("Email {} does not exist.", email.value());
             throw new UserNotFoundException();
         }
