@@ -45,12 +45,12 @@ public class LoginUserUseCase {
         Email email = Email.of(command.email());
         User user = userRepository.findByEmail(email)
                 .orElseThrow(() -> {
-                    log.warn("User not found for email {}", email.value());
-                    return new InvalidCredentialsException("Invalid credentials.");
+                    String message = "User not found for email " + email.value() + ".";
+                    return new InvalidCredentialsException(message);
                 });
         if (user.isExternal()) {
-            log.warn("External user {} tried to log in internally.", user.id().value());
-            throw new InvalidCredentialsException("Invalid credentials.");
+            String message =  "External user " + user.id().value() + " tried to log in internally.";
+            throw new InvalidCredentialsException(message);
         }
         PlainPassword plainPassword = PlainPassword.forLogin(command.password());
         user.validateLoginPassword(plainPassword, passwordEncoder);
@@ -61,7 +61,7 @@ public class LoginUserUseCase {
         RefreshToken refreshToken = refreshTokenService.generate(user.id(), command.ip(), command.userAgent());
         log.info("User {} authenticated successfully.", user.username().value());
         LoginResponse response = new LoginResponse(token, refreshToken.token().value() , expiresIn, user.username().value());
-        return new Envelope<LoginResponse>(response, new Meta());
+        return new Envelope<>(response, new Meta());
     }
 
 }

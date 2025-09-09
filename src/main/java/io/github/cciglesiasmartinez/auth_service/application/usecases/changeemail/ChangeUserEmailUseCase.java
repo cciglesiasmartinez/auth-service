@@ -46,17 +46,17 @@ public class ChangeUserEmailUseCase {
         PlainPassword currentPassword = PlainPassword.of(command.currentPassword());
         Email newEmail = Email.of(command.newEmail());
         if (userRepository.existsByEmail(newEmail)) {
-            log.warn("Email {} already exists.", newEmail.value());
-            throw new EmailAlreadyExistsException();
+            String message = "Email " + newEmail.value() + " already exists.";
+            throw new EmailAlreadyExistsException(message);
         }
         User user = userRepository.findById(UserId.of(command.userId()))
                 .orElseThrow(() -> {
-                    log.warn("UserId {} not found in database.", command.userId());
-                    return new UserNotFoundException();
+                    String message = "UserId " + command.userId() + " not found in database.";
+                    return new UserNotFoundException(message);
                 });
         if (user.isExternal()) {
-            log.warn("External user {} tried to change their email unsuccessfully.", user.id().value());
-            throw new UserIsExternalException();
+            String message = "External user " + user.id().value() + " tried to change their email unsuccessfully.";
+            throw new UserIsExternalException(message);
         }
         user.changeEmail(currentPassword, newEmail, passwordEncoder);
         userRepository.save(user);

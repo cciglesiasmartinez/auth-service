@@ -42,16 +42,16 @@ public class ChangeExternalUserUsernameUseCase {
         Username newUsername = Username.of(command.newUsername());
         User user = userRepository.findById(UserId.of(command.userId()))
                 .orElseThrow(() -> {
-                    log.warn("User {} not found on the database.", command.userId());
-                    return new UserNotFoundException();
+                    String message = "User " + command.userId() + " not found on the database.";
+                    return new UserNotFoundException(message);
                 });
         if (!user.isExternal()) {
-            log.warn("User {} is not external.", command.userId());
-            throw new UserIsNotExternalException();
+            String message = "User " + command.userId() + " is not external.";
+            throw new UserIsNotExternalException(message);
         }
         if (userRepository.existsByUsername(newUsername)) {
-            log.warn("Username {} already exists.", newUsername.value());
-            throw new UsernameAlreadyExistsException();
+            String message = "Username " + newUsername.value() + " already exists.";
+            throw new UsernameAlreadyExistsException(message);
         }
         user.changeUsernameForExternalUser(newUsername);
         userRepository.save(user);

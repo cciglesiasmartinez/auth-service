@@ -35,8 +35,8 @@ public class DeleteUserUseCase {
         PlainPassword currentPassword = PlainPassword.of(command.currentPassword());
         User user = userRepository.findById(UserId.of(command.userId()))
                 .orElseThrow(() -> {
-                    log.warn("UserId {} not found in database.", command.userId());
-                    return new UserNotFoundException();
+                    String message = "UserId " + command.userId() + " not found in database.";
+                    return new UserNotFoundException(message);
                 });
         user.validateCurrentPassword(currentPassword, passwordEncoder);
         log.info("Deleted their user successfully.");

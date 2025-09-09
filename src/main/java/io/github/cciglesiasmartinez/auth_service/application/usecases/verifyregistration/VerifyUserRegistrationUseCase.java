@@ -42,8 +42,8 @@ public class VerifyUserRegistrationUseCase {
         VerificationCodeString verificationCodeString = VerificationCodeString.of(command.verificationCode());
         VerificationCode verificationCode = verificationCodeRepository.findByCodeString(verificationCodeString)
                 .orElseThrow(() -> {
-                    log.warn("Failed to retrieved verification code {}.", verificationCodeString.value());
-                    return new VerificationCodeNotFoundException();
+                    String message = "Failed to retrieve verification code " + verificationCodeString.value();
+                    return new VerificationCodeNotFoundException(message);
                 });
         User user = User.register(verificationCode.username(), verificationCode.email(), verificationCode.password());
         user.pullEvents().forEach(eventPublisher::publish);

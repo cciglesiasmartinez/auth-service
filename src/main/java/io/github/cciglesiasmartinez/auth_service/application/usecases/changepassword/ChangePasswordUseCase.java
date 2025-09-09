@@ -45,12 +45,14 @@ public class ChangePasswordUseCase {
         PlainPassword newPassword = PlainPassword.of(command.newPassword());
         User user = userRepository.findById(UserId.of(command.userId()))
                 .orElseThrow(() -> {
-                    log.warn("UserId {} not found on database.", command.userId());
-                    return new UserNotFoundException();
+                    String message = "UserId " + command.userId() + " not found on database.";
+                    return new UserNotFoundException(message);
                 });
         if (user.isExternal()) {
-            log.warn("External user {} tried to change their password unsuccessfully.", user.id().value());
-            throw new UserIsExternalException();
+            String message = "External user "
+                    + user.id().value() +
+                    " tried to change their password unsuccessfully";
+            throw new UserIsExternalException(message);
         }
         user.changePassword(currentPassword, newPassword, passwordEncoder);
         userRepository.save(user);

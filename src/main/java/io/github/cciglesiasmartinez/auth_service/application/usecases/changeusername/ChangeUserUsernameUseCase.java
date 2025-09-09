@@ -41,17 +41,16 @@ public class ChangeUserUsernameUseCase {
      * @throws UsernameAlreadyExistsException if username already exists in database.
      */
     public Envelope<ChangeUsernameResponse> execute(ChangeUserUsernameCommand command) {
-        // TODO: try-catch for log.warn?
         PlainPassword currentPassword = PlainPassword.of(command.currentPassword());
         Username newUsername = Username.of(command.newUsername());
         if (userRepository.existsByUsername(newUsername)) {
-            log.warn("Username {} already exists.", newUsername.value());
-            throw new UsernameAlreadyExistsException();
+            String message = "Username " + newUsername.value() + " already exists";
+            throw new UsernameAlreadyExistsException(message);
         }
         User user = userRepository.findById(UserId.of(command.userId()))
                 .orElseThrow(() -> {
-                    log.warn("User {} not found on the database.", command.userId());
-                    return new UserNotFoundException();
+                    String message = "User " + command.userId() + " not found on the database.";
+                    return new UserNotFoundException(message);
                 });
         user.changeUsername(currentPassword, newUsername, passwordEncoder);
         userRepository.save(user);

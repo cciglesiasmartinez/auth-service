@@ -34,12 +34,12 @@ public class DeleteExternalUserUseCase {
         UserId userId = UserId.of(command.userId());
         User user = userRepository.findById(userId).
                 orElseThrow(() -> {
-                    log.warn("UserId {} not found in database", command.userId());
-                    return new UserNotFoundException();
+                    String message = "UserID " + command.userId() + " not found in database";
+                    return new UserNotFoundException(message);
                 });
         if (!user.isExternal()) {
-            log.warn("User {} is not external.", command.userId());
-            throw new UserIsNotExternalException();
+            String message = "User " + command.userId() + " is not external.";
+            throw new UserIsNotExternalException(message);
         }
         userRepository.delete(user);
         log.info("Deleted their user successfully.");

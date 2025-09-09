@@ -36,8 +36,8 @@ public class ResetPasswordUseCase {
         recoverCodeService.validateCodeForEmail(email, recoverCodeString, command.ip(), command.userAgent());
         User user = userRepository.findByEmail(email)
                 .orElseThrow(() -> {
-                    log.warn("User not found for email {}", email.value());
-                    return new UserNotFoundException();
+                    String message = "User not found for email " + email.value();
+                    return new UserNotFoundException(message);
                 });
         user.resetPassword(newPassword, passwordEncoder);
         userRepository.save(user);

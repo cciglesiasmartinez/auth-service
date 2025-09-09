@@ -40,8 +40,8 @@ public class RecoverPasswordUseCase {
         Email email = Email.of(command.email());
         if (!userRepository.existsByEmail(email)) {
             // TODO: Consider if it is appropriate throwing this exception
-            log.warn("Email {} does not exist.", email.value());
-            throw new UserNotFoundException();
+            String message = "Email " + email.value() + " does not exist.";
+            throw new UserNotFoundException(message);
         }
         RecoverCode recoverCode = recoverCodeService.generate(email, command.ip(), command.userAgent());
         springPublisher.publishEvent(new RecoverCodeRequestedEvent(email, recoverCode.recoverCodeString()));

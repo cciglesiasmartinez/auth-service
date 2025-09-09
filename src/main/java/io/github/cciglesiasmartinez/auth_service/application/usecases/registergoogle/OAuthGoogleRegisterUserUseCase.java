@@ -49,8 +49,9 @@ public class OAuthGoogleRegisterUserUseCase {
         ProviderName providerName = ProviderName.GOOGLE;
         Email googleEmail = Email.of(command.googleEmail());
         if (userRepository.existsByEmail(googleEmail)) {
-            log.warn("Email {} already exists.", googleEmail.value());
-            throw new EmailAlreadyExistsException();
+//            log.warn("Email {} already exists.", googleEmail.value());
+            String message = "Email " + googleEmail.value() + " already exists.";
+            throw new EmailAlreadyExistsException(message);
         }
         User user = User.createExternalUser(googleEmail, providerKey, providerName);
         userRepository.save(user);

@@ -43,12 +43,12 @@ public class RefreshAccessTokenUseCase {
         RefreshTokenString tokenString = RefreshTokenString.of(command.refreshToken());
         RefreshToken storedToken =  refreshTokenRepository.findByTokenString(tokenString)
                 .orElseThrow(() -> {
-                    log.warn("Token not found in database.");
-                    return new RefreshTokenNotFoundException();
+//                    log.warn("Token not found in database.");
+                    return new RefreshTokenNotFoundException("Token not found in database.");
                 });
         if (storedToken.expiresAt().isBefore(LocalDateTime.now())) {
-            log.warn("Refresh token expired.");
-            throw new RefreshTokenExpiredException();
+//            log.warn();
+            throw new RefreshTokenExpiredException("Refresh token expired.");
         }
         String subject = storedToken.getUserId().value();
         // TODO: generateToken() should ask for exp time? Then we can pass it to the response obj.

@@ -33,8 +33,8 @@ public class GetUserInfoUseCase {
     public Envelope<UserResponse> execute(GetUserInfoCommand command) {
         User user = userRepository.findById(UserId.of(command.userId()))
                 .orElseThrow(() -> {
-                    log.warn("UserId {} not found in database.", command.userId());
-                    return new UserNotFoundException();
+                    String message = "UserId " + command.userId() + " not found in database.";
+                    return new UserNotFoundException(message);
                 });
         log.info("User checked their information successfully.");
         return new Envelope<>(UserResponse.fromDomainUser(user), new Meta());
