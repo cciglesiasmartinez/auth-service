@@ -187,7 +187,7 @@ public class User {
     public void validateLoginPassword(PlainPassword loginPassword,
                                       PasswordEncoder passwordEncoder) {
         if (!passwordEncoder.matches(loginPassword, this.password)) {
-            throw new InvalidCredentialsException("Invalid credentials.");
+            throw new InvalidCredentialsException("Password does not match.");
         }
     }
 
