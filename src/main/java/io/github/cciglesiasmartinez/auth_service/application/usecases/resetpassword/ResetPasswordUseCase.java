@@ -18,7 +18,8 @@ import org.springframework.stereotype.Service;
 /**
  * Application service for recovering user password.
  * <p>
- * TODO: Explain it further.
+ * Verifies if the {@link RecoverCodeString} and {@link Email} provided in the request match the persisted values.
+ * If the values match, it sets the provided {@link PlainPassword} as the new {@link User} password.
  */
 @Slf4j
 @Service
@@ -29,6 +30,13 @@ public class ResetPasswordUseCase {
     private final RecoverCodeService recoverCodeService;
     private final PasswordEncoder passwordEncoder;
 
+    /**
+     * Executes the reset password use case.
+     *
+     * @param command command containing recover code, email, new desired password, user's ip and agent.
+     * @return A {@link ResetPasswordResponse} confirming the operation has succeeded.
+     * @throws UserNotFoundException if the {@link User} is not found on the database.
+     */
     public Envelope<ResetPasswordResponse> execute(ResetPasswordCommand command) {
         Email email = Email.of(command.email());
         RecoverCodeString recoverCodeString = RecoverCodeString.of(command.recoverCode());
