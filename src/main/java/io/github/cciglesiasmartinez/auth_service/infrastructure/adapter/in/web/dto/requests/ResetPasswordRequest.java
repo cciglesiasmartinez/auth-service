@@ -11,27 +11,27 @@ import lombok.Getter;
 @AllArgsConstructor
 @Getter
 @JsonNaming(PropertyNamingStrategies.SnakeCaseStrategy.class)
-@Schema(description = "Response returned after a successful recover password request.")
+@Schema(description = "Request for reset password flow (end).")
 public class ResetPasswordRequest {
 
     @Schema(
-            description = "",
-            example = ""
+            description = "Recover code.",
+            example = "BC1PO3"
     )
     @NotBlank
     private String recoverCode;
 
     @Schema(
-            description = "",
-            example = ""
+            description = "User email.",
+            example = "jane@mail.org"
     )
     @Email
     @NotBlank
     private String email;
 
     @Schema(
-            description = "",
-            example = ""
+            description = "New desired password.",
+            example = "Str0ngPassw0rd!"
     )
     @NotBlank
     private String password;
