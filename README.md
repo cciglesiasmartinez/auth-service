@@ -28,6 +28,7 @@ A robust authentication and authorization microservice built with **Spring Boot*
 - Hexagonal architecture: uncoupled implementations.
 - Extensive JavaDoc documentation.
 - OpenAPI documentation.
+- Ready to integrate with ELK stack.
 - Follows OWASP security best practices.
 
 ---
