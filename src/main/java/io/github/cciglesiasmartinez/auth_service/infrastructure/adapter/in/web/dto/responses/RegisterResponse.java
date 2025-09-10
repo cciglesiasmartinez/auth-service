@@ -9,18 +9,18 @@ import lombok.Getter;
 @AllArgsConstructor
 @Getter
 @JsonNaming(PropertyNamingStrategies.SnakeCaseStrategy.class)
-@Schema(description = "Response returned after a successful registration.")
+@Schema(description = "Response returned after a successful registration request.")
 public class RegisterResponse {
 
     @Schema(
-            description = "",
-            example = ""
+            description = "Message containing a code confirming the operation has been successful.",
+            example = "verification_sent"
     )
     private String message;
 
     @Schema(
-            description = "",
-            example = ""
+            description = "User email.",
+            example = "joe@mail.org"
     )
     private String email;
 

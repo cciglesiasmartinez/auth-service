@@ -13,14 +13,14 @@ import lombok.Getter;
 public class RecoverPasswordResponse {
 
     @Schema(
-            description = "",
-            example = ""
+            description = "Message containing a code confirming the operation has been successful.",
+            example = "verification_sent"
     )
     private String message;
 
     @Schema(
-            description = "",
-            example = ""
+            description = "User email.",
+            example = "joe@mail.org"
     )
     private String email;
 
