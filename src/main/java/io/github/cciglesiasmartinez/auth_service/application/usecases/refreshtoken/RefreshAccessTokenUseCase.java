@@ -42,12 +42,8 @@ public class RefreshAccessTokenUseCase {
     public Envelope<RefreshAccessTokenResponse> execute(RefreshAccessTokenCommand command) {
         RefreshTokenString tokenString = RefreshTokenString.of(command.refreshToken());
         RefreshToken storedToken =  refreshTokenRepository.findByTokenString(tokenString)
-                .orElseThrow(() -> {
-//                    log.warn("Token not found in database.");
-                    return new RefreshTokenNotFoundException("Token not found in database.");
-                });
+                .orElseThrow(() -> new RefreshTokenNotFoundException("Token not found in database."));
         if (storedToken.expiresAt().isBefore(LocalDateTime.now())) {
-//            log.warn();
             throw new RefreshTokenExpiredException("Refresh token expired.");
         }
         String subject = storedToken.getUserId().value();

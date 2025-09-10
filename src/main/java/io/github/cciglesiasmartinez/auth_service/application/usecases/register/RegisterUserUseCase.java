@@ -50,7 +50,6 @@ public class RegisterUserUseCase {
         Email email = Email.of(command.email());
         PlainPassword plainPassword = PlainPassword.of(command.password());
         if (userRepository.existsByEmailOrUsername(email, username)) {
-//            log.warn("Email {} or username {} already exist.", email.value(), username.value());
             String message = "Email " + email.value() + " or username " + username.value() + " already exist.";
             throw new UserAlreadyRegisteredException(message);
         }
