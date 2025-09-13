@@ -5,6 +5,8 @@ import lombok.*;
 
 import java.io.Serializable;
 import java.time.LocalDateTime;
+import java.util.HashSet;
+import java.util.Set;
 
 @NoArgsConstructor
 @AllArgsConstructor
@@ -40,6 +42,12 @@ public class UserEntity implements Serializable {
 
     @Column(name="is_external")
     private boolean isExternal;
+
+    @ManyToMany(fetch = FetchType.LAZY)
+    @JoinTable(name = "user_roles",
+            joinColumns = @JoinColumn(name = "user_id"),
+            inverseJoinColumns = @JoinColumn(name = "role_id"))
+    private Set<RoleEntity> role = new HashSet<>();
 
     /**
      * Updates automatically the modified_at value each time we update (SQL) the entity.
