@@ -7,8 +7,10 @@ import io.github.cciglesiasmartinez.auth_service.domain.model.valueobject.Encode
 import io.github.cciglesiasmartinez.auth_service.domain.model.valueobject.UserId;
 import io.github.cciglesiasmartinez.auth_service.domain.model.valueobject.Username;
 import io.github.cciglesiasmartinez.auth_service.infrastructure.adapter.out.persistence.mysql.entity.UserEntity;
+import lombok.AllArgsConstructor;
 import org.springframework.stereotype.Component;
 
+@AllArgsConstructor
 @Component
 public class UserEntityMapperImpl implements UserEntityMapper {
 
