@@ -8,6 +8,7 @@ import java.time.LocalDateTime;
 import java.util.HashSet;
 import java.util.Set;
 
+@ToString // TODO: Delete in production
 @NoArgsConstructor
 @AllArgsConstructor
 @EqualsAndHashCode(onlyExplicitlyIncluded = true)
@@ -47,7 +48,7 @@ public class UserEntity implements Serializable {
     @JoinTable(name = "user_roles",
             joinColumns = @JoinColumn(name = "user_id"),
             inverseJoinColumns = @JoinColumn(name = "role_id"))
-    private Set<RoleEntity> role = new HashSet<>();
+    private Set<RoleEntity> roles = new HashSet<>();
 
     /**
      * Updates automatically the modified_at value each time we update (SQL) the entity.
