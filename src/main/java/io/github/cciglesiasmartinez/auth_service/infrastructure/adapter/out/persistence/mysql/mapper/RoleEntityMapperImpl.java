@@ -8,7 +8,8 @@ import java.util.HashSet;
 import java.util.Set;
 
 @Component
-public class RoleEntityMapperImpl implements RoleEntityMapper{
+public class RoleEntityMapperImpl implements RoleEntityMapper {
+
     @Override
     public Set<Role> toDomain(Set<RoleEntity> roles) {
         Set<Role> result = new HashSet<>();
