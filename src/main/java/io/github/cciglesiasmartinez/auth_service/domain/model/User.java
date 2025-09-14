@@ -13,6 +13,7 @@ import io.github.cciglesiasmartinez.auth_service.infrastructure.adapter.out.pers
 import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Set;
 
 /**
  * Domain model representing a User within the system.
@@ -33,10 +34,11 @@ public class User {
     private LocalDateTime modifiedAt;
     private LocalDateTime lastLogin;
     private boolean isExternal;
+    private Set<Role> roles;
     private List<DomainEvent> events = new ArrayList<>();
 
     private User(UserId id, Username username, EncodedPassword password, Email email, LocalDateTime registeredAt,
-                 LocalDateTime modifiedAt, LocalDateTime lastLogin, boolean isExternal) {
+                 LocalDateTime modifiedAt, LocalDateTime lastLogin, boolean isExternal, Set<Role> roles) {
         this.id = id;
         this.username = username;
         this.password = password;
@@ -45,6 +47,7 @@ public class User {
         this.modifiedAt = modifiedAt;
         this.lastLogin = lastLogin;
         this.isExternal = isExternal;
+        this.roles = roles;
     }
 
     /**
@@ -58,7 +61,7 @@ public class User {
      */
     public static User create(Username username, Email email, EncodedPassword encodedPassword) {
         return new User(UserId.generate(), username, encodedPassword, email, LocalDateTime.now(), LocalDateTime.now(),
-                null, false);
+                null, false, null);
     }
 
     /**
@@ -76,7 +79,7 @@ public class User {
         Username username = Username.createDefaultExternalUsername(providerName, providerKey);
         EncodedPassword externalNullPassword = EncodedPassword.externalNullPassword();
         return new User(UserId.generate(), username, externalNullPassword, email, LocalDateTime.now(),
-                LocalDateTime.now(), null, true);
+                LocalDateTime.now(), null, true, null);
     }
 
     /**
@@ -109,8 +112,8 @@ public class User {
      */
     public static User of(UserId id, Username username, EncodedPassword password, Email email,
                           LocalDateTime registeredAt, LocalDateTime modifiedAt, LocalDateTime lastLogin,
-                          boolean isExternal) {
-        return new User(id, username, password, email, registeredAt, modifiedAt, lastLogin, isExternal);
+                          boolean isExternal, Set<Role> roles) {
+        return new User(id, username, password, email, registeredAt, modifiedAt, lastLogin, isExternal, roles);
     }
 
     /**
@@ -280,6 +283,10 @@ public class User {
 
     public boolean isExternal() {
         return isExternal;
+    }
+
+    public Set<Role> roles() {
+        return roles;
     }
 
 }
