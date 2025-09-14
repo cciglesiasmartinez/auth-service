@@ -7,6 +7,7 @@ import java.io.Serializable;
 import java.util.HashSet;
 import java.util.Set;
 
+@ToString // TODO: Delete in production.
 @NoArgsConstructor
 @AllArgsConstructor
 @EqualsAndHashCode(onlyExplicitlyIncluded = true)
@@ -33,4 +34,10 @@ public class RoleEntity implements Serializable {
             inverseJoinColumns = @JoinColumn(name = "permission_id"))
     private Set<PermissionEntity> permissions = new HashSet<>();
 
+    // Temporary 3-arg constructor. TODO: Delete later.
+    public RoleEntity(String id, String name, String description) {
+        this.id = id;
+        this.name = name;
+        this.description = description;
+    }
 }
