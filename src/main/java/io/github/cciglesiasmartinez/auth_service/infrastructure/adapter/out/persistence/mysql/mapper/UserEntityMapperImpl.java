@@ -12,8 +12,11 @@ import org.springframework.stereotype.Component;
 @Component
 public class UserEntityMapperImpl implements UserEntityMapper {
 
+    private RoleEntityMapper roleEntityMapper;
+
     @Override
     public User toDomain(UserEntity entity) {
+        System.out.println(entity);
         return User.of(
                 UserId.of(entity.getId()),
                 Username.of(entity.getUsername()),
@@ -22,7 +25,8 @@ public class UserEntityMapperImpl implements UserEntityMapper {
                 entity.getRegisteredAt(),
                 entity.getModifiedAt(),
                 entity.getLastLogin(),
-                entity.isExternal()
+                entity.isExternal(),
+                roleEntityMapper.toDomain(entity.getRoles())
         );
     }
 
@@ -37,6 +41,7 @@ public class UserEntityMapperImpl implements UserEntityMapper {
         entity.setModifiedAt(user.modifiedAt());
         entity.setLastLogin(user.lastLogin());
         entity.setExternal(user.isExternal());
+        roleEntityMapper.toEntity(user.roles());
         return entity;
     }
 
