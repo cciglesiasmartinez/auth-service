@@ -1,5 +1,6 @@
 package io.github.cciglesiasmartinez.auth_service.infrastructure.security;
 
+import io.github.cciglesiasmartinez.auth_service.domain.model.Role;
 import io.github.cciglesiasmartinez.auth_service.domain.port.out.AccessTokenProvider;
 import io.jsonwebtoken.*;
 import io.jsonwebtoken.security.Keys;
@@ -9,8 +10,7 @@ import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Component;
 
 import javax.crypto.SecretKey;
-import java.util.Base64;
-import java.util.Date;
+import java.util.*;
 
 @Getter
 @Component
@@ -31,12 +31,27 @@ public class JwtAccessTokenProvider implements AccessTokenProvider {
     }
 
     @Override
-    public String generateToken(String username) {
+    public String generateToken(String subject) {
         return Jwts.builder()
-                .setSubject(username)
+                .setSubject(subject)
                 .setIssuedAt(new Date())
                 .setExpiration(new Date((new Date()).getTime() + jwtExpirationMs))
                 .signWith(key, SignatureAlgorithm.HS256)
+                .compact();
+    }
+
+    @Override
+    public String generateToken(String subject, Set<Role> roles) {
+        List<String> roleList = new ArrayList<String>();
+        for (Role r: roles) {
+            roleList.add(r.name());
+        }
+        return Jwts.builder()
+                .setSubject(subject)
+                .setIssuedAt(new Date())
+                .setExpiration(new Date((new Date()).getTime() + jwtExpirationMs))
+                .signWith(key, SignatureAlgorithm.HS256)
+                .claim("roles", roleList)
                 .compact();
     }
 
