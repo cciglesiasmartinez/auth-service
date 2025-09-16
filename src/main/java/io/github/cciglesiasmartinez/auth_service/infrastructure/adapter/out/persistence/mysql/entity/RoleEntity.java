@@ -9,7 +9,7 @@ import java.util.Set;
 
 @ToString // TODO: Delete in production.
 @NoArgsConstructor
-@AllArgsConstructor
+//@AllArgsConstructor
 @EqualsAndHashCode(onlyExplicitlyIncluded = true)
 @Getter
 @Setter
@@ -28,11 +28,11 @@ public class RoleEntity implements Serializable {
     @Column(nullable = true, length = 255)
     private String description;
 
-    @ManyToMany(fetch = FetchType.LAZY)
-    @JoinTable(name = "role_permissions",
-            joinColumns = @JoinColumn(name = "role_id"),
-            inverseJoinColumns = @JoinColumn(name = "permission_id"))
-    private Set<PermissionEntity> permissions = new HashSet<>();
+//    @ManyToMany(fetch = FetchType.EAGER) // TODO: Solve this so we can avoid using EAGER
+//    @JoinTable(name = "role_permissions",
+//            joinColumns = @JoinColumn(name = "role_id"),
+//            inverseJoinColumns = @JoinColumn(name = "permission_id"))
+//    private Set<PermissionEntity> permissions = new HashSet<>();
 
     // Temporary 3-arg constructor. TODO: Delete later.
     public RoleEntity(String id, String name, String description) {
