@@ -56,7 +56,7 @@ public class LoginUserUseCase {
         user.validateLoginPassword(plainPassword, passwordEncoder);
         user.recordLogin();
         userRepository.save(user);
-        String token = accessTokenProvider.generateToken(user.id().value());
+        String token = accessTokenProvider.generateToken(user.id().value(),user.roles());
         long expiresIn = accessTokenProvider.getTokenExpirationInSeconds();
         RefreshToken refreshToken = refreshTokenService.generate(user.id(), command.ip(), command.userAgent());
         log.info("User {} authenticated successfully.", user.username().value());
