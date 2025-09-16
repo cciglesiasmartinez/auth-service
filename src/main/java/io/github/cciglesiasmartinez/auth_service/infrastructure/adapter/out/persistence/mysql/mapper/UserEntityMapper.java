@@ -7,7 +7,6 @@ import io.github.cciglesiasmartinez.auth_service.infrastructure.adapter.out.pers
 public interface UserEntityMapper {
 
     User toDomain(UserEntity entity);
-
     UserEntity toEntity(User user);
 
 }

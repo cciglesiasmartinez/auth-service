@@ -18,7 +18,6 @@ public class UserEntityMapperImpl implements UserEntityMapper {
 
     @Override
     public User toDomain(UserEntity entity) {
-        System.out.println(entity);
         return User.of(
                 UserId.of(entity.getId()),
                 Username.of(entity.getUsername()),
@@ -43,7 +42,7 @@ public class UserEntityMapperImpl implements UserEntityMapper {
         entity.setModifiedAt(user.modifiedAt());
         entity.setLastLogin(user.lastLogin());
         entity.setExternal(user.isExternal());
-        roleEntityMapper.toEntity(user.roles());
+        entity.setRoles(roleEntityMapper.toEntity(user.roles()));
         return entity;
     }
 
