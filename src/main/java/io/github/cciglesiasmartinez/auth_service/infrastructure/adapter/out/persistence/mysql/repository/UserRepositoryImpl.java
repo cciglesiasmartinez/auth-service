@@ -18,16 +18,17 @@ public class UserRepositoryImpl implements UserRepository {
     private final SpringDataUserRepository springDataUserRepository;
     private final UserEntityMapper mapper;
 
-
     @Override
     public Optional<User> findById(UserId id) {
-        return springDataUserRepository.findById(id.value())
+        return springDataUserRepository.findByIdWithRoles(id.value())
                 .map(mapper::toDomain);
     }
 
     @Override
     public Optional<User> findByEmail(Email email) {
-        return springDataUserRepository.findByEmail(email.value())
+//        return springDataUserRepository.findByEmail(email.value())
+//                .map(mapper::toDomain);
+        return springDataUserRepository.findByEmailWithRoles(email.value())
                 .map(mapper::toDomain);
     }
 
