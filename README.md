@@ -1,6 +1,6 @@
 # Authentication microservice
 
-A robust authentication and authorization microservice built with **Spring Boot**, featuring email/password authentication, Google OAuth2 login, JWT access tokens, refresh tokens, email verification and password recovery flows. Fully unit-tested and documented with JavaDoc. Designed with a clean architecture approach.
+A robust authentication and authorization microservice built with **Spring Boot**, featuring email/password authentication, Google OAuth2 login, JWT access tokens, refresh tokens, email verification and password recovery flows. Fully unit-tested and documented with JavaDoc.
 
 ---
 
@@ -19,7 +19,7 @@ A robust authentication and authorization microservice built with **Spring Boot*
 ## Features
 
 - User registration with email verification.
-- Login with email/password or Google OAuth2.
+- Login with email/password or via Google OAuth2.
 - JWT-based access tokens and refresh tokens.
 - Password hashing and secure validation.
 - Redis-backed verification and recovery codes with TTL.
@@ -30,6 +30,7 @@ A robust authentication and authorization microservice built with **Spring Boot*
 - OpenAPI documentation.
 - Ready to integrate with ELK stack.
 - Follows OWASP security best practices.
+- RBAC support.
 
 ---
 
@@ -45,8 +46,9 @@ Design follows domain driven design (DDD) principles and Hexagonal Architecture 
 
 - Java 22
 - Maven 
-- Redis (for verification codes, refresh tokens and )
+- Redis (for verification codes, recovery codes and refresh tokens)
 - MySQL or any relational DB for user persistence
+- SMTP mail service (for registration code and recover password code delivery)
 - Google OAuth2 credentials (optional)
 
 ### Run the Application
