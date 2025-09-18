@@ -48,15 +48,13 @@ public class RecoverCodeServiceImpl implements RecoverCodeService{
         RecoverCode recoverCode = recoverCodeRepository.findByCodeString(recoverCodeString)
                 .orElseThrow(
                     () -> {
-                        log.warn("Code {} not found in database.", recoverCodeString.value());
-                        // TODO: Consider if this is adequate to throw a custom exception here
-                        return new VerificationCodeNotFoundException();
+                        String message = "Code " + recoverCodeString.value() + " not found in database.";
+                        return new VerificationCodeNotFoundException(message);
                     });
         if (!email.value().equals(recoverCode.email().value())) {
-            // TODO: Create a custom exception
-            log.warn("Email mismatch between provided email {} and current stored email {}",
-                    email.value(), recoverCode.email().value());
-            throw new VerificationCodeNotFoundException();
+            String message = "Email mismatch between provided email " + email.value()
+                    + " and current stored email " + recoverCode.email().value();
+            throw new VerificationCodeNotFoundException(message);
         }
         recoverCodeRepository.delete(recoverCode);
     }
