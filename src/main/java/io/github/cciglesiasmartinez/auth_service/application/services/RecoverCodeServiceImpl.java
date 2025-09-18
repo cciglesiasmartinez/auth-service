@@ -58,11 +58,14 @@ public class RecoverCodeServiceImpl implements RecoverCodeService{
                     + " and current stored email " + recoverCode.email().value();
             throw new VerificationCodeNotFoundException(message);
         }
+        log.info("Validated recover password code {} for email {} with ip {} and agent {}",
+                recoverCodeString.value(), email.value(), ipAddress, userAgent);
         recoverCodeRepository.delete(recoverCode);
     }
 
     @Override
     public void delete(RecoverCode recoverCode) {
+        log.info("Deleted recover password code {}", recoverCode.recoverCodeString().value());
         recoverCodeRepository.delete(recoverCode);
     }
 }
