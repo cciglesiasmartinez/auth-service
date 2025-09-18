@@ -18,10 +18,11 @@ public class GlobalExceptionHandler {
 
     private ResponseEntity<Envelope<ExceptionResponse>> buildResponse(Exception e, String code, HttpStatus type) {
         StackTraceElement origin = e.getStackTrace()[0];
-        MDC.put("exceptionOrigin",
-                origin.getClassName() + ":" + origin.getLineNumber());
+        MDC.put("exceptionType", e.getClass().getSimpleName());
+        MDC.put("exceptionOrigin", origin.getClassName() + ":" + origin.getLineNumber());
         log.warn(e.getMessage());
         MDC.remove("exceptionOrigin");
+        MDC.remove("exceptionType");
         ExceptionResponse exceptionResponse = new ExceptionResponse(code);
         Envelope<ExceptionResponse> response = new Envelope<>(exceptionResponse, new Meta());
         return new ResponseEntity<>(response, type);
@@ -30,10 +31,11 @@ public class GlobalExceptionHandler {
     private ResponseEntity<Envelope<ExceptionResponse>> buildResponse(Exception e, String code, String message,
                                                                       HttpStatus type) {
         StackTraceElement origin = e.getStackTrace()[0];
-        MDC.put("exceptionOrigin",
-                origin.getClassName() + ":" + origin.getLineNumber());
+        MDC.put("exceptionType", e.getClass().getSimpleName());
+        MDC.put("exceptionOrigin",origin.getClassName() + ":" + origin.getLineNumber());
         log.warn(e.getMessage());
         MDC.remove("exceptionOrigin");
+        MDC.remove("exceptionType");
         ExceptionResponse exceptionResponse = new ExceptionResponse(code, message);
         Envelope<ExceptionResponse> response = new Envelope<>(exceptionResponse, new Meta());
         return new ResponseEntity<>(response, type);
