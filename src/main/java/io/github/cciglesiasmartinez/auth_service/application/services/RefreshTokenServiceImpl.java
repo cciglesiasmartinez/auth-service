@@ -12,6 +12,17 @@ import org.springframework.transaction.annotation.Transactional;
 
 import java.time.LocalDateTime;
 
+/**
+ * Service responsible for issuing and rotating refresh tokens.
+ *
+ * <p>Implements the security policy for refresh token lifecycle:
+ * <ul>
+ *   <li>Tokens expire after a fixed TTL (time to live).</li>
+ *   <li>Rotation revokes the old token immediately after issuing a new one
+ *       to prevent reuse attacks.</li>
+ *   <li>Issued tokens are bound to user id (uuid), IP address and user agent.</li>
+ * </ul>
+ */
 @Service
 @Transactional
 @AllArgsConstructor

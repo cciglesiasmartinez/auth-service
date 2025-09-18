@@ -12,6 +12,14 @@ import org.springframework.stereotype.Service;
 
 import java.time.LocalDateTime;
 
+/**
+ * Service responsible for issuing register verification codes.
+ * <p></p>
+ * <ul>
+ *     <li>Codes are bound to email, username and password.</li>
+ *     <li>Each code expires after a fixed TTL.</li>
+ * </ul>
+ */
 @Service
 @AllArgsConstructor
 public class VerificationCodeServiceImpl implements VerificationCodeService{

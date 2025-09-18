@@ -13,6 +13,15 @@ import org.springframework.stereotype.Service;
 
 import java.time.LocalDateTime;
 
+/**
+ * Service responsible for issuing and validating recover codes.
+ * <p> </p>
+ * <ul>
+ *     <li>Codes expire after a fixed TTL (time to live).</li>
+ *     <li>After validation codes are deleted.</li>
+ *     <li>Each code is bound to user email, IP and user agent.</li>
+ * </ul>
+ */
 @Slf4j
 @Service
 @Transactional
