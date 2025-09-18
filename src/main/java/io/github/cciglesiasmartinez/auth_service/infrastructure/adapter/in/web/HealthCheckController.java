@@ -15,4 +15,9 @@ public class HealthCheckController {
         log.info("/ping endpoint called.");
         return "Auth API is active :3";
     }
+    @GetMapping("/admin/check-security")
+    public String checkSecurity() {
+        log.info("/check-security called");
+        return "Security check";
+    }
 }
