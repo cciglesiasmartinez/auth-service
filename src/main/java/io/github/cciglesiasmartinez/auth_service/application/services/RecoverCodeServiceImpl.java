@@ -39,6 +39,8 @@ public class RecoverCodeServiceImpl implements RecoverCodeService{
         RecoverCode recoverCode = RecoverCode.create(recoverCodeString, email, ipAddress, userAgent,
                 issuedAt, expiresAt);
         recoverCodeRepository.save(recoverCode);
+        log.info("Generated recover password code {} for email {} with ip {} and agent {}",
+                recoverCodeString.value(), email.value(), ipAddress, userAgent);
         return recoverCode;
     }
 
