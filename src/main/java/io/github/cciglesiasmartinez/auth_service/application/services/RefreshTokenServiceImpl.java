@@ -40,7 +40,8 @@ public class RefreshTokenServiceImpl implements RefreshTokenService {
         LocalDateTime expiresAt = issuedAt.plusDays(1);
         RefreshToken refreshToken = RefreshToken.create(tokenString, userId, issuedAt, expiresAt, ipAddress, userAgent);
         refreshTokenRepository.save(refreshToken);
-        log.info("Generated new refresh token {} for user {} with ip {} and agent {}", tokenString.value(), userId.value(), ipAddress, userAgent);
+        log.info("Generated new refresh token {} for user {} with ip {} and agent {}",
+                tokenString.value(), userId.value(), ipAddress, userAgent);
         return refreshToken;
     }
 
