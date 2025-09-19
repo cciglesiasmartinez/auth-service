@@ -6,6 +6,9 @@ import lombok.Getter;
 
 import java.time.LocalDateTime;
 
+/**
+ * Event sent after a registration process is completed.
+ */
 @Getter
 public class UserRegisteredEvent implements DomainEvent {
 
