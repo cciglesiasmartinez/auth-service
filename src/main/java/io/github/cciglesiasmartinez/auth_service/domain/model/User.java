@@ -12,6 +12,7 @@ import io.github.cciglesiasmartinez.auth_service.infrastructure.adapter.out.pers
 
 import java.time.LocalDateTime;
 import java.util.ArrayList;
+import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
 
@@ -60,8 +61,9 @@ public class User {
      * @return a new {@link User} instance.
      */
     public static User create(Username username, Email email, EncodedPassword encodedPassword) {
+        Set<Role> roles = new HashSet<>();
         return new User(UserId.generate(), username, encodedPassword, email, LocalDateTime.now(), LocalDateTime.now(),
-                null, false, null);
+                null, false, roles);
     }
 
     /**
@@ -78,8 +80,9 @@ public class User {
     public static User createExternalUser(Email email, ProviderKey providerKey, ProviderName providerName) {
         Username username = Username.createDefaultExternalUsername(providerName, providerKey);
         EncodedPassword externalNullPassword = EncodedPassword.externalNullPassword();
+        Set<Role> roles = new HashSet<>();
         return new User(UserId.generate(), username, externalNullPassword, email, LocalDateTime.now(),
-                LocalDateTime.now(), null, true, null);
+                LocalDateTime.now(), null, true, roles);
     }
 
     /**
