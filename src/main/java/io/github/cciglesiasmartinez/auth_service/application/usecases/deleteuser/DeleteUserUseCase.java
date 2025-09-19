@@ -1,5 +1,7 @@
 package io.github.cciglesiasmartinez.auth_service.application.usecases.deleteuser;
 
+import io.github.cciglesiasmartinez.auth_service.domain.event.DomainEventPublisher;
+import io.github.cciglesiasmartinez.auth_service.domain.event.UserDeletedEvent;
 import io.github.cciglesiasmartinez.auth_service.domain.exception.UserNotFoundException;
 import io.github.cciglesiasmartinez.auth_service.domain.model.valueobject.PlainPassword;
 import io.github.cciglesiasmartinez.auth_service.domain.model.User;
@@ -23,6 +25,7 @@ public class DeleteUserUseCase {
 
     private final UserRepository userRepository;
     private final PasswordEncoder passwordEncoder;
+    private final DomainEventPublisher eventPublisher;
 
     /**
      * Executes the user delete (self delete) use case.
@@ -33,12 +36,14 @@ public class DeleteUserUseCase {
      */
     public void execute(DeleteUserCommand command) {
         PlainPassword currentPassword = PlainPassword.of(command.currentPassword());
+        UserId userId = UserId.of(command.userId());
         User user = userRepository.findById(UserId.of(command.userId()))
                 .orElseThrow(() -> {
                     String message = "UserId " + command.userId() + " not found in database.";
                     return new UserNotFoundException(message);
                 });
         user.validateCurrentPassword(currentPassword, passwordEncoder);
+        eventPublisher.publish(new UserDeletedEvent(userId));
         log.info("Deleted their user successfully.");
         userRepository.delete(user);
     }
