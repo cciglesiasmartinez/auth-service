@@ -1,5 +1,6 @@
 package io.github.cciglesiasmartinez.auth_service.application.usecases.login;
 
+import io.github.cciglesiasmartinez.auth_service.domain.model.Role;
 import io.github.cciglesiasmartinez.auth_service.domain.model.valueobject.*;
 import io.github.cciglesiasmartinez.auth_service.infrastructure.adapter.in.web.dto.responses.Envelope;
 import io.github.cciglesiasmartinez.auth_service.infrastructure.adapter.in.web.dto.responses.LoginResponse;
@@ -16,9 +17,10 @@ import org.mockito.InjectMocks;
 import org.mockito.Mock;
 import org.mockito.junit.jupiter.MockitoExtension;
 
+import java.util.HashSet;
 import java.util.Optional;
+import java.util.Set;
 
-import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertThrows;
 import static org.mockito.Mockito.*;
 
@@ -96,6 +98,7 @@ public class LoginUserUseCaseTest {
         PlainPassword plainPassword = PlainPassword.of("Str0ngPassword!");
         String ip = "localhost";
         String userAgent = "mockAgent";
+        Set<Role> roles = new HashSet<>();
         LoginUserCommand command = new LoginUserCommand(email.value(), plainPassword.value(), ip, userAgent);
         User user = mock(User.class);
         when(userRepository.findByEmail(email)).thenReturn(Optional.of(user));
@@ -107,7 +110,7 @@ public class LoginUserUseCaseTest {
 
         doNothing().when(user).validateLoginPassword(any(PlainPassword.class), eq(passwordEncoder));
 
-        when(accessTokenProvider.generateToken("mock-user-id")).thenReturn("mock-token");
+        when(accessTokenProvider.generateToken("mock-user-id", roles)).thenReturn("mock-token");
         when(accessTokenProvider.getTokenExpirationInSeconds()).thenReturn(3600L);
 
         Username username = Username.of("testUser");
