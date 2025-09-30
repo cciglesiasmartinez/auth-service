@@ -1,5 +1,6 @@
 package io.github.cciglesiasmartinez.auth_service.application.usecases.resetpassword;
 
+import io.github.cciglesiasmartinez.auth_service.application.services.RecoverCodeService;
 import io.github.cciglesiasmartinez.auth_service.domain.exception.UserNotFoundException;
 import io.github.cciglesiasmartinez.auth_service.domain.model.User;
 import io.github.cciglesiasmartinez.auth_service.domain.model.valueobject.Email;
@@ -23,6 +24,9 @@ public class ResetPasswordUseCaseTest {
 
     @Mock
     private UserRepository userRepository;
+
+    @Mock
+    private RecoverCodeService recoverCodeService;
 
     @InjectMocks
     private ResetPasswordUseCase useCase;
