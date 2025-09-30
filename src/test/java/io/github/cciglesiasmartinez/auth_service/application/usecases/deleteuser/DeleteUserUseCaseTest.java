@@ -1,5 +1,6 @@
 package io.github.cciglesiasmartinez.auth_service.application.usecases.deleteuser;
 
+import io.github.cciglesiasmartinez.auth_service.domain.event.DomainEventPublisher;
 import io.github.cciglesiasmartinez.auth_service.domain.exception.PasswordMismatchException;
 import io.github.cciglesiasmartinez.auth_service.domain.exception.UserNotFoundException;
 import io.github.cciglesiasmartinez.auth_service.domain.model.User;
@@ -26,6 +27,9 @@ public class DeleteUserUseCaseTest {
 
     @Mock
     private PasswordEncoder passwordEncoder;
+
+    @Mock
+    private DomainEventPublisher eventPublisher;
 
     @InjectMocks
     private DeleteUserUseCase useCase;
