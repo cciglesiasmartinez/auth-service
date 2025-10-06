@@ -3,6 +3,7 @@ package io.github.cciglesiasmartinez.auth_service.infrastructure.event;
 import io.github.cciglesiasmartinez.auth_service.domain.event.UserRegisteredEvent;
 import io.github.cciglesiasmartinez.auth_service.domain.model.valueobject.EmailMessage;
 import io.github.cciglesiasmartinez.auth_service.domain.port.out.MailProvider;
+import io.github.cciglesiasmartinez.auth_service.domain.port.out.MessageBroker;
 import lombok.AllArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.context.event.EventListener;
@@ -15,6 +16,7 @@ import org.springframework.stereotype.Component;
 public class UserRegisteredEventListener {
 
     private final MailProvider mailProvider;
+    private final MessageBroker messageBroker;
 
     @Async
     @EventListener
@@ -25,5 +27,7 @@ public class UserRegisteredEventListener {
                 "User registration confirmation.",
                 "Your user has been registered successfully.");
         mailProvider.sendMail(confirmationMail);
+        String message = "User " + event.getUserId().value() + " registered.";
+        messageBroker.sendMessage(message);
     }
 }
