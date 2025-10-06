@@ -2,6 +2,7 @@ package io.github.cciglesiasmartinez.auth_service.application.usecases.changeuse
 
 import io.github.cciglesiasmartinez.auth_service.domain.exception.UserNotFoundException;
 import io.github.cciglesiasmartinez.auth_service.domain.exception.UsernameAlreadyExistsException;
+import io.github.cciglesiasmartinez.auth_service.domain.model.Role;
 import io.github.cciglesiasmartinez.auth_service.domain.model.User;
 import io.github.cciglesiasmartinez.auth_service.domain.model.valueobject.*;
 import io.github.cciglesiasmartinez.auth_service.domain.port.out.PasswordEncoder;
@@ -13,7 +14,9 @@ import org.mockito.Mock;
 import org.mockito.junit.jupiter.MockitoExtension;
 
 import java.time.LocalDateTime;
+import java.util.HashSet;
 import java.util.Optional;
+import java.util.Set;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertThrows;
@@ -50,6 +53,7 @@ public class ChangeUserUsernameUseCaseTest {
         LocalDateTime registeredAt = LocalDateTime.of(2025, 8, 26, 10, 0);
         LocalDateTime modifiedAt = LocalDateTime.of(2025, 8, 26, 10, 30);
         LocalDateTime lastLogin = LocalDateTime.of(2025, 8, 26, 10, 30);
+        Set<Role> roles = new HashSet<>();
         User user = User.of(
                 userId,
                 oldUsername,
@@ -58,7 +62,8 @@ public class ChangeUserUsernameUseCaseTest {
                 registeredAt,
                 modifiedAt,
                 lastLogin,
-                false
+                false,
+                roles
         );
         when(userRepository.findById(userId)).thenReturn(Optional.of(user));
         when(passwordEncoder.matches(currentPassword, encodedPassword)).thenReturn(true);

@@ -3,6 +3,7 @@ package io.github.cciglesiasmartinez.auth_service.application.usecases.changeuse
 import io.github.cciglesiasmartinez.auth_service.domain.exception.UserIsNotExternalException;
 import io.github.cciglesiasmartinez.auth_service.domain.exception.UserNotFoundException;
 import io.github.cciglesiasmartinez.auth_service.domain.exception.UsernameAlreadyExistsException;
+import io.github.cciglesiasmartinez.auth_service.domain.model.Role;
 import io.github.cciglesiasmartinez.auth_service.domain.model.User;
 import io.github.cciglesiasmartinez.auth_service.domain.model.valueobject.Email;
 import io.github.cciglesiasmartinez.auth_service.domain.model.valueobject.EncodedPassword;
@@ -16,7 +17,9 @@ import org.mockito.Mock;
 import org.mockito.junit.jupiter.MockitoExtension;
 
 import java.time.LocalDateTime;
+import java.util.HashSet;
 import java.util.Optional;
+import java.util.Set;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertThrows;
@@ -47,6 +50,7 @@ public class ChangeExternalUserUsernameUseCaseTest {
         LocalDateTime registeredAt = LocalDateTime.of(2025, 8, 26, 10, 0);
         LocalDateTime modifiedAt = LocalDateTime.of(2025, 8, 26, 10, 30);
         LocalDateTime lastLogin = LocalDateTime.of(2025, 8, 26, 10, 30);
+        Set<Role> roles = new HashSet<>();
         User user = User.of(
                 userId,
                 oldUsername,
@@ -55,7 +59,8 @@ public class ChangeExternalUserUsernameUseCaseTest {
                 registeredAt,
                 modifiedAt,
                 lastLogin,
-                true
+                true,
+                roles
         );
         when(userRepository.findById(userId)).thenReturn(Optional.of(user));
 

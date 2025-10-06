@@ -1,6 +1,7 @@
 package io.github.cciglesiasmartinez.auth_service.application.usecases.getuserinfo;
 
 import io.github.cciglesiasmartinez.auth_service.domain.exception.UserNotFoundException;
+import io.github.cciglesiasmartinez.auth_service.domain.model.Role;
 import io.github.cciglesiasmartinez.auth_service.domain.model.User;
 import io.github.cciglesiasmartinez.auth_service.domain.model.valueobject.*;
 import io.github.cciglesiasmartinez.auth_service.domain.port.out.UserRepository;
@@ -13,7 +14,9 @@ import org.mockito.Mock;
 import org.mockito.junit.jupiter.MockitoExtension;
 
 import java.time.LocalDateTime;
+import java.util.HashSet;
 import java.util.Optional;
+import java.util.Set;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertThrows;
@@ -40,6 +43,7 @@ public class GetUserInfoUseCaseTest {
         LocalDateTime registeredAt = LocalDateTime.of(2025, 8, 26, 10, 0);
         LocalDateTime modifiedAt = LocalDateTime.of(2025, 8, 26, 10, 30);
         LocalDateTime lastLogin = LocalDateTime.of(2025, 8, 26, 10, 30);
+        Set<Role> roles = new HashSet<>();
         User testUser = User.of(
                 userId,
                 userName,
@@ -48,7 +52,8 @@ public class GetUserInfoUseCaseTest {
                 registeredAt,
                 modifiedAt,
                 lastLogin,
-                false
+                false,
+                roles
         );
         when(userRepository.findById(userId)).thenReturn(Optional.of(testUser));
 

@@ -3,6 +3,7 @@ package io.github.cciglesiasmartinez.auth_service.application.usecases.changeema
 import io.github.cciglesiasmartinez.auth_service.domain.exception.EmailAlreadyExistsException;
 import io.github.cciglesiasmartinez.auth_service.domain.exception.UserIsExternalException;
 import io.github.cciglesiasmartinez.auth_service.domain.exception.UserNotFoundException;
+import io.github.cciglesiasmartinez.auth_service.domain.model.Role;
 import io.github.cciglesiasmartinez.auth_service.domain.model.User;
 import io.github.cciglesiasmartinez.auth_service.domain.model.valueobject.*;
 import io.github.cciglesiasmartinez.auth_service.domain.port.out.PasswordEncoder;
@@ -14,7 +15,9 @@ import org.mockito.Mock;
 import org.mockito.junit.jupiter.MockitoExtension;
 
 import java.time.LocalDateTime;
+import java.util.HashSet;
 import java.util.Optional;
+import java.util.Set;
 
 import static org.junit.jupiter.api.Assertions.assertThrows;
 import static org.mockito.Mockito.*;
@@ -101,6 +104,7 @@ public class ChangeUserEmailUseCaseTest {
         LocalDateTime registeredAt = LocalDateTime.of(2025, 8, 26, 10, 0);
         LocalDateTime modifiedAt = LocalDateTime.of(2025, 8, 26, 10, 30);
         LocalDateTime lastLogin = LocalDateTime.of(2025, 8, 26, 10, 30);
+        Set<Role> roles = new HashSet<>();
         User externalUser = User.of(
                 userId,
                 username,
@@ -109,7 +113,8 @@ public class ChangeUserEmailUseCaseTest {
                 registeredAt,
                 modifiedAt,
                 lastLogin,
-                true
+                true,
+                roles
         );
         when(userRepository.findById(userId)).thenReturn(Optional.of(externalUser));
 
