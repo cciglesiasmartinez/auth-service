@@ -7,6 +7,7 @@ import io.github.cciglesiasmartinez.auth_service.domain.model.valueobject.Email;
 import io.github.cciglesiasmartinez.auth_service.domain.model.valueobject.EncodedPassword;
 import io.github.cciglesiasmartinez.auth_service.domain.model.valueobject.Username;
 import io.github.cciglesiasmartinez.auth_service.domain.model.valueobject.VerificationCodeString;
+import io.github.cciglesiasmartinez.auth_service.domain.port.out.RoleRepository;
 import io.github.cciglesiasmartinez.auth_service.domain.port.out.UserRepository;
 import io.github.cciglesiasmartinez.auth_service.domain.port.out.VerificationCodeRepository;
 import io.github.cciglesiasmartinez.auth_service.infrastructure.adapter.in.web.dto.responses.Envelope;
@@ -35,6 +36,9 @@ public class VerifyUserRegistrationUseCaseTest {
 
     @Mock
     private DomainEventPublisher eventPublisher;
+
+    @Mock
+    private RoleRepository roleRepository;
 
     @InjectMocks
     private VerifyUserRegistrationUseCase useCase;

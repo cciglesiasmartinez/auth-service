@@ -6,6 +6,7 @@ import io.github.cciglesiasmartinez.auth_service.domain.model.RefreshToken;
 import io.github.cciglesiasmartinez.auth_service.domain.model.valueobject.Email;
 import io.github.cciglesiasmartinez.auth_service.domain.model.valueobject.RefreshTokenString;
 import io.github.cciglesiasmartinez.auth_service.domain.port.out.AccessTokenProvider;
+import io.github.cciglesiasmartinez.auth_service.domain.port.out.RoleRepository;
 import io.github.cciglesiasmartinez.auth_service.domain.port.out.UserLoginRepository;
 import io.github.cciglesiasmartinez.auth_service.domain.port.out.UserRepository;
 import io.github.cciglesiasmartinez.auth_service.infrastructure.adapter.in.web.dto.responses.Envelope;
@@ -34,6 +35,9 @@ public class OAuthGoogleRegisterUserUseCaseTest {
 
     @Mock
     private RefreshTokenService refreshTokenService;
+
+    @Mock
+    private RoleRepository roleRepository;
 
     @InjectMocks
     private OAuthGoogleRegisterUserUseCase useCase;
