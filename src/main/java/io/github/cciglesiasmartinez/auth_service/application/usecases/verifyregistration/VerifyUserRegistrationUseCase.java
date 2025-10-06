@@ -1,5 +1,7 @@
 package io.github.cciglesiasmartinez.auth_service.application.usecases.verifyregistration;
 
+import io.github.cciglesiasmartinez.auth_service.domain.model.Role;
+import io.github.cciglesiasmartinez.auth_service.domain.port.out.RoleRepository;
 import io.github.cciglesiasmartinez.auth_service.infrastructure.adapter.in.web.dto.responses.Envelope;
 import io.github.cciglesiasmartinez.auth_service.infrastructure.adapter.in.web.dto.responses.Meta;
 import io.github.cciglesiasmartinez.auth_service.infrastructure.adapter.in.web.dto.responses.UserResponse;
@@ -14,6 +16,9 @@ import lombok.AllArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
 
+import java.util.HashSet;
+import java.util.Set;
+
 /**
  *  Application service for verifying a user registry code.
  *  <p>
@@ -27,6 +32,7 @@ import org.springframework.stereotype.Service;
 public class VerifyUserRegistrationUseCase {
 
     private final UserRepository userRepository;
+    private final RoleRepository roleRepository;
     private final VerificationCodeRepository verificationCodeRepository;
     private final DomainEventPublisher eventPublisher;
 
@@ -45,7 +51,15 @@ public class VerifyUserRegistrationUseCase {
                     String message = "Failed to retrieve verification code " + verificationCodeString.value();
                     return new VerificationCodeNotFoundException(message);
                 });
-        User user = User.register(verificationCode.username(), verificationCode.email(), verificationCode.password());
+        Role userRole = roleRepository.findByName("USER")
+                .orElseThrow(() -> {
+                    String message = "Role not found";
+                    return new RuntimeException(message);
+                });
+        Set<Role> roles = new HashSet<>();
+        roles.add(userRole);
+        User user = User.register(verificationCode.username(), verificationCode.email(),
+                verificationCode.password(), roles);
         user.pullEvents().forEach(eventPublisher::publish);
         userRepository.save(user);
         verificationCodeRepository.delete(verificationCode);

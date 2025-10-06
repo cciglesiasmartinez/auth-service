@@ -1,5 +1,7 @@
 package io.github.cciglesiasmartinez.auth_service.application.usecases.registergoogle;
 
+import io.github.cciglesiasmartinez.auth_service.domain.model.Role;
+import io.github.cciglesiasmartinez.auth_service.domain.port.out.RoleRepository;
 import io.github.cciglesiasmartinez.auth_service.infrastructure.adapter.in.web.dto.responses.LoginResponse;
 import io.github.cciglesiasmartinez.auth_service.infrastructure.adapter.in.web.dto.responses.Envelope;
 import io.github.cciglesiasmartinez.auth_service.domain.exception.EmailAlreadyExistsException;
@@ -19,6 +21,9 @@ import lombok.AllArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
 
+import java.util.HashSet;
+import java.util.Set;
+
 /**
  * Application service for registering users via Google OAuth2
  * <p>
@@ -32,6 +37,7 @@ import org.springframework.stereotype.Service;
 public class OAuthGoogleRegisterUserUseCase {
 
     private final UserRepository userRepository;
+    private final RoleRepository roleRepository;
     private final UserLoginRepository userLoginRepository;
     private final AccessTokenProvider accessTokenProvider;
     private final RefreshTokenService refreshTokenService;
@@ -52,7 +58,14 @@ public class OAuthGoogleRegisterUserUseCase {
             String message = "Email " + googleEmail.value() + " already exists.";
             throw new EmailAlreadyExistsException(message);
         }
-        User user = User.createExternalUser(googleEmail, providerKey, providerName);
+        Role userRole = roleRepository.findByName("USER")
+                .orElseThrow(() -> {
+                    String message = "Role not found";
+                    return new RuntimeException(message);
+                });
+        Set<Role> roles = new HashSet<>();
+        roles.add(userRole); // TODO: Is this clean?
+        User user = User.createExternalUser(googleEmail, providerKey, providerName, roles);
         userRepository.save(user);
         UserLogin userLogin = UserLogin.create(user.id(), providerKey, providerName);
         userLoginRepository.save(userLogin);
