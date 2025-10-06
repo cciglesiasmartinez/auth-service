@@ -9,5 +9,6 @@ public interface RoleEntityMapper {
 
     Set<Role> toDomain(Set<RoleEntity> roles);
     Set<RoleEntity> toEntity(Set<Role> roles);
-
+    RoleEntity toEntity(Role role);
+    Role toDomain(RoleEntity entity);
 }
