@@ -12,7 +12,6 @@ import io.github.cciglesiasmartinez.auth_service.infrastructure.adapter.out.pers
 
 import java.time.LocalDateTime;
 import java.util.ArrayList;
-import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
 
@@ -58,10 +57,10 @@ public class User {
      * @param username Username for the new user.
      * @param email Email for the new user.
      * @param encodedPassword Encoded password for the new user.
+     * @param roles A {@link Set} of roles for the new user.
      * @return a new {@link User} instance.
      */
-    public static User create(Username username, Email email, EncodedPassword encodedPassword) {
-        Set<Role> roles = new HashSet<>();
+    public static User create(Username username, Email email, EncodedPassword encodedPassword, Set<Role> roles) {
         return new User(UserId.generate(), username, encodedPassword, email, LocalDateTime.now(), LocalDateTime.now(),
                 null, false, roles);
     }
@@ -75,12 +74,13 @@ public class User {
      * @param email Email from external provider.
      * @param providerKey ID from external provider.
      * @param providerName name of the external provider.
+     * @param roles A {@link Set} of roles for the external user.
      * @return a new {@link User} instance.
      */
-    public static User createExternalUser(Email email, ProviderKey providerKey, ProviderName providerName) {
+    public static User createExternalUser(Email email, ProviderKey providerKey, ProviderName providerName,
+                                          Set<Role> roles) {
         Username username = Username.createDefaultExternalUsername(providerName, providerKey);
         EncodedPassword externalNullPassword = EncodedPassword.externalNullPassword();
-        Set<Role> roles = new HashSet<>();
         return new User(UserId.generate(), username, externalNullPassword, email, LocalDateTime.now(),
                 LocalDateTime.now(), null, true, roles);
     }
@@ -92,10 +92,11 @@ public class User {
      * @param username Username for the new user.
      * @param email Email for the new user.
      * @param encodedPassword Encoded password for the new user.
+     * @param roles A {@link Set} of {@link Role} for the new user.
      * @return a new {@link User} instance.
      */
-    public static User register(Username username, Email email, EncodedPassword encodedPassword) {
-        User user = User.create(username, email, encodedPassword);
+    public static User register(Username username, Email email, EncodedPassword encodedPassword, Set<Role> roles) {
+        User user = User.create(username, email, encodedPassword, roles);
         user.events.add(new UserRegisteredEvent(user.id(), user.email()));
         return user;
     }
