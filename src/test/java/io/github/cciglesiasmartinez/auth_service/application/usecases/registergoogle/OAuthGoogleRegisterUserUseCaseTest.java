@@ -3,6 +3,7 @@ package io.github.cciglesiasmartinez.auth_service.application.usecases.registerg
 import io.github.cciglesiasmartinez.auth_service.application.services.RefreshTokenService;
 import io.github.cciglesiasmartinez.auth_service.domain.exception.EmailAlreadyExistsException;
 import io.github.cciglesiasmartinez.auth_service.domain.model.RefreshToken;
+import io.github.cciglesiasmartinez.auth_service.domain.model.Role;
 import io.github.cciglesiasmartinez.auth_service.domain.model.valueobject.Email;
 import io.github.cciglesiasmartinez.auth_service.domain.model.valueobject.RefreshTokenString;
 import io.github.cciglesiasmartinez.auth_service.domain.port.out.AccessTokenProvider;
@@ -16,6 +17,8 @@ import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.InjectMocks;
 import org.mockito.Mock;
 import org.mockito.junit.jupiter.MockitoExtension;
+
+import java.util.Optional;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertThrows;
@@ -54,6 +57,9 @@ public class OAuthGoogleRegisterUserUseCaseTest {
         Email googleEmail = Email.of(command.googleEmail());
 
         when(userRepository.existsByEmail(googleEmail)).thenReturn(false);
+
+        Role userRole = mock(Role.class);
+        when(roleRepository.findByName("USER")).thenReturn(Optional.of(userRole));
 
         RefreshToken mockRefreshToken = mock(RefreshToken.class);
         RefreshTokenString mockRefreshTokenString = RefreshTokenString.of("refresh-token");
