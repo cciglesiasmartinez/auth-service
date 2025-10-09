@@ -15,11 +15,13 @@ public class UserRegisteredEvent implements DomainEvent {
     private final UserId userId;
     private final Email userEmail;
     private final LocalDateTime occurredOn;
+    private final String requestId;
 
-    public UserRegisteredEvent(UserId userId, Email userEmail) {
+    public UserRegisteredEvent(UserId userId, Email userEmail, String requestId) {
         this.userId = userId;
         this.userEmail = userEmail;
         this.occurredOn = LocalDateTime.now();
+        this.requestId = requestId;
     }
 
 }

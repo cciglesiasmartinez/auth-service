@@ -4,8 +4,10 @@ import io.github.cciglesiasmartinez.auth_service.domain.event.UserRegisteredEven
 import io.github.cciglesiasmartinez.auth_service.domain.model.valueobject.EmailMessage;
 import io.github.cciglesiasmartinez.auth_service.domain.port.out.MailProvider;
 import io.github.cciglesiasmartinez.auth_service.domain.port.out.MessageBroker;
+import io.github.cciglesiasmartinez.auth_service.infrastructure.adapter.out.messaging.kafka.KafkaMessage;
 import lombok.AllArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
+import org.slf4j.MDC;
 import org.springframework.context.event.EventListener;
 import org.springframework.scheduling.annotation.Async;
 import org.springframework.stereotype.Component;
@@ -21,6 +23,7 @@ public class UserRegisteredEventListener {
     @Async
     @EventListener
     public void handle(UserRegisteredEvent event) {
+        MDC.put("requestId", event.getRequestId());
         log.info("Handling UserRegisteredEvent for user {}", event.getUserId().value());
         EmailMessage confirmationMail = EmailMessage.of(
                 event.getUserEmail(),
@@ -28,6 +31,8 @@ public class UserRegisteredEventListener {
                 "Your user has been registered successfully.");
         mailProvider.sendMail(confirmationMail);
         String message = "User " + event.getUserId().value() + " registered.";
-        messageBroker.sendMessage(message);
+        KafkaMessage kafkaMessage = new KafkaMessage(event.getRequestId(), event.getClass().getSimpleName(),message);
+        messageBroker.sendMessage(kafkaMessage);
+        MDC.clear();
     }
 }
