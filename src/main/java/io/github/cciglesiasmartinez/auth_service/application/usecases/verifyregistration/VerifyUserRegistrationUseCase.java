@@ -1,5 +1,6 @@
 package io.github.cciglesiasmartinez.auth_service.application.usecases.verifyregistration;
 
+import io.github.cciglesiasmartinez.auth_service.domain.event.UserRegisteredEvent;
 import io.github.cciglesiasmartinez.auth_service.domain.model.Role;
 import io.github.cciglesiasmartinez.auth_service.domain.port.out.RoleRepository;
 import io.github.cciglesiasmartinez.auth_service.infrastructure.adapter.in.web.dto.responses.Envelope;
@@ -14,6 +15,7 @@ import io.github.cciglesiasmartinez.auth_service.domain.port.out.UserRepository;
 import io.github.cciglesiasmartinez.auth_service.domain.port.out.VerificationCodeRepository;
 import lombok.AllArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
+import org.slf4j.MDC;
 import org.springframework.stereotype.Service;
 
 import java.util.HashSet;
@@ -45,6 +47,7 @@ public class VerifyUserRegistrationUseCase {
      */
     public Envelope<UserResponse> execute(VerifyUserRegistrationCommand command) {
         // TODO: Change the response DTO for this use case
+        // TODO: Clean this logic
         VerificationCodeString verificationCodeString = VerificationCodeString.of(command.verificationCode());
         VerificationCode verificationCode = verificationCodeRepository.findByCodeString(verificationCodeString)
                 .orElseThrow(() -> {
@@ -60,7 +63,10 @@ public class VerifyUserRegistrationUseCase {
         roles.add(userRole);
         User user = User.register(verificationCode.username(), verificationCode.email(),
                 verificationCode.password(), roles);
-        user.pullEvents().forEach(eventPublisher::publish);
+//        user.pullEvents().forEach(eventPublisher::publish);
+        String requestId = MDC.get("requestId");
+        UserRegisteredEvent event = new UserRegisteredEvent(user.id(),user.email(), requestId);
+        eventPublisher.publish(event);
         userRepository.save(user);
         verificationCodeRepository.delete(verificationCode);
         log.info("User {} verified their registration email successfully.", user.id().value());

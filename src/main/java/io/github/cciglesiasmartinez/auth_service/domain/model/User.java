@@ -5,7 +5,6 @@ import io.github.cciglesiasmartinez.auth_service.application.usecases.logingoogl
 import io.github.cciglesiasmartinez.auth_service.domain.event.DomainEvent;
 import io.github.cciglesiasmartinez.auth_service.domain.event.UserRegisteredEvent;
 import io.github.cciglesiasmartinez.auth_service.domain.model.valueobject.*;
-import io.github.cciglesiasmartinez.auth_service.domain.model.valueobject.*;
 import io.github.cciglesiasmartinez.auth_service.domain.port.out.PasswordEncoder;
 import io.github.cciglesiasmartinez.auth_service.domain.exception.PasswordMismatchException;
 import io.github.cciglesiasmartinez.auth_service.infrastructure.adapter.out.persistence.mysql.entity.UserEntity;
@@ -97,7 +96,7 @@ public class User {
      */
     public static User register(Username username, Email email, EncodedPassword encodedPassword, Set<Role> roles) {
         User user = User.create(username, email, encodedPassword, roles);
-        user.events.add(new UserRegisteredEvent(user.id(), user.email()));
+//        user.events.add(new UserRegisteredEvent(user.id(), user.email()));
         return user;
     }
 
