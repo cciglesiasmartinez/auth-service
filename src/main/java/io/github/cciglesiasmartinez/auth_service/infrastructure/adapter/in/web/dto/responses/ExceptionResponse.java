@@ -13,19 +13,33 @@ import lombok.Getter;
 public class ExceptionResponse {
 
     @Schema(
-            description = "Error code.",
-            example = "invalid_password"
+            description = "Error URI.",
+            example = "https://api.example.com/errors/user_already_registered"
     )
-    private String code;
+    private String type;
 
     @Schema(
-            description = "Error message.",
-            example = "Password should contain more than 8 characters."
+            description = "HTTP status code.",
+            example = "409"
     )
-    private String message;
+    private int status;
 
-    public ExceptionResponse(String code) {
-        this.code = code;
-    }
+    @Schema(
+            description = "Error description.",
+            example = "User is already registered."
+    )
+    private String title;
+
+    @Schema(
+            description = "Error details (if provided).",
+            example = "User can't be found in our database due to reasons."
+    )
+    private String detail;
+
+    @Schema(
+            description = "Error code.",
+            example = "user_already_registered"
+    )
+    private String code;
 
 }
