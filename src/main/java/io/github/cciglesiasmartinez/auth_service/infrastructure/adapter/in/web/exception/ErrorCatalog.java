@@ -55,7 +55,7 @@ public enum ErrorCatalog {
             InvalidPasswordException.class,
             HttpStatus.BAD_REQUEST,
             "https://api.example.com/errors/invalid_password",
-            "Invalid password",
+            "Invalid password.",
             "invalid_password"
     ),
 
@@ -63,7 +63,7 @@ public enum ErrorCatalog {
             InvalidUsernameException.class,
             HttpStatus.BAD_REQUEST,
             "https://api.example.com/errors/invalid_username",
-            "Invalid username",
+            "Invalid username.",
             "invalid_username"
     ),
 
@@ -71,7 +71,7 @@ public enum ErrorCatalog {
             UserNotFoundException.class,
             HttpStatus.UNAUTHORIZED,
             "https://api.example.com/errors/user_not_found",
-            "User not found",
+            "User not found.",
             "user_not_found"
     ),
 
@@ -87,7 +87,7 @@ public enum ErrorCatalog {
             UserIsNotExternalException.class,
             HttpStatus.UNAUTHORIZED,
             "https://api.example.com/errors/user_is_not_external",
-            "User is not external",
+            "User is not external.",
             "user_is_not_external"
     ),
 
@@ -95,7 +95,7 @@ public enum ErrorCatalog {
             VerificationCodeNotFoundException.class,
             HttpStatus.UNAUTHORIZED,
             "https://api.example.com/errors/verification_code_not_found",
-            "Verification code not found",
+            "Verification code not found.",
             "verification_code_not_found"
     ),
 
@@ -103,7 +103,7 @@ public enum ErrorCatalog {
             RefreshTokenExpiredException.class,
             HttpStatus.BAD_REQUEST,
             "https://api.example.com/errors/refresh_token_expired",
-            "Refresh token expired",
+            "Refresh token expired.",
             "refresh_token_expired"
     ),
 
@@ -111,7 +111,7 @@ public enum ErrorCatalog {
             RefreshTokenNotFoundException.class,
             HttpStatus.BAD_REQUEST,
             "https://api.example.com/errors/refresh_token_not_found",
-            "Refresh token not found",
+            "Refresh token not found.",
             "refresh_token_not_found"
     ),
 
@@ -119,7 +119,7 @@ public enum ErrorCatalog {
             Exception.class,
             HttpStatus.INTERNAL_SERVER_ERROR,
             "https://api.example.com/errors/internal_error",
-            "Internal Server Error",
+            "Internal Server Error.",
             "internal_error"
     );
 
