@@ -7,8 +7,6 @@ import io.github.cciglesiasmartinez.auth_service.application.context.RequestCont
 import io.github.cciglesiasmartinez.auth_service.application.port.in.AuthUseCase;
 import io.github.cciglesiasmartinez.auth_service.domain.model.User;
 import io.github.cciglesiasmartinez.auth_service.domain.exception.InvalidCredentialsException;
-import io.github.cciglesiasmartinez.auth_service.infrastructure.adapter.in.web.dto.requests.*;
-import io.github.cciglesiasmartinez.auth_service.infrastructure.adapter.in.web.dto.responses.*;
 import io.github.cciglesiasmartinez.auth_service.infrastructure.security.CustomUserDetails;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.responses.ApiResponses;
@@ -85,8 +83,9 @@ public class AuthController {
             @ApiResponse(responseCode = "202", description = "Code sent.")
     })
     @PostMapping("/recover-password")
-    public ResponseEntity<Envelope<RecoverPasswordResponse>> recoverPassword(@Valid @RequestBody RecoverPasswordRequest request,
-                                                                             HttpServletRequest httpRequest) {
+    public ResponseEntity<Envelope<RecoverPasswordResponse>> recoverPassword(
+            @Valid @RequestBody RecoverPasswordRequest request,
+            HttpServletRequest httpRequest) {
         String ip = httpRequest.getRemoteAddr();
         String userAgent = httpRequest.getHeader("User-Agent");
         RequestContext context = new RequestContext(ip, userAgent);
@@ -102,8 +101,9 @@ public class AuthController {
             @ApiResponse(responseCode = "202", description = "Password reset.")
     })
     @PostMapping("/reset-password")
-    public ResponseEntity<Envelope<ResetPasswordResponse>> resetPassword(@Valid @RequestBody ResetPasswordRequest request,
-                                                                         HttpServletRequest httpRequest) {
+    public ResponseEntity<Envelope<ResetPasswordResponse>> resetPassword(
+            @Valid @RequestBody ResetPasswordRequest request,
+            HttpServletRequest httpRequest) {
         String ip = httpRequest.getRemoteAddr();
         String userAgent = httpRequest.getHeader("User-Agent");
         RequestContext context = new RequestContext(ip, userAgent);
@@ -136,7 +136,8 @@ public class AuthController {
             @ApiResponse(responseCode = "200", description = "Access token and new refresh token issued.")
     })
     @PostMapping("/refresh")
-    public ResponseEntity<Envelope<RefreshAccessTokenResponse>> refresh(@Valid @RequestBody RefreshAccessTokenRequest request) {
+    public ResponseEntity<Envelope<RefreshAccessTokenResponse>> refresh(
+            @Valid @RequestBody RefreshAccessTokenRequest request) {
         Envelope<RefreshAccessTokenResponse> response = authUseCase.refreshAccessToken(request);
         return new ResponseEntity<>(response, HttpStatus.OK);
     }
@@ -163,8 +164,9 @@ public class AuthController {
             @ApiResponse(responseCode = "200", description = "User (self) password changed successfully.")
     })
     @PutMapping("/me/password")
-    public ResponseEntity<Envelope<ChangePasswordResponse>> changeUserPassword(@Valid @RequestBody ChangePasswordRequest request,
-                                                                     Authentication authentication) {
+    public ResponseEntity<Envelope<ChangePasswordResponse>> changeUserPassword(
+            @Valid @RequestBody ChangePasswordRequest request,
+            Authentication authentication) {
         User user = getAuthenticatedUser(authentication);
         Envelope<ChangePasswordResponse> response = authUseCase.changePassword(user, request);
         return new ResponseEntity<>(response, HttpStatus.OK);
@@ -178,8 +180,9 @@ public class AuthController {
             @ApiResponse(responseCode = "200", description = "User (self) username changed successfully.")
     })
     @PutMapping("/me/username")
-    public ResponseEntity<Envelope<ChangeUsernameResponse>> changeUserUsername(@Valid @RequestBody ChangeUsernameRequest request,
-                                                                               Authentication authentication) {
+    public ResponseEntity<Envelope<ChangeUsernameResponse>> changeUserUsername(
+            @Valid @RequestBody ChangeUsernameRequest request,
+            Authentication authentication) {
         User user = getAuthenticatedUser(authentication);
         Envelope<ChangeUsernameResponse> response = authUseCase.changeUsername(user, request);
         return new ResponseEntity<>(response, HttpStatus.OK);
