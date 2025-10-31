@@ -25,12 +25,6 @@ public class LoginResponse {
     private String tokenType = "Bearer";
 
     @Schema(
-            description = "Refresh token.",
-            example = "UglbGB5x0WWNLXsrfoNrOZqldrftYRTp_Ler8LM2Z7s"
-    )
-    private String refreshToken;
-
-    @Schema(
             description = "Token expiration term,",
             example = "600"
     )
@@ -42,9 +36,8 @@ public class LoginResponse {
     )
     private String username;
 
-    public LoginResponse(String token, String refreshToken, long expiresIn, String username) {
+    public LoginResponse(String token, long expiresIn, String username) {
         this.token = token;
-        this.refreshToken = refreshToken;
         this.expiresIn = expiresIn;
         this.username = username;
     }
