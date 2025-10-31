@@ -1,5 +1,6 @@
 package io.github.cciglesiasmartinez.auth_service.infrastructure.adapter.in.web;
 
+import io.github.cciglesiasmartinez.auth_service.application.dto.LoginResult;
 import io.github.cciglesiasmartinez.auth_service.domain.model.valueobject.UserId;
 import io.github.cciglesiasmartinez.auth_service.infrastructure.adapter.in.web.dto.requests.*;
 import io.github.cciglesiasmartinez.auth_service.infrastructure.adapter.in.web.dto.responses.*;
@@ -12,18 +13,21 @@ import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.responses.ApiResponses;
 import io.swagger.v3.oas.annotations.responses.ApiResponse;
 import io.swagger.v3.oas.annotations.tags.Tag;
+import jakarta.servlet.http.Cookie;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.validation.Valid;
 import lombok.AllArgsConstructor;
 import org.springframework.beans.factory.annotation.Value;
-import org.springframework.http.HttpStatus;
-import org.springframework.http.MediaType;
-import org.springframework.http.ResponseEntity;
+import org.springframework.http.*;
 import org.springframework.security.core.Authentication;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.reactive.function.BodyInserters;
 import org.springframework.web.reactive.function.client.WebClient;
 import org.springframework.web.servlet.view.RedirectView;
+
+import java.util.Arrays;
+import java.util.Optional;
+import java.util.stream.Stream;
 
 @AllArgsConstructor
 @RestController
@@ -33,6 +37,26 @@ import org.springframework.web.servlet.view.RedirectView;
 public class AuthController {
 
     private final AuthUseCase authUseCase;
+
+    /**
+     * Helper method that builds a {@link RequestContext} object.
+     *
+     * @param httpServletRequest
+     * @return
+     */
+    private RequestContext buildRequestContext(HttpServletRequest httpServletRequest) {
+        String ip = httpServletRequest.getRemoteAddr();
+        String userAgent = httpServletRequest.getHeader("User-Agent");
+        String language = httpServletRequest.getHeader("Accept-Language");
+        String refreshToken = Optional.ofNullable(httpServletRequest.getCookies())
+                .map(Arrays::stream)
+                .orElseGet(Stream::empty)
+                .filter(cookie -> cookie.getName().equals("refresh_token"))
+                .map(Cookie::getValue)
+                .findFirst()
+                .orElse(null);
+        return new RequestContext(ip, userAgent, language, refreshToken);
+    }
 
     /**
      * Helper method that obtains a model {@link User} instance from the {@link Authentication} instance in a request.
@@ -86,9 +110,7 @@ public class AuthController {
     public ResponseEntity<Envelope<RecoverPasswordResponse>> recoverPassword(
             @Valid @RequestBody RecoverPasswordRequest request,
             HttpServletRequest httpRequest) {
-        String ip = httpRequest.getRemoteAddr();
-        String userAgent = httpRequest.getHeader("User-Agent");
-        RequestContext context = new RequestContext(ip, userAgent);
+        RequestContext context = buildRequestContext(httpRequest);
         Envelope<RecoverPasswordResponse> response = authUseCase.recoverPassword(request, context);
         return new ResponseEntity<>(response, HttpStatus.ACCEPTED);
     }
@@ -104,9 +126,7 @@ public class AuthController {
     public ResponseEntity<Envelope<ResetPasswordResponse>> resetPassword(
             @Valid @RequestBody ResetPasswordRequest request,
             HttpServletRequest httpRequest) {
-        String ip = httpRequest.getRemoteAddr();
-        String userAgent = httpRequest.getHeader("User-Agent");
-        RequestContext context = new RequestContext(ip, userAgent);
+        RequestContext context = buildRequestContext(httpRequest);
         Envelope<ResetPasswordResponse> response = authUseCase.resetPassword(request, context);
         return new ResponseEntity<>(response, HttpStatus.ACCEPTED);
     }
@@ -121,11 +141,20 @@ public class AuthController {
     @PostMapping("/login")
     public ResponseEntity<Envelope<LoginResponse>> login(@Valid @RequestBody LoginRequest request,
                                                HttpServletRequest httpRequest) {
-        String ip = httpRequest.getRemoteAddr();
-        String userAgent = httpRequest.getHeader("User-Agent");
-        RequestContext context = new RequestContext(ip, userAgent);
-        Envelope<LoginResponse> response = authUseCase.login(request, context);
-        return new ResponseEntity<>(response, HttpStatus.ACCEPTED);
+        RequestContext context = buildRequestContext(httpRequest);
+        System.out.println(context.toString());
+        LoginResult result = authUseCase.login(request, context);
+        ResponseCookie cookie = ResponseCookie.from("refresh_token", result.refreshToken().token().value())
+                .httpOnly(true)
+                .secure(true)
+                .path("/")
+                .maxAge(3600000)
+                .sameSite("Strict")
+                .build();
+        Envelope<LoginResponse> response = result.envelope();
+        return ResponseEntity.status(HttpStatus.ACCEPTED)
+                .header(HttpHeaders.SET_COOKIE, cookie.toString())
+                .body(response);
     }
 
     @Operation(
@@ -136,10 +165,22 @@ public class AuthController {
             @ApiResponse(responseCode = "200", description = "Access token and new refresh token issued.")
     })
     @PostMapping("/refresh")
-    public ResponseEntity<Envelope<RefreshAccessTokenResponse>> refresh(
-            @Valid @RequestBody RefreshAccessTokenRequest request) {
-        Envelope<RefreshAccessTokenResponse> response = authUseCase.refreshAccessToken(request);
-        return new ResponseEntity<>(response, HttpStatus.OK);
+    public ResponseEntity<Envelope<LoginResponse>> refresh(
+            @Valid @RequestBody RefreshAccessTokenRequest request,
+            HttpServletRequest httpRequest) {
+        RequestContext context = buildRequestContext(httpRequest);
+        LoginResult result = authUseCase.refreshAccessToken(request, context);
+        ResponseCookie cookie = ResponseCookie.from("refresh_token", result.refreshToken().token().value())
+                .httpOnly(true)
+                .secure(true)
+                .path("/")
+                .maxAge(3600000)
+                .sameSite("Strict")
+                .build();
+        Envelope<LoginResponse> response = result.envelope();
+        return ResponseEntity.status(HttpStatus.OK)
+                .header(HttpHeaders.SET_COOKIE, cookie.toString())
+                .body(response);
     }
 
     @Operation(
@@ -263,11 +304,19 @@ public class AuthController {
                 .retrieve()
                 .bodyToMono(OAuthGoogleRequest.class)
                 .block();
-        String ip = httpRequest.getRemoteAddr();
-        String userAgent = httpRequest.getHeader("User-Agent");
-        RequestContext context = new RequestContext(ip, userAgent);
-        Envelope<LoginResponse> response = authUseCase.OAuthGoogleFlow(googleResponse, context);
-        return new ResponseEntity<>(response, HttpStatus.ACCEPTED);
+        RequestContext context = buildRequestContext(httpRequest);
+        LoginResult result = authUseCase.OAuthGoogleFlow(googleResponse, context);
+        ResponseCookie cookie = ResponseCookie.from("refresh_token", result.refreshToken().token().value())
+                .httpOnly(true)
+                .secure(true)
+                .path("/")
+                .maxAge(3600000)
+                .sameSite("Strict")
+                .build();
+        Envelope<LoginResponse> response = result.envelope();
+        return ResponseEntity.status(HttpStatus.OK)
+                .header(HttpHeaders.SET_COOKIE, cookie.toString())
+                .body(response);
     }
 
     @Operation(
