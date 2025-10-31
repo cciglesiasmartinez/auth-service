@@ -8,6 +8,10 @@ import lombok.Builder;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 
+import java.util.ArrayList;
+import java.util.HashMap;
+import java.util.List;
+
 @Data
 @Builder
 @NoArgsConstructor
@@ -15,12 +19,6 @@ import lombok.NoArgsConstructor;
 @JsonNaming(PropertyNamingStrategies.SnakeCaseStrategy.class)
 @JsonInclude(JsonInclude.Include.NON_NULL)
 public class Envelope<T> {
-
-//    private String message;
-//    private boolean success;
-//    private LocalDateTime timestamp;
-//    private Object data;
-
     // TODO: Create a factory method like .of or .success to generate the envelopes in a more pro manner
 
     private T data;

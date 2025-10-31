@@ -14,13 +14,17 @@ import org.springframework.web.bind.annotation.ExceptionHandler;
 @ControllerAdvice
 public class GlobalExceptionHandler {
 
-    private ResponseEntity<Envelope<ExceptionResponse>> buildResponse(Exception e, String details) {
+    private void logException(Exception e) {
         StackTraceElement origin = e.getStackTrace()[0];
         MDC.put("exceptionType", e.getClass().getSimpleName());
         MDC.put("exceptionOrigin", origin.getClassName() + ":" + origin.getLineNumber());
         log.warn(e.getMessage());
         MDC.remove("exceptionOrigin");
         MDC.remove("exceptionType");
+    }
+
+    private ResponseEntity<Envelope<ExceptionResponse>> buildResponse(Exception e, String details) {
+        logException(e);
         ErrorCatalog catalog = ErrorCatalog.fromException(e);
         ExceptionResponse exceptionResponse = new ExceptionResponse(
                 catalog.getType(),
@@ -34,12 +38,7 @@ public class GlobalExceptionHandler {
     }
 
     private ResponseEntity<Envelope<ExceptionResponse>> buildResponse(Exception e) {
-        StackTraceElement origin = e.getStackTrace()[0];
-        MDC.put("exceptionType", e.getClass().getSimpleName());
-        MDC.put("exceptionOrigin", origin.getClassName() + ":" + origin.getLineNumber());
-        log.warn(e.getMessage());
-        MDC.remove("exceptionOrigin");
-        MDC.remove("exceptionType");
+        logException(e);
         ErrorCatalog catalog = ErrorCatalog.fromException(e);
         ExceptionResponse exceptionResponse = new ExceptionResponse(
                 catalog.getType(),
