@@ -17,7 +17,7 @@ public class RequestContext {
 
     private String ip;
     private String userAgent;
-    private String refreshTokenId;
     private String language;
+    private String refreshTokenId;
 
 }
