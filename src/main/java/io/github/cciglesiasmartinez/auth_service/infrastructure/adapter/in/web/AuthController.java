@@ -41,8 +41,8 @@ public class AuthController {
     /**
      * Helper method that builds a {@link RequestContext} object.
      *
-     * @param httpServletRequest
-     * @return
+     * @param httpServletRequest {@link HttpServletRequest} containing HTTP request data.
+     * @return {@link RequestContext} object.
      */
     private RequestContext buildRequestContext(HttpServletRequest httpServletRequest) {
         String ip = httpServletRequest.getRemoteAddr();
@@ -142,7 +142,6 @@ public class AuthController {
     public ResponseEntity<Envelope<LoginResponse>> login(@Valid @RequestBody LoginRequest request,
                                                HttpServletRequest httpRequest) {
         RequestContext context = buildRequestContext(httpRequest);
-        System.out.println(context.toString());
         LoginResult result = authUseCase.login(request, context);
         ResponseCookie cookie = ResponseCookie.from("refresh_token", result.refreshToken().token().value())
                 .httpOnly(true)
@@ -165,11 +164,9 @@ public class AuthController {
             @ApiResponse(responseCode = "200", description = "Access token and new refresh token issued.")
     })
     @PostMapping("/refresh")
-    public ResponseEntity<Envelope<LoginResponse>> refresh(
-            @Valid @RequestBody RefreshAccessTokenRequest request,
-            HttpServletRequest httpRequest) {
+    public ResponseEntity<Envelope<LoginResponse>> refresh(HttpServletRequest httpRequest) {
         RequestContext context = buildRequestContext(httpRequest);
-        LoginResult result = authUseCase.refreshAccessToken(request, context);
+        LoginResult result = authUseCase.refreshAccessToken(context);
         ResponseCookie cookie = ResponseCookie.from("refresh_token", result.refreshToken().token().value())
                 .httpOnly(true)
                 .secure(true)
