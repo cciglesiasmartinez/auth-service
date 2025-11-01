@@ -1,5 +1,6 @@
 package io.github.cciglesiasmartinez.auth_service.application.usecases.logingoogle;
 
+import io.github.cciglesiasmartinez.auth_service.application.dto.LoginResult;
 import io.github.cciglesiasmartinez.auth_service.infrastructure.adapter.in.web.dto.responses.Envelope;
 import io.github.cciglesiasmartinez.auth_service.infrastructure.adapter.in.web.dto.responses.LoginResponse;
 import io.github.cciglesiasmartinez.auth_service.domain.exception.UserNotFoundException;
@@ -43,7 +44,7 @@ public class OAuthGoogleLoginUserUseCase {
      * @throws UserNotFoundException if provider key or user id are not found in our repositories.
      */
     @Transactional
-    public Envelope<LoginResponse> execute(OAuthGoogleLoginUserCommand command) {
+    public LoginResult execute(OAuthGoogleLoginUserCommand command) {
         ProviderKey providerKey = ProviderKey.of(command.googleId());
         Email googleEmail = Email.of(command.googleEmail());
         UserLogin userLogin = userLoginRepository.findByProviderKey(providerKey)
@@ -59,13 +60,15 @@ public class OAuthGoogleLoginUserUseCase {
         user.recordLogin();
         user.updateEmailIfDifferent(googleEmail);
         userRepository.save(user);
-        // Token logic
-        String token = accessTokenProvider.generateToken(user.id().value());
-        long expiresIn = accessTokenProvider.getTokenExpirationInSeconds();
+        String accessToken = accessTokenProvider.generateToken(user.id().value());
         RefreshToken refreshToken = refreshTokenService.generate(user.id(), command.ip(), command.userAgent());
         log.info("User logged in via Google OAuth successfully");
-        LoginResponse data = new LoginResponse(token, refreshToken.token().value() , expiresIn, user.username().value());
-        return new Envelope<>(data, new Meta());
+        LoginResponse data = new LoginResponse(
+                accessToken,
+                accessTokenProvider.getTokenExpirationInSeconds(),
+                user.username().value());
+        Envelope<LoginResponse> envelope = new Envelope<>(data, new Meta());
+        return new LoginResult(envelope, refreshToken);
     }
 
 }

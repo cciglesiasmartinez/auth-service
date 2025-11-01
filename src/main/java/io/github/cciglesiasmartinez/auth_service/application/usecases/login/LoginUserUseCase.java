@@ -1,5 +1,6 @@
 package io.github.cciglesiasmartinez.auth_service.application.usecases.login;
 
+import io.github.cciglesiasmartinez.auth_service.application.dto.LoginResult;
 import io.github.cciglesiasmartinez.auth_service.domain.exception.InvalidCredentialsException;
 import io.github.cciglesiasmartinez.auth_service.application.services.RefreshTokenService;
 import io.github.cciglesiasmartinez.auth_service.domain.model.RefreshToken;
@@ -41,7 +42,7 @@ public class LoginUserUseCase {
      * @throws InvalidCredentialsException if the user is not found or is externally authenticated.
      * @throws PasswordMismatchException if provided password does not match stored password.
      */
-    public Envelope<LoginResponse> execute(LoginUserCommand command) {
+    public LoginResult execute(LoginUserCommand command) {
         Email email = Email.of(command.email());
         User user = userRepository.findByEmail(email)
                 .orElseThrow(() -> {
@@ -56,12 +57,15 @@ public class LoginUserUseCase {
         user.validateLoginPassword(plainPassword, passwordEncoder);
         user.recordLogin();
         userRepository.save(user);
-        String token = accessTokenProvider.generateToken(user.id().value(),user.roles());
-        long expiresIn = accessTokenProvider.getTokenExpirationInSeconds();
+        String accessToken = accessTokenProvider.generateToken(user.id().value(),user.roles());
         RefreshToken refreshToken = refreshTokenService.generate(user.id(), command.ip(), command.userAgent());
         log.info("User {} authenticated successfully.", user.username().value());
-        LoginResponse response = new LoginResponse(token, refreshToken.token().value() , expiresIn, user.username().value());
-        return new Envelope<>(response, new Meta());
+        LoginResponse response = new LoginResponse(
+                accessToken,
+                accessTokenProvider.getTokenExpirationInSeconds(),
+                user.username().value());
+        Envelope<LoginResponse> envelope = new Envelope<>(response, new Meta());
+        return new LoginResult(envelope, refreshToken);
     }
 
 }

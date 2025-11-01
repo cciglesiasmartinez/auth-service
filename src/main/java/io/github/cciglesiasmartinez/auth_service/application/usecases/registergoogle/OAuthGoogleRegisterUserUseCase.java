@@ -1,5 +1,6 @@
 package io.github.cciglesiasmartinez.auth_service.application.usecases.registergoogle;
 
+import io.github.cciglesiasmartinez.auth_service.application.dto.LoginResult;
 import io.github.cciglesiasmartinez.auth_service.domain.model.Role;
 import io.github.cciglesiasmartinez.auth_service.domain.port.out.RoleRepository;
 import io.github.cciglesiasmartinez.auth_service.infrastructure.adapter.in.web.dto.responses.LoginResponse;
@@ -50,7 +51,7 @@ public class OAuthGoogleRegisterUserUseCase {
      * @throws EmailAlreadyExistsException if email is already registered in our database.
      */
     @Transactional
-    public Envelope<LoginResponse> execute(OAuthGoogleRegisterUserCommand command) {
+    public LoginResult execute(OAuthGoogleRegisterUserCommand command) {
         ProviderKey providerKey = ProviderKey.of(command.googleId());
         ProviderName providerName = ProviderName.GOOGLE;
         Email googleEmail = Email.of(command.googleEmail());
@@ -69,13 +70,15 @@ public class OAuthGoogleRegisterUserUseCase {
         userRepository.save(user);
         UserLogin userLogin = UserLogin.create(user.id(), providerKey, providerName);
         userLoginRepository.save(userLogin);
-        // Token logic
-        String token = accessTokenProvider.generateToken(user.id().value());
-        long expiresIn = accessTokenProvider.getTokenExpirationInSeconds();
+        String accessToken = accessTokenProvider.generateToken(user.id().value());
         RefreshToken refreshToken = refreshTokenService.generate(user.id(), command.ip(), command.userAgent());
         log.info("User registered via Google OAuth successfully");
-        LoginResponse data = new LoginResponse(token, refreshToken.token().value(), expiresIn, user.username().value());
-        return new Envelope<>(data, new Meta());
+        LoginResponse data = new LoginResponse(
+                accessToken,
+                accessTokenProvider.getTokenExpirationInSeconds(),
+                user.username().value());
+        Envelope<LoginResponse> envelope = new Envelope<>(data, new Meta());
+        return new LoginResult(envelope, refreshToken);
     }
 
 }

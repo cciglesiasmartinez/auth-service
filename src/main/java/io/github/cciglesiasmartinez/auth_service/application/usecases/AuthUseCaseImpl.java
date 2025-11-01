@@ -1,5 +1,6 @@
 package io.github.cciglesiasmartinez.auth_service.application.usecases;
 
+import io.github.cciglesiasmartinez.auth_service.application.dto.LoginResult;
 import io.github.cciglesiasmartinez.auth_service.application.usecases.getuserinfo.GetUserInfoCommand;
 import io.github.cciglesiasmartinez.auth_service.application.usecases.getuserinfo.GetUserInfoUseCase;
 import io.github.cciglesiasmartinez.auth_service.application.usecases.recoverpassword.RecoverPasswordCommand;
@@ -7,8 +8,6 @@ import io.github.cciglesiasmartinez.auth_service.application.usecases.recoverpas
 import io.github.cciglesiasmartinez.auth_service.application.usecases.resetpassword.ResetPasswordCommand;
 import io.github.cciglesiasmartinez.auth_service.application.usecases.resetpassword.ResetPasswordUseCase;
 import io.github.cciglesiasmartinez.auth_service.domain.model.valueobject.UserId;
-import io.github.cciglesiasmartinez.auth_service.infrastructure.adapter.in.web.dto.requests.*;
-import io.github.cciglesiasmartinez.auth_service.infrastructure.adapter.in.web.dto.responses.*;
 import io.github.cciglesiasmartinez.auth_service.infrastructure.adapter.in.web.dto.requests.*;
 import io.github.cciglesiasmartinez.auth_service.infrastructure.adapter.in.web.dto.responses.*;
 import io.github.cciglesiasmartinez.auth_service.infrastructure.adapter.in.web.mapper.AuthRequestCommandMapper;
@@ -93,15 +92,20 @@ public class AuthUseCaseImpl implements AuthUseCase {
     }
 
     @Override
-    public Envelope<LoginResponse> login(LoginRequest request, RequestContext context) {
+    public LoginResult login(LoginRequest request, RequestContext context) {
         LoginUserCommand command = mapper.toLoginUserCommand(request, context);
         return loginUserService.execute(command);
     }
 
     @Override
-    public Envelope<RefreshAccessTokenResponse> refreshAccessToken(RefreshAccessTokenRequest request) {
+    public LoginResult refreshAccessToken(RefreshAccessTokenRequest request, RequestContext context) {
         RefreshAccessTokenCommand command = mapper.toRefreshAccessTokenCommand(request);
-        return refreshAccessTokenService.execute(command);
+        return null; // Disabled temporarily.
+    }
+
+    @Override
+    public LoginResult refreshAccessToken(RequestContext context) {
+        return refreshAccessTokenService.execute(context);
     }
 
     @Override
@@ -131,7 +135,7 @@ public class AuthUseCaseImpl implements AuthUseCase {
     }
 
     @Override
-    public Envelope<LoginResponse> OAuthGoogleFlow(OAuthGoogleRequest request, RequestContext context) {
+    public LoginResult OAuthGoogleFlow(OAuthGoogleRequest request, RequestContext context) {
         GoogleTokenVerifier.GoogleUser user = googleTokenVerifier.extractUserInfo(request.getIdToken());
         // TODO: Object for this?
         String userGoogleId = user.googleId();

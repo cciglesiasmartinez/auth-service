@@ -1,8 +1,11 @@
 package io.github.cciglesiasmartinez.auth_service.application.usecases.refreshtoken;
 
+import io.github.cciglesiasmartinez.auth_service.application.context.RequestContext;
+import io.github.cciglesiasmartinez.auth_service.application.dto.LoginResult;
 import io.github.cciglesiasmartinez.auth_service.domain.exception.RefreshTokenExpiredException;
 import io.github.cciglesiasmartinez.auth_service.domain.exception.RefreshTokenNotFoundException;
 import io.github.cciglesiasmartinez.auth_service.infrastructure.adapter.in.web.dto.responses.Envelope;
+import io.github.cciglesiasmartinez.auth_service.infrastructure.adapter.in.web.dto.responses.LoginResponse;
 import io.github.cciglesiasmartinez.auth_service.infrastructure.adapter.in.web.dto.responses.Meta;
 import io.github.cciglesiasmartinez.auth_service.infrastructure.adapter.in.web.dto.responses.RefreshAccessTokenResponse;
 import io.github.cciglesiasmartinez.auth_service.application.services.RefreshTokenService;
@@ -34,27 +37,28 @@ public class RefreshAccessTokenUseCase {
     /**
      * Executes the refresh and access token use case.
      *
-     * @param command containing the current refresh token.
+     * @param context the {@link RequestContext} instance containing the current refresh token.
      * @return a {@link RefreshAccessTokenResponse} instance containing the new access and refresh tokens.
      * @throws RuntimeException if token is not found.
      * @throws RuntimeException if token has expired.
      */
-    public Envelope<RefreshAccessTokenResponse> execute(RefreshAccessTokenCommand command) {
-        RefreshTokenString tokenString = RefreshTokenString.of(command.refreshToken());
+    public LoginResult execute(RequestContext context) {
+        RefreshTokenString tokenString = RefreshTokenString.of(context.getRefreshTokenId());
         RefreshToken storedToken =  refreshTokenRepository.findByTokenString(tokenString)
                 .orElseThrow(() -> new RefreshTokenNotFoundException("Token not found in database."));
         if (storedToken.expiresAt().isBefore(LocalDateTime.now())) {
             throw new RefreshTokenExpiredException("Refresh token expired.");
         }
         String subject = storedToken.getUserId().value();
-        // TODO: generateToken() should ask for exp time? Then we can pass it to the response obj.
         String accessToken = accessTokenProvider.generateToken(subject);
-        // TODO: NoArgConstructor to avoid passing tokenType?
-        RefreshToken newToken = refreshTokenService.rotate(storedToken);
+        RefreshToken newToken = refreshTokenService.rotate(storedToken); // TODO: Add checks with context :)
         log.info("New refresh token generated successfully.");
-        RefreshAccessTokenResponse data = new RefreshAccessTokenResponse(accessToken, newToken.token().value(),
-                "Bearer",3600, LocalDateTime.now());
-        return new Envelope<>(data, new Meta());
+        LoginResponse response = new LoginResponse(
+                accessToken,
+                accessTokenProvider.getTokenExpirationInSeconds(),
+                null);
+        Envelope<LoginResponse> envelope = new Envelope<>(response, new Meta());
+        return new LoginResult(envelope, newToken);
     }
 
 }
