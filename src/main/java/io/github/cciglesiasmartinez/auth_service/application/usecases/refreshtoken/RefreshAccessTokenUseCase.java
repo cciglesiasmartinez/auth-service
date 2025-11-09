@@ -57,7 +57,7 @@ public class RefreshAccessTokenUseCase {
                 accessToken,
                 accessTokenProvider.getTokenExpirationInSeconds(),
                 null);
-        Envelope<LoginResponse> envelope = new Envelope<>(response, new Meta());
+        Envelope<LoginResponse> envelope = new Envelope<>(response, new Meta()); // TODO: Clean this DTO and figure if we should delete RefreshAccessTokenDto :)
         return new LoginResult(envelope, newToken);
     }
 
