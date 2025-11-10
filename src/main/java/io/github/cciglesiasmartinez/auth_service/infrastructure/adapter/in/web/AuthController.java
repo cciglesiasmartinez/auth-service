@@ -184,7 +184,7 @@ public class AuthController {
             summary = "Logs out the user (self).",
             description = "Revokes the refresh token for the user (self), effectively logging them out."
     )
-    @GetMapping("/logout")
+    @PostMapping("/logout")
     public ResponseEntity<?> logout(HttpServletRequest httpRequest) {
         RequestContext context = buildRequestContext(httpRequest);
         authUseCase.logout(context);
