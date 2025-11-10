@@ -180,6 +180,12 @@ public class AuthController {
                 .body(response);
     }
 
+    public ResponseEntity<?> logout(HttpServletRequest httpRequest) {
+        RequestContext context = buildRequestContext(httpRequest);
+        authUseCase.logout(context);
+        return ResponseEntity.noContent().build();
+    }
+
     @Operation(
             summary = "Retrieves user information (self).",
             description = "Retrieves all available user (self) information excluding sensitive data."

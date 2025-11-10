@@ -57,4 +57,10 @@ public class RefreshTokenServiceImpl implements RefreshTokenService {
                 oldToken.userId().value(), oldToken.ipAddress(), oldToken.userAgent());
         return newToken;
     }
+
+    @Override
+    public void delete(RefreshToken refreshToken) {
+        refreshTokenRepository.delete(refreshToken);
+        log.info("Revoked refresh token {} for user {}", refreshToken.token(), refreshToken.userId().value());
+    }
 }

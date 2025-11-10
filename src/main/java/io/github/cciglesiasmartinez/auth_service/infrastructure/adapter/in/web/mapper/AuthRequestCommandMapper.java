@@ -1,6 +1,7 @@
 package io.github.cciglesiasmartinez.auth_service.infrastructure.adapter.in.web.mapper;
 
 import io.github.cciglesiasmartinez.auth_service.application.usecases.getuserinfo.GetUserInfoCommand;
+import io.github.cciglesiasmartinez.auth_service.application.usecases.logout.LogoutUserCommand;
 import io.github.cciglesiasmartinez.auth_service.application.usecases.recoverpassword.RecoverPasswordCommand;
 import io.github.cciglesiasmartinez.auth_service.application.usecases.resetpassword.ResetPasswordCommand;
 import io.github.cciglesiasmartinez.auth_service.infrastructure.adapter.in.web.dto.requests.*;
@@ -35,6 +36,7 @@ public interface AuthRequestCommandMapper {
     DeleteUserCommand toDeleteUserCommand(DeleteUserRequest request, String userId);
     DeleteExternalUserCommand toDeleteExternalUserCommand(String userId);
     RefreshAccessTokenCommand toRefreshAccessTokenCommand(RefreshAccessTokenRequest request);
+    LogoutUserCommand toLogoutUserCommand(RequestContext context);
     GetUserInfoCommand toGetUserInfoCommand(String userId);
     OAuthGoogleLoginUserCommand toOAuthGoogleLoginUserCommand(String userGoogleId, String userGoogleEmail,
                                                               RequestContext context);

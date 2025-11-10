@@ -3,6 +3,8 @@ package io.github.cciglesiasmartinez.auth_service.application.usecases;
 import io.github.cciglesiasmartinez.auth_service.application.dto.LoginResult;
 import io.github.cciglesiasmartinez.auth_service.application.usecases.getuserinfo.GetUserInfoCommand;
 import io.github.cciglesiasmartinez.auth_service.application.usecases.getuserinfo.GetUserInfoUseCase;
+import io.github.cciglesiasmartinez.auth_service.application.usecases.logout.LogoutUserCommand;
+import io.github.cciglesiasmartinez.auth_service.application.usecases.logout.LogoutUserUseCase;
 import io.github.cciglesiasmartinez.auth_service.application.usecases.recoverpassword.RecoverPasswordCommand;
 import io.github.cciglesiasmartinez.auth_service.application.usecases.recoverpassword.RecoverPasswordUseCase;
 import io.github.cciglesiasmartinez.auth_service.application.usecases.resetpassword.ResetPasswordCommand;
@@ -60,6 +62,7 @@ public class AuthUseCaseImpl implements AuthUseCase {
     private final DeleteUserUseCase deleteUserService;
     private final DeleteExternalUserUseCase deleteExternalUserService;
     private final RefreshAccessTokenUseCase refreshAccessTokenService;
+    private final LogoutUserUseCase logoutUserUseCase;
     private final OAuthGoogleRegisterUserUseCase oAuthGoogleRegisterService;
     private final OAuthGoogleLoginUserUseCase oAuthGoogleLoginService;
     private final GetUserInfoUseCase getUserInfoUseCase;
@@ -106,6 +109,12 @@ public class AuthUseCaseImpl implements AuthUseCase {
     @Override
     public LoginResult refreshAccessToken(RequestContext context) {
         return refreshAccessTokenService.execute(context);
+    }
+
+    @Override
+    public void logout(RequestContext context) {
+        LogoutUserCommand command = mapper.toLogoutUserCommand(context);
+        logoutUserUseCase.execute(command);
     }
 
     @Override

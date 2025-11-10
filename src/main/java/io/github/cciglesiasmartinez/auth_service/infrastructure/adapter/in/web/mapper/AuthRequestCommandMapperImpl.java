@@ -1,6 +1,7 @@
 package io.github.cciglesiasmartinez.auth_service.infrastructure.adapter.in.web.mapper;
 
 import io.github.cciglesiasmartinez.auth_service.application.usecases.getuserinfo.GetUserInfoCommand;
+import io.github.cciglesiasmartinez.auth_service.application.usecases.logout.LogoutUserCommand;
 import io.github.cciglesiasmartinez.auth_service.application.usecases.recoverpassword.RecoverPasswordCommand;
 import io.github.cciglesiasmartinez.auth_service.application.usecases.resetpassword.ResetPasswordCommand;
 import io.github.cciglesiasmartinez.auth_service.infrastructure.adapter.in.web.dto.requests.*;
@@ -121,6 +122,16 @@ public class AuthRequestCommandMapperImpl implements  AuthRequestCommandMapper {
     public RefreshAccessTokenCommand toRefreshAccessTokenCommand(RefreshAccessTokenRequest request) {
         return new RefreshAccessTokenCommand(
                 request.getRefreshToken()
+        );
+    }
+
+    @Override
+    public LogoutUserCommand toLogoutUserCommand(RequestContext context) {
+        return new LogoutUserCommand(
+                context.getIp(),
+                context.getUserAgent(),
+                context.getLanguage(),
+                context.getRefreshTokenId()
         );
     }
 

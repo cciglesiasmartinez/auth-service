@@ -15,8 +15,9 @@ public interface AuthUseCase {
     Envelope<RecoverPasswordResponse> recoverPassword(RecoverPasswordRequest request, RequestContext context);
     Envelope<ResetPasswordResponse> resetPassword(ResetPasswordRequest request, RequestContext context);
     LoginResult login(LoginRequest request, RequestContext context);
-    LoginResult refreshAccessToken(RefreshAccessTokenRequest request, RequestContext context);
+    LoginResult refreshAccessToken(RefreshAccessTokenRequest request, RequestContext context); // TODO: Delete this
     LoginResult refreshAccessToken(RequestContext context);
+    void logout(RequestContext context);
     Envelope<ChangePasswordResponse> changePassword(User user, ChangePasswordRequest request);
     Envelope<ChangeUsernameResponse> changeUsername(User user, ChangeUsernameRequest request);
     Envelope<ChangeUsernameResponse> changeExternalUserUsername(User user, ChangeExternalUserUsernameRequest request);

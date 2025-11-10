@@ -7,5 +7,6 @@ public interface RefreshTokenService {
 
     RefreshToken generate(UserId userId, String ipAddress, String userAgent);
     RefreshToken rotate(RefreshToken refreshToken);
+    void delete(RefreshToken refreshToken);
 
 }
