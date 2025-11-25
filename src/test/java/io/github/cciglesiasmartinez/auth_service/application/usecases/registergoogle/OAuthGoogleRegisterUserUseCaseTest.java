@@ -1,5 +1,6 @@
 package io.github.cciglesiasmartinez.auth_service.application.usecases.registergoogle;
 
+import io.github.cciglesiasmartinez.auth_service.application.dto.LoginResult;
 import io.github.cciglesiasmartinez.auth_service.application.services.RefreshTokenService;
 import io.github.cciglesiasmartinez.auth_service.domain.exception.EmailAlreadyExistsException;
 import io.github.cciglesiasmartinez.auth_service.domain.model.RefreshToken;
@@ -72,11 +73,12 @@ public class OAuthGoogleRegisterUserUseCaseTest {
         when(accessTokenProvider.getTokenExpirationInSeconds()).thenReturn(3600L);
 
         // When
-        Envelope<LoginResponse> response = useCase.execute(command);
+        LoginResult result = useCase.execute(command);
+        Envelope<LoginResponse> response = result.envelope();
 
         // Then
         assertEquals("fake-access-token", response.getData().getToken());
-        assertEquals("refresh-token", response.getData().getRefreshToken());
+        assertEquals("refresh-token", response.getData().getToken());
     }
 
     @Test

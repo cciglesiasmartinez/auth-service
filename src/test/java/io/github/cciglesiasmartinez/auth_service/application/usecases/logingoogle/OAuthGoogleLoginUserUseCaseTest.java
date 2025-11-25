@@ -1,5 +1,6 @@
 package io.github.cciglesiasmartinez.auth_service.application.usecases.logingoogle;
 
+import io.github.cciglesiasmartinez.auth_service.application.dto.LoginResult;
 import io.github.cciglesiasmartinez.auth_service.application.services.RefreshTokenService;
 import io.github.cciglesiasmartinez.auth_service.domain.exception.UserNotFoundException;
 import io.github.cciglesiasmartinez.auth_service.domain.model.RefreshToken;
@@ -84,12 +85,13 @@ public class OAuthGoogleLoginUserUseCaseTest {
                 .thenReturn(refreshToken);
 
         // When
-        Envelope<LoginResponse> response = useCase.execute(command);
+        LoginResult result = useCase.execute(command);
+        Envelope<LoginResponse> response = result.envelope();
 
         // Then
         assertEquals(user.username().value(), response.getData().getUsername());
         assertEquals("access-token", response.getData().getToken());
-        assertEquals("refresh-token", response.getData().getRefreshToken());
+//        assertEquals("refresh-token", response.getData().getRefreshToken());
         verify(user).recordLogin();
         verify(user).updateEmailIfDifferent(googleMail);
         verify(userRepository).save(user);

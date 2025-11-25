@@ -1,5 +1,6 @@
 package io.github.cciglesiasmartinez.auth_service.application.usecases.login;
 
+import io.github.cciglesiasmartinez.auth_service.application.dto.LoginResult;
 import io.github.cciglesiasmartinez.auth_service.domain.model.Role;
 import io.github.cciglesiasmartinez.auth_service.domain.model.valueobject.*;
 import io.github.cciglesiasmartinez.auth_service.infrastructure.adapter.in.web.dto.responses.Envelope;
@@ -120,7 +121,8 @@ public class LoginUserUseCaseTest {
         when(refreshTokenService.generate(userId, ip, userAgent)).thenReturn(refreshToken);
 
         // When
-        Envelope<LoginResponse> response = useCase.execute(command);
+        LoginResult result = useCase.execute(command);
+        Envelope<LoginResponse> response = result.envelope();
 
         // Then
 //        assertEquals("mock-token", response.getToken());
