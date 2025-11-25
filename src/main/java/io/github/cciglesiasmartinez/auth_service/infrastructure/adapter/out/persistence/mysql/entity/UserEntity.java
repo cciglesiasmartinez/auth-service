@@ -50,12 +50,12 @@ public class UserEntity implements Serializable {
             inverseJoinColumns = @JoinColumn(name = "role_id"))
     private Set<RoleEntity> roles = new HashSet<>();
 
-    /**
-     * Updates automatically the modified_at value each time we update (SQL) the entity.
-     */
-    @PreUpdate
-    public void onUpdate() {
-        this.modifiedAt = LocalDateTime.now();
-    }
+//    /**
+//     * Updates automatically the modified_at value each time we update (SQL) the entity.
+//     */
+//    @PreUpdate
+//    public void onUpdate() {
+//        this.modifiedAt = LocalDateTime.now();
+//    }
 
 }
